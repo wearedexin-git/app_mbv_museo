@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/labirinto_labirinto_museo_2_luminance.jpg",
+  "metadata": null,
+  "name": "labirinto_labirinto_museo_2",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 3024,
+    "height": 4032,
+    "isRotated": true,
+    "originalWidth": 3024,
+    "originalHeight": 4032
+  },
+  "resources": {
+    "originalImage": "labirinto_labirinto_museo_2_original.jpg",
+    "croppedImage": "labirinto_labirinto_museo_2_cropped.jpg",
+    "thumbnailImage": "labirinto_labirinto_museo_2_thumbnail.jpg",
+    "luminanceImage": "labirinto_labirinto_museo_2_luminance.jpg"
+  },
+  "created": 1775632607338,
+  "updated": 1775632607338
+}

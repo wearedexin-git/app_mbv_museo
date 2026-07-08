@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_affresco_capitello_capitello_qr_luminance.jpg",
+  "metadata": null,
+  "name": "sala_affresco_capitello_capitello_qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 33,
+    "top": 0,
+    "width": 983,
+    "height": 1311,
+    "isRotated": false,
+    "originalWidth": 1049,
+    "originalHeight": 1311
+  },
+  "resources": {
+    "originalImage": "sala_affresco_capitello_capitello_qr_original.jpg",
+    "croppedImage": "sala_affresco_capitello_capitello_qr_cropped.jpg",
+    "thumbnailImage": "sala_affresco_capitello_capitello_qr_thumbnail.jpg",
+    "luminanceImage": "sala_affresco_capitello_capitello_qr_luminance.jpg"
+  },
+  "created": 1775632609816,
+  "updated": 1775632609816
+}

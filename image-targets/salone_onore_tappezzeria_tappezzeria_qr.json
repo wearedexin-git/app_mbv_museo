@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/salone_onore_tappezzeria_tappezzeria_qr_luminance.jpg",
+  "metadata": null,
+  "name": "salone_onore_tappezzeria_tappezzeria_qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 109,
+    "width": 1311,
+    "height": 1748,
+    "isRotated": false,
+    "originalWidth": 1311,
+    "originalHeight": 1966
+  },
+  "resources": {
+    "originalImage": "salone_onore_tappezzeria_tappezzeria_qr_original.jpg",
+    "croppedImage": "salone_onore_tappezzeria_tappezzeria_qr_cropped.jpg",
+    "thumbnailImage": "salone_onore_tappezzeria_tappezzeria_qr_thumbnail.jpg",
+    "luminanceImage": "salone_onore_tappezzeria_tappezzeria_qr_luminance.jpg"
+  },
+  "created": 1775632639697,
+  "updated": 1775632639697
+}

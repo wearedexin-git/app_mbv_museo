@@ -1,0 +1,22 @@
+{
+  "name": "Museo Bagatti Valsecchi AR",
+  "short_name": "BagattiAR",
+  "description": "Esperienza WebAR immersiva nel Museo Bagatti Valsecchi",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#c4a45d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "./asset/icons/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./asset/icons/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

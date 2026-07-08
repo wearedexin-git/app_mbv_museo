@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/biblioteca_stanza_stanza_luminance.jpg",
+  "metadata": null,
+  "name": "biblioteca_stanza_stanza",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "biblioteca_stanza_stanza_original.jpg",
+    "croppedImage": "biblioteca_stanza_stanza_cropped.jpg",
+    "thumbnailImage": "biblioteca_stanza_stanza_thumbnail.jpg",
+    "luminanceImage": "biblioteca_stanza_stanza_luminance.jpg"
+  },
+  "created": 1775632567485,
+  "updated": 1775632567485
+}

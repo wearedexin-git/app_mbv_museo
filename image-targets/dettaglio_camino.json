@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/dettaglio_camino_luminance.jpg",
+  "metadata": null,
+  "name": "dettaglio_camino",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 106,
+    "width": 1272,
+    "height": 1696,
+    "isRotated": true,
+    "originalWidth": 1272,
+    "originalHeight": 1908
+  },
+  "resources": {
+    "originalImage": "dettaglio_camino_original.jpg",
+    "croppedImage": "dettaglio_camino_cropped.jpg",
+    "thumbnailImage": "dettaglio_camino_thumbnail.jpg",
+    "luminanceImage": "dettaglio_camino_luminance.jpg"
+  },
+  "created": 1775573922406,
+  "updated": 1775573922406
+}

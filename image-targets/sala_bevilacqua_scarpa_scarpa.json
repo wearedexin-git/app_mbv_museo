@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_bevilacqua_scarpa_scarpa_luminance.jpg",
+  "metadata": null,
+  "name": "sala_bevilacqua_scarpa_scarpa",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "sala_bevilacqua_scarpa_scarpa_original.jpg",
+    "croppedImage": "sala_bevilacqua_scarpa_scarpa_cropped.jpg",
+    "thumbnailImage": "sala_bevilacqua_scarpa_scarpa_thumbnail.jpg",
+    "luminanceImage": "sala_bevilacqua_scarpa_scarpa_luminance.jpg"
+  },
+  "created": 1775632621882,
+  "updated": 1775632621882
+}

@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/porta_luminance.jpg",
+  "metadata": null,
+  "name": "porta",
+  "type": "PLANAR",
+  "properties": {
+    "left": 1,
+    "top": 0,
+    "width": 810,
+    "height": 1080,
+    "isRotated": false,
+    "originalWidth": 811,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "porta_original.jpg",
+    "croppedImage": "porta_cropped.jpg",
+    "thumbnailImage": "porta_thumbnail.jpg",
+    "luminanceImage": "porta_luminance.jpg"
+  },
+  "created": 1775573931089,
+  "updated": 1775573931089
+}

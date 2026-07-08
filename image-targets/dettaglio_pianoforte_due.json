@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/dettaglio_pianoforte_due_luminance.jpg",
+  "metadata": null,
+  "name": "dettaglio_pianoforte_due",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 90,
+    "width": 1080,
+    "height": 1440,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 1619
+  },
+  "resources": {
+    "originalImage": "dettaglio_pianoforte_due_original.jpg",
+    "croppedImage": "dettaglio_pianoforte_due_cropped.jpg",
+    "thumbnailImage": "dettaglio_pianoforte_due_thumbnail.jpg",
+    "luminanceImage": "dettaglio_pianoforte_due_luminance.jpg"
+  },
+  "created": 1775573931528,
+  "updated": 1775573931528
+}

@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_verde_camera_camera_museo_2_luminance.jpg",
+  "metadata": null,
+  "name": "camera_verde_camera_camera_museo_2",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 3024,
+    "height": 4032,
+    "isRotated": false,
+    "originalWidth": 3024,
+    "originalHeight": 4032
+  },
+  "resources": {
+    "originalImage": "camera_verde_camera_camera_museo_2_original.jpg",
+    "croppedImage": "camera_verde_camera_camera_museo_2_cropped.jpg",
+    "thumbnailImage": "camera_verde_camera_camera_museo_2_thumbnail.jpg",
+    "luminanceImage": "camera_verde_camera_camera_museo_2_luminance.jpg"
+  },
+  "created": 1775651242400,
+  "updated": 1775651242400
+}

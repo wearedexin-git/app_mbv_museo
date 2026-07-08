@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/capitello_luminance.jpg",
+  "metadata": null,
+  "name": "capitello",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 60,
+    "width": 720,
+    "height": 960,
+    "isRotated": false,
+    "originalWidth": 720,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "capitello_original.jpg",
+    "croppedImage": "capitello_cropped.jpg",
+    "thumbnailImage": "capitello_thumbnail.jpg",
+    "luminanceImage": "capitello_luminance.jpg"
+  },
+  "created": 1775573919299,
+  "updated": 1775573919299
+}

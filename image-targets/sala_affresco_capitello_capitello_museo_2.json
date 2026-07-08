@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_affresco_capitello_capitello_museo_2_luminance.jpg",
+  "metadata": null,
+  "name": "sala_affresco_capitello_capitello_museo_2",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 3024,
+    "height": 4032,
+    "isRotated": false,
+    "originalWidth": 3024,
+    "originalHeight": 4032
+  },
+  "resources": {
+    "originalImage": "sala_affresco_capitello_capitello_museo_2_original.jpg",
+    "croppedImage": "sala_affresco_capitello_capitello_museo_2_cropped.jpg",
+    "thumbnailImage": "sala_affresco_capitello_capitello_museo_2_thumbnail.jpg",
+    "luminanceImage": "sala_affresco_capitello_capitello_museo_2_luminance.jpg"
+  },
+  "created": 1775652963172,
+  "updated": 1775652963172
+}

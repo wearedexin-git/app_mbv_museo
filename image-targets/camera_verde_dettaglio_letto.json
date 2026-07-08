@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_verde_dettaglio_letto_luminance.jpg",
+  "metadata": null,
+  "name": "camera_verde_dettaglio_letto",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 1723,
+    "width": 1080,
+    "height": 1440,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 4886
+  },
+  "resources": {
+    "originalImage": "camera_verde_dettaglio_letto_original.jpg",
+    "croppedImage": "camera_verde_dettaglio_letto_cropped.jpg",
+    "thumbnailImage": "camera_verde_dettaglio_letto_thumbnail.jpg",
+    "luminanceImage": "camera_verde_dettaglio_letto_luminance.jpg"
+  },
+  "created": 1775573960623,
+  "updated": 1775573960623
+}

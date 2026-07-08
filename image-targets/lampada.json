@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/lampada_luminance.jpg",
+  "metadata": null,
+  "name": "lampada",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 95,
+    "width": 1143,
+    "height": 1524,
+    "isRotated": false,
+    "originalWidth": 1143,
+    "originalHeight": 1714
+  },
+  "resources": {
+    "originalImage": "lampada_original.jpg",
+    "croppedImage": "lampada_cropped.jpg",
+    "thumbnailImage": "lampada_thumbnail.jpg",
+    "luminanceImage": "lampada_luminance.jpg"
+  },
+  "created": 1775573933292,
+  "updated": 1775573933292
+}

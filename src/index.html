@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Museo Bagatti Valsecchi - WebAR Experience</title>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#c4a45d">
+
+  <!-- iOS support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BagattiAR">
+  <link rel="apple-touch-icon" href="./asset/icons/pwa-icon-192.png">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('✅ Service Worker registrato!', reg))
+          .catch(err => console.log('❌ Registrazione Service Worker fallita:', err));
+      });
+    }
+
+    // GESTIONE BANNER PWA
+    let deferredPrompt;
+    let pwaBanner, installBtn, closeBtn, pwaMsg;
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    window.addEventListener('load', () => {
+      // Inizializza elementi solo dopo il caricamento della pagina
+      pwaBanner = document.getElementById('pwa-install-banner');
+      installBtn = document.getElementById('pwa-install-btn');
+      closeBtn = document.getElementById('pwa-close-btn');
+      pwaMsg = document.getElementById('pwa-msg');
+
+      // Bind dell'evento chiusura
+      closeBtn.onclick = () => {
+        pwaBanner.classList.add('hidden');
+        localStorage.setItem('pwa_dismissed', 'true');
+      };
+
+      // Bind dell'evento installazione (Android)
+      installBtn.onclick = () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choice) => {
+          if (choice.outcome === 'accepted') pwaBanner.classList.add('hidden');
+          deferredPrompt = null;
+        });
+      };
+
+      // Se già installato o già chiuso, non mostrare nulla
+      if (isStandalone || localStorage.getItem('pwa_dismissed') === 'true') return;
+
+      setTimeout(() => {
+        if (isIOS) {
+          pwaMsg.innerText = "Tocca 'Condividi' e seleziona 'Aggiungi alla Home' per installare l'app.";
+          pwaBanner.classList.remove('hidden');
+        } else {
+          // Su Android/Desktop proviamo a mostrarlo comunque se il prompt non è ancora scattato
+          pwaBanner.classList.remove('hidden');
+        }
+      }, 5000);
+    });
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (!isStandalone && localStorage.getItem('pwa_dismissed') !== 'true') {
+        if (pwaBanner) pwaBanner.classList.remove('hidden');
+        if (installBtn) installBtn.classList.remove('hidden');
+      }
+    });
+
+    // 8TH WALL CUSTOMIZATION SCRIPT (LOCALIZATION ONLY)
+    const observer = new MutationObserver(() => {
+      const promptBox = document.querySelector('.prompt-box-8w')
+      if (promptBox) {
+        // Traduzione dei bottoni e del testo nel box dei permessi (iOS/Android)
+        const p = promptBox.querySelector('p')
+        if (p && !p.innerText.includes('Tocca')) {
+          p.innerHTML = "<strong>Tocca 'Consenti' per accedere alla fotocamera e iniziare l'esperienza</strong>"
+        }
+        const primaryBtn = promptBox.querySelector('.button-primary-8w')
+        if (primaryBtn && primaryBtn.innerText !== 'Consenti') {
+          primaryBtn.innerText = 'Consenti'
+        }
+        const secondaryBtn = promptBox.querySelector('.prompt-button-8w:not(.button-primary-8w)')
+        if (secondaryBtn && secondaryBtn.innerText !== 'Annulla') {
+          secondaryBtn.innerText = 'Annulla'
+        }
+      }
+    })
+    observer.observe(document.body, { childList: true, subtree: true })
+  </script>
+  <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
+  <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam"
+    appKey="3BnxNE2RNShEkkTCf4TzDiMhNRy_2EsTEq3ZvhXbZg8bXtAT4"></script>
+  <!-- Carica XRExtras ufficiale per gestire FullScreen e Permessi Camera -->
+  <script src="//cdn.8thwall.com/web/xrextras/xrextras.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #ffffff;
+      --glass-bg: rgba(255, 255, 255, 0.15);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glass-blur: blur(12px);
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .hidden {
+      display: none !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #ar-ui-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    .ui-element {
+      pointer-events: auto;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      color: var(--primary);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s, background 0.2s;
+    }
+
+    .ui-element:active {
+      transform: scale(0.9);
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .material-symbols-rounded {
+      font-size: 26px;
+    }
+
+    /* --- 8TH WALL LOADING SCREEN CUSTOMIZATION (FINALE) --- */
+    #loadBackground,
+    .xrextras-loading-screen {
+      background: #ffffff !important;
+    }
+
+    #requestingCameraPermissions,
+    #loading-screen {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      background-color: #ffffff !important;
+      color: transparent !important;
+      /* Nasconde i text nodes diretti */
+      font-family: 'Inter', sans-serif !important;
+      text-align: center !important;
+      z-index: 10000 !important;
+      /* Alzato per sicurezza */
+      font-size: 0 !important;
+      /* Nasconde i text nodes diretti */
+      line-height: 0 !important;
+    }
+
+    /* Logo - Pseudo-elemento */
+    #requestingCameraPermissions::before,
+    #loading-screen::before {
+      content: "" !important;
+      display: block !important;
+      width: 280px !important;
+      height: 180px !important;
+      background-image: url('./image/ba_va_vettoriale_payoff_oro_nero.png') !important;
+      background-size: contain !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      margin-bottom: 20px !important;
+      order: -2 !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* Testo tradotto - Pseudo-elemento */
+    #requestingCameraPermissions::after {
+      content: "Accesso all'Esperienza AR\n\nTocca 'Consenti' per attivare la fotocamera e iniziare l'esperienza" !important;
+      display: block !important;
+      font-size: 1.15rem !important;
+      color: #141419 !important;
+      white-space: pre-wrap !important;
+      max-width: 85% !important;
+      margin: 20px auto !important;
+      order: -1 !important;
+      font-weight: 500 !important;
+      line-height: 1.6 !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    /* Nascondiamo TUTTI i figli (Inclusi img e testi iniettati) */
+    #requestingCameraPermissions>*,
+    #requestingCameraIcon,
+    #loadImage,
+    .permission-icon,
+    .prompt-image {
+      display: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      font-size: 0 !important;
+      height: 0 !important;
+      width: 0 !important;
+      margin: 0 !important;
+      content: none !important;
+    }
+
+    /* Esenzione per il badge obbligatorio */
+    #requestingCameraPermissions .poweredby-img,
+    #loading-screen .poweredby-img {
+      display: block !important;
+      opacity: 0.5 !important;
+      visibility: visible !important;
+      height: auto !important;
+      width: 100px !important;
+      margin-top: 40px !important;
+      order: 1 !important;
+      font-size: 12px !important;
+      /* Se c'è testo nel badge */
+    }
+
+    /* Prompt iOS/Android */
+    .prompt-box-8w {
+      background-color: #ffffff !important;
+      border-radius: 24px !important;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+      padding: 30px !important;
+      z-index: 10001 !important;
+    }
+
+    .button-primary-8w {
+      background-color: #c4a45d !important;
+      color: #000000 !important;
+      border-radius: 12px !important;
+      font-weight: 600 !important;
+    }
+
+    /* ------------------------------------------------------------- */
+
+    @keyframes loading-pulse {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(0.98);
+        opacity: 0.9;
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.02);
+        opacity: 1;
+      }
+    }
+
+    .btn-text {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .top-bar {
+      position: absolute;
+      top: calc(25px + env(safe-area-inset-top, 0px));
+      right: 25px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .side-controls {
+      position: absolute;
+      top: calc(95px + env(safe-area-inset-top, 0px));
+      right: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    /* QUIZ STYLES */
+    #quiz-panel h3 {
+      font-size: 1.2rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .quiz-option {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 1rem;
+      text-align: left;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .quiz-option:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .quiz-option.correct {
+      background: rgba(46, 204, 113, 0.3) !important;
+      border-color: rgba(46, 204, 113, 0.6) !important;
+      color: #2ecc71;
+    }
+
+    .quiz-option.wrong {
+      background: rgba(231, 76, 60, 0.3) !important;
+      border-color: rgba(231, 76, 60, 0.6) !important;
+      color: #e74c3c;
+    }
+
+    .quiz-option.disabled {
+      pointer-events: none;
+    }
+
+    .nav-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 60px;
+      height: 60px;
+      font-size: 1.5rem;
+    }
+
+    #nav-left-btn {
+      left: 20px;
+    }
+
+    #nav-right-btn {
+      right: 20px;
+    }
+
+    /* INFO BOTTOM SHEET */
+    #info-bottomsheet {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      max-height: 75vh;
+      /* Limite altezza al 75% dello schermo */
+      display: flex;
+      flex-direction: column;
+      background: rgba(20, 20, 25, 0.85);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-top: 1px solid var(--glass-border);
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      padding: 25px 25px 30px 25px;
+      color: white;
+      pointer-events: auto;
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+      z-index: 30;
+      box-sizing: border-box;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    }
+
+    #info-bottomsheet.hidden {
+      display: flex !important;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(100%);
+    }
+
+    .sheet-handle {
+      width: 45px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      margin: -10px auto 20px auto;
+      flex-shrink: 0;
+    }
+
+    .sheet-content {
+      overflow-y: auto;
+      flex-grow: 1;
+      padding-right: 8px;
+      /* Spazio per la scrollbar */
+      margin-bottom: 20px;
+    }
+
+    /* Scrollbar personalizzata premium */
+    .sheet-content::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .sheet-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .sheet-content::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+    }
+
+    #info-text {
+      font-size: 1.05rem;
+      line-height: 1.65;
+      text-align: left;
+      margin: 0;
+    }
+
+    #close-sheet-btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+      padding: 14px 0;
+      width: 100%;
+      border-radius: 15px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    #close-sheet-btn:active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* CUSTOM AUDIO PLAYER */
+    #custom-audio-player {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      max-width: 400px;
+      background: rgba(20, 20, 25, 0.7);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 15px 20px;
+      color: white;
+      pointer-events: auto;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      z-index: 20;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #custom-audio-player.hidden {
+      display: block !important;
+      /* overrides .hidden display:none to allow transition */
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 20px);
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    #play-pause-btn {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s;
+    }
+
+    #play-pause-btn .material-symbols-rounded {
+      font-size: 34px;
+    }
+
+    #play-pause-btn:active {
+      transform: scale(0.9);
+    }
+
+    #progress-container {
+      flex-grow: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: #00d2ff;
+      width: 0%;
+      border-radius: 3px;
+      pointer-events: none;
+    }
+
+    #time-display {
+      font-size: 0.8rem;
+      font-family: monospace;
+      opacity: 0.8;
+      white-space: nowrap;
+    }
+
+    #close-player-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+      opacity: 0.6;
+      padding: 0;
+    }
+
+    /* PWA BANNER STYLES */
+    #pwa-install-banner {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 18px;
+      color: white;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: slide-up 0.5s ease-out;
+    }
+
+    @keyframes slide-up {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .pwa-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pwa-icon-mini {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+    }
+
+    .pwa-text {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    .pwa-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    .pwa-btn {
+      padding: 8px 18px;
+      border-radius: 10px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .pwa-btn-primary {
+      background: #c4a45d;
+      color: black;
+    }
+
+    .pwa-btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid var(--glass-border);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- PWA INSTALL BANNER -->
+  <div id="pwa-install-banner" class="hidden">
+    <div class="pwa-header">
+      <img src="./asset/icons/pwa-icon-192.png" class="pwa-icon-mini">
+      <div id="pwa-msg" class="pwa-text">Installa l'app del Museo per un'esperienza migliore e accesso offline.</div>
+    </div>
+    <div class="pwa-actions">
+      <button id="pwa-install-btn" class="pwa-btn pwa-btn-primary hidden">Installa</button>
+      <button id="pwa-close-btn" class="pwa-btn pwa-btn-secondary">Chiudi</button>
+    </div>
+  </div>
+
+  <canvas id="camerafeed"></canvas>
+  <div id="ar-ui-overlay" class="hidden">
+    <div class="top-bar">
+      <div id="lang-btn" class="ui-element btn-text">IT</div>
+      <div id="close-btn" class="ui-element"><span class="material-symbols-rounded">close</span></div>
+    </div>
+
+    <div class="side-controls">
+      <div id="audio-btn" class="ui-element"><span class="material-symbols-rounded">volume_off</span></div>
+      <div id="info-btn" class="ui-element"><span class="material-symbols-rounded">info</span></div>
+      <div id="quiz-btn" class="ui-element hidden"><span class="material-symbols-rounded">help</span></div>
+    </div>
+
+    <div id="nav-left-btn" class="ui-element nav-arrow"><span class="material-symbols-rounded">chevron_left</span></div>
+    <div id="nav-right-btn" class="ui-element nav-arrow"><span class="material-symbols-rounded">chevron_right</span>
+    </div>
+
+    <!-- INFO BOTTOM SHEET -->
+    <div id="info-bottomsheet" class="hidden">
+      <div class="sheet-handle"></div>
+
+      <!-- STORIA -->
+      <div id="info-panel" class="sheet-content">
+        <p id="info-text">Testo placeholder</p>
+      </div>
+
+      <!-- QUIZ -->
+      <div id="quiz-panel" class="sheet-content hidden">
+        <h3 id="quiz-question">Domanda</h3>
+        <div id="quiz-options">
+          <!-- Bottoni opzioni iniettati via JS -->
+        </div>
+      </div>
+
+      <button id="close-sheet-btn">Chiudi</button>
+    </div>
+
+    <!-- AUDIO PLAYER PANEL -->
+    <div id="custom-audio-player" class="hidden">
+      <div class="player-controls">
+        <button id="play-pause-btn"><span class="material-symbols-rounded">play_arrow</span></button>
+        <div id="progress-container">
+          <div id="progress-bar"></div>
+        </div>
+        <span id="time-display">0:00 / 0:00</span>
+        <button id="close-player-btn"><span class="material-symbols-rounded">close</span></button>
+      </div>
+    </div>
+  </div>
+
+  <audio id="ar-audio-player" class="hidden"></audio>
+
+  <script src="bundle.js"></script>
+</body>
+
+</html>

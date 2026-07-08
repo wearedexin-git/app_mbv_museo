@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_stufa_valtellinese_stanza_stanza_luminance.jpg",
+  "metadata": null,
+  "name": "sala_stufa_valtellinese_stanza_stanza",
+  "type": "PLANAR",
+  "properties": {
+    "left": 5,
+    "top": 0,
+    "width": 1070,
+    "height": 1427,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 1427
+  },
+  "resources": {
+    "originalImage": "sala_stufa_valtellinese_stanza_stanza_original.jpg",
+    "croppedImage": "sala_stufa_valtellinese_stanza_stanza_cropped.jpg",
+    "thumbnailImage": "sala_stufa_valtellinese_stanza_stanza_thumbnail.jpg",
+    "luminanceImage": "sala_stufa_valtellinese_stanza_stanza_luminance.jpg"
+  },
+  "created": 1775632633919,
+  "updated": 1775632633919
+}

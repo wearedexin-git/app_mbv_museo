@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_fausto_capitello_capitello_qr_luminance.jpg",
+  "metadata": null,
+  "name": "camera_fausto_capitello_capitello_qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 60,
+    "width": 720,
+    "height": 960,
+    "isRotated": false,
+    "originalWidth": 720,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "camera_fausto_capitello_capitello_qr_original.jpg",
+    "croppedImage": "camera_fausto_capitello_capitello_qr_cropped.jpg",
+    "thumbnailImage": "camera_fausto_capitello_capitello_qr_thumbnail.jpg",
+    "luminanceImage": "camera_fausto_capitello_capitello_qr_luminance.jpg"
+  },
+  "created": 1775632569453,
+  "updated": 1775632569453
+}

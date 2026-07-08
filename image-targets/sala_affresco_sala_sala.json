@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_affresco_sala_sala_luminance.jpg",
+  "metadata": null,
+  "name": "sala_affresco_sala_sala",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "sala_affresco_sala_sala_original.jpg",
+    "croppedImage": "sala_affresco_sala_sala_cropped.jpg",
+    "thumbnailImage": "sala_affresco_sala_sala_thumbnail.jpg",
+    "luminanceImage": "sala_affresco_sala_sala_luminance.jpg"
+  },
+  "created": 1775632610292,
+  "updated": 1775632610292
+}

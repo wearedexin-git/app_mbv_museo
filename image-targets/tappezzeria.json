@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/tappezzeria_luminance.jpg",
+  "metadata": null,
+  "name": "tappezzeria",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 109,
+    "width": 1311,
+    "height": 1748,
+    "isRotated": false,
+    "originalWidth": 1311,
+    "originalHeight": 1966
+  },
+  "resources": {
+    "originalImage": "tappezzeria_original.jpg",
+    "croppedImage": "tappezzeria_cropped.jpg",
+    "thumbnailImage": "tappezzeria_thumbnail.jpg",
+    "luminanceImage": "tappezzeria_luminance.jpg"
+  },
+  "created": 1775573934654,
+  "updated": 1775573934654
+}

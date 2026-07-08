@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/dettaglio_pianoforte_uno_luminance.jpg",
+  "metadata": null,
+  "name": "dettaglio_pianoforte_uno",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 60,
+    "width": 720,
+    "height": 960,
+    "isRotated": false,
+    "originalWidth": 720,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "dettaglio_pianoforte_uno_original.jpg",
+    "croppedImage": "dettaglio_pianoforte_uno_cropped.jpg",
+    "thumbnailImage": "dettaglio_pianoforte_uno_thumbnail.jpg",
+    "luminanceImage": "dettaglio_pianoforte_uno_luminance.jpg"
+  },
+  "created": 1775573931933,
+  "updated": 1775573931933
+}

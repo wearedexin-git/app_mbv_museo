@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/candelabro_luminance.jpg",
+  "metadata": null,
+  "name": "candelabro",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 90,
+    "width": 1080,
+    "height": 1440,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 1619
+  },
+  "resources": {
+    "originalImage": "candelabro_original.jpg",
+    "croppedImage": "candelabro_cropped.jpg",
+    "thumbnailImage": "candelabro_thumbnail.jpg",
+    "luminanceImage": "candelabro_luminance.jpg"
+  },
+  "created": 1775573924991,
+  "updated": 1775573924991
+}

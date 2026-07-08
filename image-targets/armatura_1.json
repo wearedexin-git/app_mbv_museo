@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/armatura_1_luminance.jpg",
+  "metadata": null,
+  "name": "armatura_1",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 60,
+    "width": 720,
+    "height": 960,
+    "isRotated": false,
+    "originalWidth": 720,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "armatura_1_original.jpg",
+    "croppedImage": "armatura_1_cropped.jpg",
+    "thumbnailImage": "armatura_1_thumbnail.jpg",
+    "luminanceImage": "armatura_1_luminance.jpg"
+  },
+  "created": 1775573923464,
+  "updated": 1775573923464
+}

@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/scalone_ingresso_scalone_1_luminance.jpg",
+  "metadata": null,
+  "name": "scalone_ingresso_scalone_1",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "scalone_ingresso_scalone_1_original.jpg",
+    "croppedImage": "scalone_ingresso_scalone_1_cropped.jpg",
+    "thumbnailImage": "scalone_ingresso_scalone_1_thumbnail.jpg",
+    "luminanceImage": "scalone_ingresso_scalone_1_luminance.jpg"
+  },
+  "created": 1775632640644,
+  "updated": 1775632640644
+}

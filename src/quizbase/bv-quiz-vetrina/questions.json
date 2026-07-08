@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Le sigle \"LI BO\" e \"BA VA\" intagliate in questa vetrina cosa indicano?",
+    "options": [
+      "I nomi degli artigiani che realizzarono il mobile",
+      "Un motto in latino abbreviato, legato alla famiglia Borromeo",
+      "Le iniziali di Carolina \"Lina\" Borromeo e Giuseppe Bagatti Valsecchi"
+    ],
+    "correctAnswer": 2,
+    "images": [
+      "assets/images/quiz_06.png"
+    ]
+  }
+]

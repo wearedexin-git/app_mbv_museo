@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Da dove proviene il camino della sala da pranzo?",
+    "options": [
+      "da una casa colonica alle porte di Milano",
+      "da Palazzo Carbonera a Sondrio",
+      "Da Villa Bagatti Valsecchi a Varedo"
+    ],
+    "correctAnswer": 0,
+    "images": [
+      "assets/images/quiz_08.png"
+    ]
+  }
+]

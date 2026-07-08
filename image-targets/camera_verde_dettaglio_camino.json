@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_verde_dettaglio_camino_luminance.jpg",
+  "metadata": null,
+  "name": "camera_verde_dettaglio_camino",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 106,
+    "width": 1272,
+    "height": 1696,
+    "isRotated": true,
+    "originalWidth": 1272,
+    "originalHeight": 1908
+  },
+  "resources": {
+    "originalImage": "camera_verde_dettaglio_camino_original.jpg",
+    "croppedImage": "camera_verde_dettaglio_camino_cropped.jpg",
+    "thumbnailImage": "camera_verde_dettaglio_camino_thumbnail.jpg",
+    "luminanceImage": "camera_verde_dettaglio_camino_luminance.jpg"
+  },
+  "created": 1775573960117,
+  "updated": 1775573960117
+}

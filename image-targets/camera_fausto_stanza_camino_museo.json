@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_fausto_stanza_camino_museo_luminance.jpg",
+  "metadata": null,
+  "name": "camera_fausto_stanza_camino_museo",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 3024,
+    "height": 4032,
+    "isRotated": true,
+    "originalWidth": 3024,
+    "originalHeight": 4032
+  },
+  "resources": {
+    "originalImage": "camera_fausto_stanza_camino_museo_original.jpg",
+    "croppedImage": "camera_fausto_stanza_camino_museo_cropped.jpg",
+    "thumbnailImage": "camera_fausto_stanza_camino_museo_thumbnail.jpg",
+    "luminanceImage": "camera_fausto_stanza_camino_museo_luminance.jpg"
+  },
+  "created": 1775632572183,
+  "updated": 1775632572183
+}

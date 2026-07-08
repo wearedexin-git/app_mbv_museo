@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Perché la famiglia Bagatti Valsecchi ha come simbolo araldico una scarpetta?",
+    "options": [
+      "Perché in milanese bagatt vuol dire ciabattino",
+      "Perché uno degli antenati era un famoso calzolaio della corte ducale",
+      "Perché rappresentava un dono di nozze molto diffuso nel Rinascimento"
+    ],
+    "correctAnswer": 0,
+    "images": [
+      "assets/images/quiz_02.png"
+    ]
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_bagno_bagno_museo_luminance.jpg",
+  "metadata": null,
+  "name": "sala_bagno_bagno_museo",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 3024,
+    "height": 4032,
+    "isRotated": true,
+    "originalWidth": 3024,
+    "originalHeight": 4032
+  },
+  "resources": {
+    "originalImage": "sala_bagno_bagno_museo_original.jpg",
+    "croppedImage": "sala_bagno_bagno_museo_cropped.jpg",
+    "thumbnailImage": "sala_bagno_bagno_museo_thumbnail.jpg",
+    "luminanceImage": "sala_bagno_bagno_museo_luminance.jpg"
+  },
+  "created": 1775632616072,
+  "updated": 1775632616072
+}

@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/serliana_luminance.jpg",
+  "metadata": null,
+  "name": "serliana",
+  "type": "PLANAR",
+  "properties": {
+    "left": 1,
+    "top": 0,
+    "width": 1440,
+    "height": 1920,
+    "isRotated": false,
+    "originalWidth": 1442,
+    "originalHeight": 1920
+  },
+  "resources": {
+    "originalImage": "serliana_original.jpg",
+    "croppedImage": "serliana_cropped.jpg",
+    "thumbnailImage": "serliana_thumbnail.jpg",
+    "luminanceImage": "serliana_luminance.jpg"
+  },
+  "created": 1775573927530,
+  "updated": 1775573927530
+}

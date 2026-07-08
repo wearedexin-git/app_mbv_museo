@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/galleria_cupola_stanza_stanza_qr_luminance.jpg",
+  "metadata": null,
+  "name": "galleria_cupola_stanza_stanza_qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 2,
+    "width": 807,
+    "height": 1076,
+    "isRotated": false,
+    "originalWidth": 807,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "galleria_cupola_stanza_stanza_qr_original.jpg",
+    "croppedImage": "galleria_cupola_stanza_stanza_qr_cropped.jpg",
+    "thumbnailImage": "galleria_cupola_stanza_stanza_qr_thumbnail.jpg",
+    "luminanceImage": "galleria_cupola_stanza_stanza_qr_luminance.jpg"
+  },
+  "created": 1775632604607,
+  "updated": 1775632604607
+}

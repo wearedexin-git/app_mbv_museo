@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_pranzo_camera_sala_qr_luminance.jpg",
+  "metadata": null,
+  "name": "sala_pranzo_camera_sala_qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 1,
+    "top": 0,
+    "width": 1078,
+    "height": 1437,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 1437
+  },
+  "resources": {
+    "originalImage": "sala_pranzo_camera_sala_qr_original.jpg",
+    "croppedImage": "sala_pranzo_camera_sala_qr_cropped.jpg",
+    "thumbnailImage": "sala_pranzo_camera_sala_qr_thumbnail.jpg",
+    "luminanceImage": "sala_pranzo_camera_sala_qr_luminance.jpg"
+  },
+  "created": 1775632624641,
+  "updated": 1775632624641
+}

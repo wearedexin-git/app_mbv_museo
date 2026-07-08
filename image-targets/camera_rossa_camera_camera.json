@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_rossa_camera_camera_luminance.jpg",
+  "metadata": null,
+  "name": "camera_rossa_camera_camera",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "camera_rossa_camera_camera_original.jpg",
+    "croppedImage": "camera_rossa_camera_camera_cropped.jpg",
+    "thumbnailImage": "camera_rossa_camera_camera_thumbnail.jpg",
+    "luminanceImage": "camera_rossa_camera_camera_luminance.jpg"
+  },
+  "created": 1775632575188,
+  "updated": 1775632575188
+}

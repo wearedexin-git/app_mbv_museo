@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/salone_onore_salone_luminance.jpg",
+  "metadata": null,
+  "name": "salone_onore_salone",
+  "type": "PLANAR",
+  "properties": {
+    "left": 2,
+    "top": 0,
+    "width": 1440,
+    "height": 1920,
+    "isRotated": true,
+    "originalWidth": 1443,
+    "originalHeight": 1920
+  },
+  "resources": {
+    "originalImage": "salone_onore_salone_original.jpg",
+    "croppedImage": "salone_onore_salone_cropped.jpg",
+    "thumbnailImage": "salone_onore_salone_thumbnail.jpg",
+    "luminanceImage": "salone_onore_salone_luminance.jpg"
+  },
+  "created": 1775573973231,
+  "updated": 1775573973231
+}

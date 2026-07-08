@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Sul comodino di Fausto c'è un oggetto già visto nella sala precedente. Cosa rappresenta il teschio?",
+    "options": [
+      "Il memento mori: ricordarsi che la vita è breve e va vissuta al meglio",
+      "è un simbolo di maledizione che preannuncia sventura a chi lo osserva",
+      "Serviva a nascondere un piccolo vano segreto per gioielli"
+    ],
+    "correctAnswer": 0,
+    "images": [
+      "assets/images/quiz_03.png"
+    ]
+  }
+]

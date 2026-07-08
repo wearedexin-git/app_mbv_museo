@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "objects": {
+    "camera-rig": {
+      "id": "camera-rig",
+      "position": [0, 5, 5],
+      "rotation": [0, 0, 0, 1],
+      "scale": [1, 1, 1],
+      "components": {},
+      "geometry": null,
+      "material": null,
+      "camera": {
+        "type": "perspective",
+        "xr": {
+          "desktop": "disabled",
+          "xrCameraType": "world",
+          "headset": "AR",
+          "phone": "AR",
+          "world": {
+            "disableWorldTracking": false
+          }
+        }
+      },
+      "name": "Camera"
+    },
+    "ambient-light": {
+      "id": "ambient-light",
+      "position": [0, 0, 0],
+      "rotation": [0, 0, 0, 1],
+      "scale": [1, 1, 1],
+      "components": {},
+      "geometry": null,
+      "material": null,
+      "light": {
+        "type": "ambient",
+        "intensity": 1
+      },
+      "name": "Ambient Light"
+    },
+    "my-target": {
+       "id": "my-target",
+       "position": [0, 0, 0],
+       "rotation": [0, 0, 0, 1],
+       "scale": [1, 1, 1],
+       "components": {},
+       "geometry": null,
+       "material": null,
+       "name": "Target",
+       "imageTarget": {
+         "name": "imgdemo"
+       }
+    }
+  }
+}

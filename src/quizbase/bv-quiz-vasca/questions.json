@@ -1,0 +1,14 @@
+[
+  {
+    "question": "A cosa serviva davvero l'elegante vasca da bagno di Casa Bagatti Valsecchi?",
+    "options": [
+      "A nascondere un passaggio segreto",
+      "A essere una doccia con acqua calda",
+      "A impressionare gli ospiti con il suo stile rinascimentale"
+    ],
+    "correctAnswer": 1,
+    "images": [
+      "assets/images/stanzabv_.jpg"
+    ]
+  }
+]

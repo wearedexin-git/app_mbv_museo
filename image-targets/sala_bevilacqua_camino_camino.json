@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_bevilacqua_camino_camino_luminance.jpg",
+  "metadata": null,
+  "name": "sala_bevilacqua_camino_camino",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "sala_bevilacqua_camino_camino_original.jpg",
+    "croppedImage": "sala_bevilacqua_camino_camino_cropped.jpg",
+    "thumbnailImage": "sala_bevilacqua_camino_camino_thumbnail.jpg",
+    "luminanceImage": "sala_bevilacqua_camino_camino_luminance.jpg"
+  },
+  "created": 1775632617652,
+  "updated": 1775632617652
+}

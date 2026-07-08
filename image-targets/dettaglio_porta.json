@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/dettaglio_porta_luminance.jpg",
+  "metadata": null,
+  "name": "dettaglio_porta",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 60,
+    "width": 720,
+    "height": 960,
+    "isRotated": false,
+    "originalWidth": 720,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "dettaglio_porta_original.jpg",
+    "croppedImage": "dettaglio_porta_cropped.jpg",
+    "thumbnailImage": "dettaglio_porta_thumbnail.jpg",
+    "luminanceImage": "dettaglio_porta_luminance.jpg"
+  },
+  "created": 1775573919775,
+  "updated": 1775573919775
+}

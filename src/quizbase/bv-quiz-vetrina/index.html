@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <img src="assets/images/bv_logo.png" alt="Museo Bagatti Valsecchi" class="logo">
+        </header>
+
+        <!-- Quiz Container -->
+        <main class="quiz-container" id="quizContainer">
+            <!-- Loading state -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Caricamento domande...</p>
+            </div>
+
+            <!-- Question content -->
+            <div class="question-content" id="questionContent" style="display: none;">
+                <!-- Images container -->
+                <div class="images-container" id="imagesContainer"></div>
+                
+                <div class="question-text" id="questionText"></div>
+                
+                <!-- Options container -->
+                <div class="options-container" id="optionsContainer"></div>
+                
+                <!-- Navigation buttons -->
+                <div class="navigation-buttons">
+                    <button class="btn btn-primary" id="nextBtn" disabled>
+                        Avanti
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results screen -->
+            <div class="results-screen" id="resultsScreen" style="display: none;">
+                <h2>Quiz Completato!</h2>
+                <div class="score-container">
+                    <p>Hai risposto correttamente a <span id="correctAnswers">0</span> domande su <span id="totalAnswered">0</span></p>
+                    <div class="score-percentage" id="scorePercentage"></div>
+                </div>
+                <button class="btn btn-primary" id="restartBtn">Ricomincia Quiz</button>
+            </div>
+        </main>
+
+        <!-- Progress Footer -->
+        <footer class="progress-footer">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="question-counter">
+                <span id="currentQuestion">1</span> / <span id="totalQuestions">0</span>
+            </div>
+        </footer>
+
+        <!-- Confetti container -->
+        <div class="confetti-container" id="confettiContainer"></div>
+        
+        <!-- Sad animation container -->
+        <div class="sad-animation" id="sadAnimation"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

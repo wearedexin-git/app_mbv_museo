@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/galleria_cupola_candelabro_luminance.jpg",
+  "metadata": null,
+  "name": "galleria_cupola_candelabro",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 90,
+    "width": 1080,
+    "height": 1440,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 1619
+  },
+  "resources": {
+    "originalImage": "galleria_cupola_candelabro_original.jpg",
+    "croppedImage": "galleria_cupola_candelabro_cropped.jpg",
+    "thumbnailImage": "galleria_cupola_candelabro_thumbnail.jpg",
+    "luminanceImage": "galleria_cupola_candelabro_luminance.jpg"
+  },
+  "created": 1775573963180,
+  "updated": 1775573963180
+}

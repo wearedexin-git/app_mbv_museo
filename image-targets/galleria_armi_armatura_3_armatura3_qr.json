@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/galleria_armi_armatura_3_armatura3_qr_luminance.jpg",
+  "metadata": null,
+  "name": "galleria_armi_armatura_3_armatura3_qr",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 60,
+    "width": 720,
+    "height": 960,
+    "isRotated": false,
+    "originalWidth": 720,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "galleria_armi_armatura_3_armatura3_qr_original.jpg",
+    "croppedImage": "galleria_armi_armatura_3_armatura3_qr_cropped.jpg",
+    "thumbnailImage": "galleria_armi_armatura_3_armatura3_qr_thumbnail.jpg",
+    "luminanceImage": "galleria_armi_armatura_3_armatura3_qr_luminance.jpg"
+  },
+  "created": 1775632594591,
+  "updated": 1775632594591
+}

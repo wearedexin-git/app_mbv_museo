@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/galleria_armi_stanza_galleria_museo_3_luminance.jpg",
+  "metadata": null,
+  "name": "galleria_armi_stanza_galleria_museo_3",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 3024,
+    "height": 4032,
+    "isRotated": false,
+    "originalWidth": 3024,
+    "originalHeight": 4032
+  },
+  "resources": {
+    "originalImage": "galleria_armi_stanza_galleria_museo_3_original.jpg",
+    "croppedImage": "galleria_armi_stanza_galleria_museo_3_cropped.jpg",
+    "thumbnailImage": "galleria_armi_stanza_galleria_museo_3_thumbnail.jpg",
+    "luminanceImage": "galleria_armi_stanza_galleria_museo_3_luminance.jpg"
+  },
+  "created": 1775651635835,
+  "updated": 1775651635835
+}

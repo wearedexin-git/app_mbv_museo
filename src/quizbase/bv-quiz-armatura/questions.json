@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Quale dettaglio tradisce la vera epoca dell'armatura \"finta antica\"?",
+    "options": [
+      "Il colore dorato del metallo, tipico dell'Ottocento",
+      "La presenza di incisioni araldiche dei Bagatti Valsecchi",
+      "Gli spallacci simmetrici e l'elmetto dalle linee moderne"
+    ],
+    "correctAnswer": 2,
+    "images": [
+      "assets/images/quiz_09.png"
+    ]
+  }
+]

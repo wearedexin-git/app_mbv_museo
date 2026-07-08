@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_fausto_dettaglio_porta_dettaglio_luminance.jpg",
+  "metadata": null,
+  "name": "camera_fausto_dettaglio_porta_dettaglio",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 480,
+    "height": 640,
+    "isRotated": false,
+    "originalWidth": 480,
+    "originalHeight": 640
+  },
+  "resources": {
+    "originalImage": "camera_fausto_dettaglio_porta_dettaglio_original.jpg",
+    "croppedImage": "camera_fausto_dettaglio_porta_dettaglio_cropped.jpg",
+    "thumbnailImage": "camera_fausto_dettaglio_porta_dettaglio_thumbnail.jpg",
+    "luminanceImage": "camera_fausto_dettaglio_porta_dettaglio_luminance.jpg"
+  },
+  "created": 1775632569928,
+  "updated": 1775632569928
+}

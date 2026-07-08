@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camino_luminance.jpg",
+  "metadata": null,
+  "name": "camino",
+  "type": "PLANAR",
+  "properties": {
+    "left": 1,
+    "top": 0,
+    "width": 810,
+    "height": 1080,
+    "isRotated": false,
+    "originalWidth": 812,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "camino_original.jpg",
+    "croppedImage": "camino_cropped.jpg",
+    "thumbnailImage": "camino_thumbnail.jpg",
+    "luminanceImage": "camino_luminance.jpg"
+  },
+  "created": 1775573928437,
+  "updated": 1775573928437
+}

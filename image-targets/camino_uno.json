@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camino_uno_luminance.jpg",
+  "metadata": null,
+  "name": "camino_uno",
+  "type": "PLANAR",
+  "properties": {
+    "left": 135,
+    "top": 0,
+    "width": 810,
+    "height": 1080,
+    "isRotated": true,
+    "originalWidth": 1080,
+    "originalHeight": 1080
+  },
+  "resources": {
+    "originalImage": "camino_uno_original.jpg",
+    "croppedImage": "camino_uno_cropped.jpg",
+    "thumbnailImage": "camino_uno_thumbnail.jpg",
+    "luminanceImage": "camino_uno_luminance.jpg"
+  },
+  "created": 1775573930655,
+  "updated": 1775573930655
+}
