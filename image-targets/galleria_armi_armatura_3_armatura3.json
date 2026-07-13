@@ -5,12 +5,12 @@
   "type": "PLANAR",
   "properties": {
     "left": 0,
-    "top": 0,
-    "width": 480,
-    "height": 640,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
     "isRotated": false,
-    "originalWidth": 480,
-    "originalHeight": 640
+    "originalWidth": 2480,
+    "originalHeight": 3508
   },
   "resources": {
     "originalImage": "galleria_armi_armatura_3_armatura3_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "galleria_armi_armatura_3_armatura3_thumbnail.jpg",
     "luminanceImage": "galleria_armi_armatura_3_armatura3_luminance.jpg"
   },
-  "created": 1775632592945,
-  "updated": 1775632592945
+  "created": 1783946784939,
+  "updated": 1783946784939
 }

@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/biblioteca_capitello_teschio_capitelloTeschio_luminance.jpg",
+  "metadata": null,
+  "name": "biblioteca_capitello_teschio_capitelloTeschio",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
+    "isRotated": false,
+    "originalWidth": 2480,
+    "originalHeight": 3508
+  },
+  "resources": {
+    "originalImage": "biblioteca_capitello_teschio_capitelloTeschio_original.jpg",
+    "croppedImage": "biblioteca_capitello_teschio_capitelloTeschio_cropped.jpg",
+    "thumbnailImage": "biblioteca_capitello_teschio_capitelloTeschio_thumbnail.jpg",
+    "luminanceImage": "biblioteca_capitello_teschio_capitelloTeschio_luminance.jpg"
+  },
+  "created": 1783946634224,
+  "updated": 1783946634224
+}

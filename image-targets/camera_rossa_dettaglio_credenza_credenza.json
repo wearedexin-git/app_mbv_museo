@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_rossa_dettaglio_credenza_credenza_luminance.jpg",
+  "metadata": null,
+  "name": "camera_rossa_dettaglio_credenza_credenza",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
+    "isRotated": false,
+    "originalWidth": 2480,
+    "originalHeight": 3508
+  },
+  "resources": {
+    "originalImage": "camera_rossa_dettaglio_credenza_credenza_original.jpg",
+    "croppedImage": "camera_rossa_dettaglio_credenza_credenza_cropped.jpg",
+    "thumbnailImage": "camera_rossa_dettaglio_credenza_credenza_thumbnail.jpg",
+    "luminanceImage": "camera_rossa_dettaglio_credenza_credenza_luminance.jpg"
+  },
+  "created": 1783946721198,
+  "updated": 1783946721198
+}

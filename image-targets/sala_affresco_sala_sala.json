@@ -5,12 +5,12 @@
   "type": "PLANAR",
   "properties": {
     "left": 0,
-    "top": 0,
-    "width": 480,
-    "height": 640,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
     "isRotated": false,
-    "originalWidth": 480,
-    "originalHeight": 640
+    "originalWidth": 2480,
+    "originalHeight": 3508
   },
   "resources": {
     "originalImage": "sala_affresco_sala_sala_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "sala_affresco_sala_sala_thumbnail.jpg",
     "luminanceImage": "sala_affresco_sala_sala_luminance.jpg"
   },
-  "created": 1775632610292,
-  "updated": 1775632610292
+  "created": 1783946880988,
+  "updated": 1783946880988
 }

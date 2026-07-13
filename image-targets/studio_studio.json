@@ -5,12 +5,12 @@
   "type": "PLANAR",
   "properties": {
     "left": 0,
-    "top": 0,
-    "width": 480,
-    "height": 640,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
     "isRotated": false,
-    "originalWidth": 480,
-    "originalHeight": 640
+    "originalWidth": 2480,
+    "originalHeight": 3508
   },
   "resources": {
     "originalImage": "studio_studio_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "studio_studio_thumbnail.jpg",
     "luminanceImage": "studio_studio_luminance.jpg"
   },
-  "created": 1775632643904,
-  "updated": 1775632643904
+  "created": 1783947129233,
+  "updated": 1783947129233
 }

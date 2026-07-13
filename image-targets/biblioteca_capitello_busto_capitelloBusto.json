@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/biblioteca_capitello_busto_capitelloBusto_luminance.jpg",
+  "metadata": null,
+  "name": "biblioteca_capitello_busto_capitelloBusto",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
+    "isRotated": false,
+    "originalWidth": 2480,
+    "originalHeight": 3508
+  },
+  "resources": {
+    "originalImage": "biblioteca_capitello_busto_capitelloBusto_original.jpg",
+    "croppedImage": "biblioteca_capitello_busto_capitelloBusto_cropped.jpg",
+    "thumbnailImage": "biblioteca_capitello_busto_capitelloBusto_thumbnail.jpg",
+    "luminanceImage": "biblioteca_capitello_busto_capitelloBusto_luminance.jpg"
+  },
+  "created": 1783946622024,
+  "updated": 1783946622024
+}

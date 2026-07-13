@@ -4,13 +4,13 @@
   "name": "sala_bagno_bagno",
   "type": "PLANAR",
   "properties": {
-    "left": 1,
-    "top": 0,
-    "width": 810,
-    "height": 1080,
+    "left": 0,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
     "isRotated": false,
-    "originalWidth": 811,
-    "originalHeight": 1080
+    "originalWidth": 2480,
+    "originalHeight": 3508
   },
   "resources": {
     "originalImage": "sala_bagno_bagno_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "sala_bagno_bagno_thumbnail.jpg",
     "luminanceImage": "sala_bagno_bagno_luminance.jpg"
   },
-  "created": 1775632615599,
-  "updated": 1775632615599
+  "created": 1783946900089,
+  "updated": 1783946900089
 }

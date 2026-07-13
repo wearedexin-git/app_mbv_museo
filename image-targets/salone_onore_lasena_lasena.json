@@ -5,12 +5,12 @@
   "type": "PLANAR",
   "properties": {
     "left": 0,
-    "top": 214,
-    "width": 1056,
-    "height": 1408,
+    "top": 101,
+    "width": 2480,
+    "height": 3307,
     "isRotated": false,
-    "originalWidth": 1056,
-    "originalHeight": 1835
+    "originalWidth": 2480,
+    "originalHeight": 3508
   },
   "resources": {
     "originalImage": "salone_onore_lasena_lasena_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "salone_onore_lasena_lasena_thumbnail.jpg",
     "luminanceImage": "salone_onore_lasena_lasena_luminance.jpg"
   },
-  "created": 1775632638177,
-  "updated": 1775632638177
+  "created": 1783947065428,
+  "updated": 1783947065428
 }
