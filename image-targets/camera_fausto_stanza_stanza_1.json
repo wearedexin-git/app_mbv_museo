@@ -4,13 +4,13 @@
   "name": "camera_fausto_stanza_stanza_1",
   "type": "PLANAR",
   "properties": {
-    "left": 2,
+    "left": 0,
     "top": 0,
-    "width": 1077,
-    "height": 1436,
-    "isRotated": true,
-    "originalWidth": 1080,
-    "originalHeight": 1436
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
   },
   "resources": {
     "originalImage": "camera_fausto_stanza_stanza_1_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "camera_fausto_stanza_stanza_1_thumbnail.jpg",
     "luminanceImage": "camera_fausto_stanza_stanza_1_luminance.jpg"
   },
-  "created": 1783946672465,
-  "updated": 1783946672465
+  "created": 1784906978928,
+  "updated": 1784906978928
 }

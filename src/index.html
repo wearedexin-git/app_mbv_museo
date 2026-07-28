@@ -18,13 +18,37 @@
   <link rel="apple-touch-icon" href="./asset/icons/pwa-icon-192.png">
 
   <script>
+    // In test locale / tunnel: disattiva SW (cache spesso causa schermata bianca)
+    const isDevHost = /^(localhost|127\.|192\.168\.|10\.|.*\.ngrok)/i.test(location.hostname)
+      || location.hostname.endsWith('.ngrok-free.dev')
+      || location.hostname.endsWith('.ngrok.io');
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
+        if (isDevHost) {
+          navigator.serviceWorker.getRegistrations()
+            .then((regs) => Promise.all(regs.map((r) => r.unregister())))
+            .then(() => caches.keys().then((keys) => Promise.all(keys.map((k) => caches.delete(k)))))
+            .then(() => console.log('🧹 SW disattivato (dev/tunnel)'))
+            .catch(() => {});
+          return;
+        }
         navigator.serviceWorker.register('./sw.js')
           .then(reg => console.log('✅ Service Worker registrato!', reg))
           .catch(err => console.log('❌ Registrazione Service Worker fallita:', err));
       });
     }
+
+    // Se XR non parte entro 10s, mostra causa (evita sola schermata bianca)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (window.XR8) return;
+        const el = document.createElement('div');
+        el.id = 'xr-boot-error';
+        el.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:#141419;color:#fff;font:16px/1.4 -apple-system,sans-serif;text-align:center';
+        el.innerHTML = '<div><strong>WebAR non si avvia</strong><br><br>Host: ' + location.host + '<br><br>1) Ricarica la pagina<br>2) In console 8th Wall autorizza questo dominio<br>3) Consenti la fotocamera</div>';
+        document.body.appendChild(el);
+      }, 10000);
+    });
 
     // GESTIONE BANNER PWA
     let deferredPrompt;
@@ -104,7 +128,7 @@
   <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam"
     appKey="3BnxNE2RNShEkkTCf4TzDiMhNRy_2EsTEq3ZvhXbZg8bXtAT4"></script>
   <!-- Carica XRExtras ufficiale per gestire FullScreen e Permessi Camera -->
-  <script src="//cdn.8thwall.com/web/xrextras/xrextras.js"></script>
+  <script src="https://cdn.8thwall.com/web/xrextras/xrextras.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
     rel="stylesheet">

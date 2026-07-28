@@ -5,12 +5,12 @@
   "type": "PLANAR",
   "properties": {
     "left": 0,
-    "top": 101,
-    "width": 2480,
-    "height": 3307,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
     "isRotated": false,
-    "originalWidth": 2480,
-    "originalHeight": 3508
+    "originalWidth": 1200,
+    "originalHeight": 1600
   },
   "resources": {
     "originalImage": "camera_verde_dettaglio_camino_camino_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "camera_verde_dettaglio_camino_camino_thumbnail.jpg",
     "luminanceImage": "camera_verde_dettaglio_camino_camino_luminance.jpg"
   },
-  "created": 1783946744674,
-  "updated": 1783946744674
+  "created": 1784906984188,
+  "updated": 1784906984188
 }

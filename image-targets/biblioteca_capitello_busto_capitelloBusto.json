@@ -5,12 +5,12 @@
   "type": "PLANAR",
   "properties": {
     "left": 0,
-    "top": 101,
-    "width": 2480,
-    "height": 3307,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
     "isRotated": false,
-    "originalWidth": 2480,
-    "originalHeight": 3508
+    "originalWidth": 1200,
+    "originalHeight": 1600
   },
   "resources": {
     "originalImage": "biblioteca_capitello_busto_capitelloBusto_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "biblioteca_capitello_busto_capitelloBusto_thumbnail.jpg",
     "luminanceImage": "biblioteca_capitello_busto_capitelloBusto_luminance.jpg"
   },
-  "created": 1783946622024,
-  "updated": 1783946622024
+  "created": 1784906973728,
+  "updated": 1784906973728
 }

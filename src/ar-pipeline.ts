@@ -10,16 +10,21 @@ export const CarouselPipelineModule = () => {
   let activeTargetId: string | null = null;
   let activeConfig: TargetConfig | null = null;
 
+  const sameHotspot = (foundName: string, activeName: string | null, config: TargetConfig | null) => {
+    if (!activeName || !config) return false;
+    if (foundName === activeName) return true;
+    // QR / varianti foto dello stesso contenuto (prefisso config.id)
+    return foundName === config.id || foundName.startsWith(config.id + '_');
+  };
+
   return {
     name: 'carousel-pipeline',
     onStart: () => {
-      // Setup Three.js integrato in 8th Wall
       const { scene, camera, renderer } = XR8.Threejs.xrScene();
-      
+
       uiController = new UIController();
       carousel3D = new Carousel3D(scene, camera, renderer);
 
-      // Collega Eventi interfaccia a logiche spaziali/dati
       uiController.onNavLeft = () => {
         carousel3D.slideLeft();
         uiController.updateNavButtons(
@@ -34,9 +39,9 @@ export const CarouselPipelineModule = () => {
           carousel3D.getCurrentIndex() < carousel3D.getImagesCount() - 1
         );
       };
-      
+
       uiController.onLangToggle = (lang) => {
-        if(activeConfig) {
+        if (activeConfig) {
           const lData = activeConfig.localization[lang];
           uiController.updateLocalization(lData.infoText, lData.audioSrc);
         }
@@ -44,84 +49,98 @@ export const CarouselPipelineModule = () => {
 
       uiController.onQuizRequest = () => {
         if (activeConfig && activeConfig.quizId) {
-          // Caricamento on-demand del quiz per non appesantire il caricamento iniziale
           const quizPath = `./quizbase/${activeConfig.quizId}/questions.json`;
           fetch(quizPath)
-            .then(response => response.json())
-            .then(questions => {
+            .then((response) => response.json())
+            .then((questions) => {
               uiController.startQuiz(questions);
             })
-            .catch(err => {
-              console.error("❌ Errore nel caricamento del quiz:", err);
+            .catch((err) => {
+              console.error('❌ Errore nel caricamento del quiz:', err);
             });
         }
       };
 
       uiController.onCloseTarget = () => {
-         carousel3D.hideCarousel();
-         carousel3D.isTriggerVisible = false;
-         
-         activeTargetId = null;
-         activeConfig = null;
+        carousel3D.hideCarousel();
+        carousel3D.hideTrigger();
+        activeTargetId = null;
+        activeConfig = null;
       };
-      
-      // Wire: click fisico nel 3D => apertura UI
+
       carousel3D.onTriggerClicked = () => {
-         if(!activeConfig) return;
-         carousel3D.spawnCarousel(activeConfig.images);
-         const langData = activeConfig.localization['it']; // default IT as defined in UI
-         uiController.showOverlay(
-           langData.infoText, 
-           langData.audioSrc, 
-           activeConfig.images.length,
-           !!activeConfig.quizId // comunica se mostrare il tasto quiz
-         );
+        if (!activeConfig) return;
+        carousel3D.spawnCarousel(activeConfig.images);
+        const langData = activeConfig.localization['it'];
+        uiController.showOverlay(
+          langData.infoText,
+          langData.audioSrc,
+          activeConfig.images.length,
+          !!activeConfig.quizId
+        );
       };
     },
-    
+
     onUpdate: () => {
-      if(carousel3D) carousel3D.update(); // Loop di animazione per il lerp
+      if (carousel3D) carousel3D.update();
     },
-    
+
     listeners: [
       {
         event: 'reality.imagefound',
         process: ({ detail }: any) => {
-          console.log('🖼️ xrimagefound SCATTATO! Nome:', detail.name);
-          if (activeTargetId) return; // evoca blocchi multipli
           const targetName = detail.name;
           const config = getTargetConfig(targetName);
-          if(config) {
-             console.log('✅ Target config trovato, mostro il trigger 3D');
-             activeTargetId = targetName;
-             activeConfig = config;
-             carousel3D.showTrigger(detail);
-          } else {
-             console.log('⚠️ Nessun config in targetsManager per:', targetName);
+
+          // Carosello già aperto: se ritroviamo lo stesso hotspot, riaggancia con smooth
+          if (carousel3D?.isCarouselOpen) {
+            if (sameHotspot(targetName, activeTargetId, activeConfig)) {
+              activeTargetId = targetName;
+              carousel3D.resumeTracking(detail);
+            }
+            return;
           }
-        }
+
+          // Sessione attiva su altro target (sfera visibile): ignora
+          if (activeTargetId && !carousel3D.isTrackingFrozen()) return;
+
+          if (config) {
+            activeTargetId = targetName;
+            activeConfig = config;
+            carousel3D.showTrigger(detail);
+          }
+        },
       },
       {
         event: 'reality.imageupdated',
         process: ({ detail }: any) => {
-          if(activeTargetId === detail.name) {
-             carousel3D.updateTargetTransform(detail);
+          if (!activeTargetId) return;
+          if (detail.name !== activeTargetId && !sameHotspot(detail.name, activeTargetId, activeConfig)) {
+            return;
           }
-        }
+          // Aggiorna solo se tracking non congelato
+          carousel3D.updateTargetTransform(detail);
+        },
       },
       {
         event: 'reality.imagelost',
         process: ({ detail }: any) => {
-          // Se perdo il tracking PRIMA di aver cliccato il trigger, nascondo il tutto
-          // Se ho già cliccato, stiamo fluttuando ancorati all'ultima posizione vista, 
-          // quindi si sceglie tipicamente di lasciarlo lì finché l'utente non fa "Chiudi".
-          if(carousel3D && carousel3D.isTriggerVisible && activeTargetId === detail.name) {
-               carousel3D.hideTrigger();
-               activeTargetId = null;
-               activeConfig = null;
+          if (!carousel3D || activeTargetId !== detail.name) return;
+
+          // Prima del tap: nascondi sfera e libera lo scan
+          if (carousel3D.isTriggerVisible && !carousel3D.isCarouselOpen) {
+            carousel3D.hideTrigger();
+            activeTargetId = null;
+            activeConfig = null;
+            return;
           }
-        }
-      }
-    ]
-  }
-}
+
+          // Carosello aperto: congela ultima posa, non chiudere
+          if (carousel3D.isCarouselOpen) {
+            carousel3D.freezeTracking();
+          }
+        },
+      },
+    ],
+  };
+};

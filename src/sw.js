@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bagatti-ar-v2';
+const CACHE_NAME = 'bagatti-ar-v3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
