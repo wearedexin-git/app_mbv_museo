@@ -1,16 +1,30 @@
 import * as THREE from 'three';
 window.THREE = THREE;
 import { CarouselPipelineModule } from './ar-pipeline';
+import { ErrorRecovery } from './error-recovery';
+
+window.ErrorRecovery = ErrorRecovery;
 
 // App Key sul tag <script src="xr.js" appKey="..."> in index.html (questo runtime non espone XR8.configure).
 
 // ON-SCREEN LOGGER (Disabled)
 const log = (...args) => { /* console.log(...args); */ };
 
+// Init recovery il prima possibile (lingua default IT; ar-pipeline aggiorna getLang)
+ErrorRecovery.init({
+  getLang: () => 'it',
+  isCarouselOpen: () => false,
+});
+
 const onxrloaded = () => {
   log('✅ xrloaded fired');
   log('XR8.Threejs exists: ' + !!XR8.Threejs);
   log('XR8.GlTextureRenderer exists: ' + !!XR8.GlTextureRenderer);
+
+  // Permesso camera: messaggio dedicato se negato
+  if (navigator.mediaDevices?.getUserMedia) {
+    // Non forzare getUserMedia qui (XR8 lo gestisce); ascolta errori runtime
+  }
 
   // Ordine ufficiale 8th Wall: GlTextureRenderer → FullWindowCanvas → Loading → Threejs → XrController → custom
   const modules = [
@@ -48,7 +62,9 @@ const salapranzocamerasalaJson = require('../image-targets/sala_pranzo_camera_sa
 const salapranzocamerasalaqrJson = require('../image-targets/sala_pranzo_camera_sala_qr.json');
 
   XR8.XrController.configure({
-    disableWorldTracking: true,
+    // false: con carosello aperto, se perdi il marker la camera continua (SLAM)
+    // e la navigazione non si “congela” sullo schermo come con solo image targets.
+    disableWorldTracking: false,
     imageTargetData: [bibliotecacapitellobustocapitelloBustoJson, bibliotecacapitellobustocapitelloBustoqrJson, bibliotecastanzastanzaJson, bibliotecastanzastanzaqrJson, camerafaustostanzastanza1Json, camerafaustostanzastanzaqrJson, camerarossadettagliocredenzacredenzaJson, camerarossadettagliocredenzacredenzaqrJson, cameraverdedettagliocaminocaminoJson, cameraverdedettagliocaminocaminoqrJson, salaaffrescocapitellocapitelloJson, salaaffrescocapitellocapitelloqrJson, salabagnobagnoJson, salabagnobagnoqrJson, salabevilacquacaminocaminoJson, salabevilacquacaminocaminoqrJson, salapranzocamerasalaJson, salapranzocamerasalaqrJson],
   });
 

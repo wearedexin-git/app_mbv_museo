@@ -65,6 +65,7 @@ export class UIController {
     this.closePlayerBtn = document.getElementById('close-player-btn')!;
 
     this.bindEvents();
+    this.bindAudioErrorOnce();
   }
 
   private formatTime(seconds: number): string {
@@ -79,6 +80,11 @@ export class UIController {
       this.currentLang = this.currentLang === 'it' ? 'en' : 'it';
       this.langBtn.innerHTML = this.currentLang.toUpperCase();
       if(this.onLangToggle) this.onLangToggle(this.currentLang);
+      // Aggiorna copy del banner recovery se aperto
+      try {
+        const ER = (window as any).ErrorRecovery;
+        ER?.syncLanguage?.();
+      } catch { /* ignore */ }
     });
 
     this.closeBtn.addEventListener('click', () => {
@@ -162,6 +168,10 @@ export class UIController {
     });
   }
 
+  public getLang(): 'it' | 'en' {
+    return this.currentLang;
+  }
+
   // Chiamato quando il Target confermato
   public showOverlay(localizedInfoText: string, audioSrc: string, imagesCount: number, hasQuiz: boolean) {
     this.infoText.innerHTML = localizedInfoText;
@@ -219,6 +229,18 @@ export class UIController {
     if(wasPlaying) {
       this.audioPlayer.play().catch(e => console.error(e));
     }
+  }
+
+  private bindAudioErrorOnce() {
+    if ((this.audioPlayer as any)._mbvErrorBound) return;
+    (this.audioPlayer as any)._mbvErrorBound = true;
+    this.audioPlayer.addEventListener('error', () => {
+      try {
+        const ER = (window as any).ErrorRecovery;
+        if (!navigator.onLine) ER?.show?.('offline', this.audioPlayer.src);
+        else ER?.reportAssetLoadError?.(this.audioPlayer.src);
+      } catch { /* ignore */ }
+    });
   }
 
   // LOGICA QUIZ

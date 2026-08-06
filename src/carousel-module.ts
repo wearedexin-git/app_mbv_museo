@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { ErrorRecovery } from './error-recovery';
 
 /**
  * Ancoraggio ibrido:
@@ -43,14 +44,38 @@ export class Carousel3D {
   private readonly _faceCamera = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
 
   private readonly clock = new THREE.Clock();
-  /** Velocità smoothing posizione (più alto = più reattivo, più basso = più stabile). */
-  private readonly posLambda = 8;
-  private readonly billboardLambda = 12;
-  /** Max metri di correzione posa al secondo (evita scatti senza bloccare il movimento). */
-  private readonly maxSpeed = 1.2;
+  /** Tracking: più alto = più reattivo. */
+  private readonly posLambdaNormal = 10;
+  private readonly posLambdaRecovery = 6;
+  private readonly billboardLambda = 14;
+  /** Max m/s di correzione posa. */
+  private readonly maxSpeedNormal = 2.5;
+  private readonly maxSpeedRecovery = 1.4;
 
-  /** Frazione dello schermo occupata dal lato lungo dell'immagine. */
+  private posLambda = this.posLambdaNormal;
+  private maxSpeed = this.maxSpeedNormal;
+  private recoveryUntilMs = 0;
+  /** Recovery breve: solo per assorbire il riaggancio, non rallentare tutto. */
+  private readonly recoveryDurationMs = 350;
+
+  /** Frazione target dello schermo all'apertura (poi scala mondo fissa → zoom avvicinandoti). */
   private readonly screenFill = 0.68;
+  private contentLocalSize = 1;
+  /** Scala mondo fissata all'apertura: non ricalibrata, così l'avvicinamento ingrandisce i dettagli. */
+  private scaleAtOpen = 1;
+
+  /** Congela solo dopo perdita prolungata (micro-lost da avvicinamento non bloccano subito). */
+  private lostSinceMs: number | null = null;
+  private readonly loseGraceMs = 900;
+
+  /**
+   * Sfera trigger: diametro ≈ % del lato corto dello schermo (indipendente da
+   * dimensione fisica del marker / risoluzione telefono).
+   */
+  private readonly triggerScreenFill = 0.30;
+  private readonly triggerLocalDiameter = 1;
+  private triggerScaleSmoothed = 0.2;
+  private readonly triggerScaleLambda = 8;
 
   constructor(scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
     this.scene = scene;
@@ -92,8 +117,9 @@ export class Carousel3D {
 
   public showTrigger(detail: any) {
     if (!this.triggerMesh) {
-      // Piccola rispetto allo schermo / marker
-      const geo = new THREE.SphereGeometry(0.055, 16, 16);
+      // Geometria unitaria (diametro locale = 1): la scala la fa updateTriggerScale → % schermo
+      const r = this.triggerLocalDiameter * 0.5;
+      const geo = new THREE.SphereGeometry(r, 20, 20);
       const mat = new THREE.MeshBasicMaterial({
         color: 0x00d2ff,
         transparent: true,
@@ -102,7 +128,7 @@ export class Carousel3D {
         depthTest: false,
       });
       const core = new THREE.Mesh(
-        new THREE.SphereGeometry(0.028, 24, 24),
+        new THREE.SphereGeometry(r * 0.5, 24, 24),
         new THREE.MeshBasicMaterial({
           color: 0xffffff,
           transparent: true,
@@ -113,14 +139,22 @@ export class Carousel3D {
       this.triggerMesh = new THREE.Mesh(geo, mat);
       this.triggerMesh.add(core);
       this.triggerMesh.renderOrder = 999;
-      this.triggerMesh.position.set(0, 0.12, 0);
+      // Leggero lift sopra il centro del marker (in unità locali della sfera)
+      this.triggerMesh.position.set(0, this.triggerLocalDiameter * 0.55, 0);
       this.activeContainer.add(this.triggerMesh);
     }
 
     this.trackingEnabled = true;
+    this.lostSinceMs = null;
     this.triggerMesh.visible = true;
     this.isTriggerVisible = true;
     this.applyPoseFromDetail(detail, true);
+    // Prima stima immediata (poi smoothing in update)
+    this.triggerScaleSmoothed = this.computeScreenFitScale(
+      this.triggerLocalDiameter,
+      this.triggerScreenFill
+    );
+    this.triggerMesh.scale.setScalar(this.triggerScaleSmoothed);
   }
 
   public hideTrigger() {
@@ -140,65 +174,101 @@ export class Carousel3D {
     this.images = [];
     this.isCarouselOpen = true;
     this.trackingEnabled = true;
-
-    // Dimensione mondo ≈ % schermo alla distanza corrente (poi, avvicinandoti, ingrandisce)
-    const fit = this.computeScreenFitScale(1, 1);
-    this.billboardGroup.scale.setScalar(fit);
+    this.lostSinceMs = null;
+    this.recoveryUntilMs = 0;
+    this.posLambda = this.posLambdaNormal;
+    this.maxSpeed = this.maxSpeedNormal;
     this.slideSpacing = 1.15;
+
+    this.contentLocalSize = 1;
+    const openScale = this.computeScreenFitScale(1, this.screenFill);
+    this.scaleAtOpen = openScale;
+    this.billboardGroup.scale.setScalar(openScale);
 
     const loader = new THREE.TextureLoader();
     imagePaths.forEach((path, i) => {
-      loader.load(path, (texture) => {
-        if (!this.carouselGroup) {
-          texture.dispose();
-          return;
-        }
-        texture.colorSpace = THREE.SRGBColorSpace;
-        const aspect = texture.image ? texture.image.width / texture.image.height : 1;
-        // Lato lungo = 1 in unità locali; fit scale porta il lato lungo a screenFill
-        const w = aspect >= 1 ? 1 : aspect;
-        const h = aspect >= 1 ? 1 / aspect : 1;
-        const mesh = new THREE.Mesh(
-          new THREE.PlaneGeometry(w, h),
-          new THREE.MeshBasicMaterial({
-            map: texture,
-            side: THREE.DoubleSide,
-            depthTest: true,
-          })
-        );
-        mesh.position.x = i * this.slideSpacing;
-        this.carouselGroup.add(mesh);
-        this.images.push(mesh);
-
-        // Ricalcola fit sul primo asset reale (aspect corretto)
-        if (i === 0) {
-          const refW = Math.max(w, h);
-          this.billboardGroup.scale.setScalar(this.computeScreenFitScale(refW, refW));
-        }
+      const loadPromise = new Promise<THREE.Texture>((resolve, reject) => {
+        loader.load(path, resolve, undefined, reject);
       });
+
+      // Timeout + errori rete/asset → banner recovery
+      ErrorRecovery.withTimeout(loadPromise, path)
+        .then((texture: THREE.Texture) => {
+          if (!this.carouselGroup) {
+            texture.dispose();
+            return;
+          }
+          texture.colorSpace = THREE.SRGBColorSpace;
+          // Mipmap: da vicino meno shimmering / picchi GPU su texture grandi
+          texture.generateMipmaps = true;
+          texture.minFilter = THREE.LinearMipmapLinearFilter;
+          texture.magFilter = THREE.LinearFilter;
+          texture.anisotropy = Math.min(4, this.renderer.capabilities.getMaxAnisotropy?.() || 1);
+
+          const img = texture.image as { width?: number; height?: number } | undefined;
+          const aspect = img?.width && img?.height ? img.width / img.height : 1;
+          // Lato lungo = 1 in unità locali; fit scale porta il lato lungo a screenFill
+          const w = aspect >= 1 ? 1 : aspect;
+          const h = aspect >= 1 ? 1 / aspect : 1;
+          const mesh = new THREE.Mesh(
+            new THREE.PlaneGeometry(w, h),
+            new THREE.MeshBasicMaterial({
+              map: texture,
+              side: THREE.DoubleSide,
+              depthTest: true,
+            })
+          );
+          mesh.position.x = i * this.slideSpacing;
+          this.carouselGroup.add(mesh);
+          this.images.push(mesh);
+
+          // Fit una sola volta all'apertura: da qui scala mondo fissa → zoom fisico
+          if (i === 0) {
+            this.contentLocalSize = Math.max(w, h);
+            const s = this.computeScreenFitScale(this.contentLocalSize, this.screenFill);
+            this.scaleAtOpen = s;
+            this.billboardGroup.scale.setScalar(s);
+          }
+        })
+        .catch((err: unknown) => {
+          console.error('❌ Texture carosello fallita:', path, err);
+        });
     });
   }
 
-  /** Scala mondo affinché `localSize` occupi ~screenFill del lato corto dello schermo. */
-  private computeScreenFitScale(localW: number, localH: number): number {
+  /** Scala mondo affinché `localSize` occupi `fill` del lato corto dello schermo. */
+  private computeScreenFitScale(localSize: number, fill: number, minDist = 0.35): number {
     const cam = this.camera as THREE.PerspectiveCamera;
     if (!cam.isPerspectiveCamera) return 0.35;
 
     this.camera.getWorldPosition(this._camPos);
-    const dist = Math.max(0.25, this.activeContainer.position.distanceTo(this._camPos));
+    const dist = Math.max(minDist, this.activeContainer.position.distanceTo(this._camPos));
     const vFov = THREE.MathUtils.degToRad(cam.fov);
     const viewH = 2 * Math.tan(vFov / 2) * dist;
     const viewW = viewH * (cam.aspect || window.innerWidth / window.innerHeight);
 
-    const target = Math.min(viewW, viewH) * this.screenFill;
-    const localMax = Math.max(localW, localH, 1e-4);
+    const target = Math.min(viewW, viewH) * fill;
+    const localMax = Math.max(localSize, 1e-4);
     return THREE.MathUtils.clamp(target / localMax, 0.08, 2.5);
+  }
+
+  /** Sfera sempre ≈ triggerScreenFill del lato corto schermo (iPhone/Android, vicino/lontano). */
+  private updateTriggerScale(dt: number) {
+    if (!this.triggerMesh?.visible || this.isCarouselOpen) return;
+    const target = this.computeScreenFitScale(this.triggerLocalDiameter, this.triggerScreenFill);
+    const t = 1 - Math.exp(-this.triggerScaleLambda * dt);
+    this.triggerScaleSmoothed += (target - this.triggerScaleSmoothed) * t;
+    this.triggerMesh.scale.setScalar(this.triggerScaleSmoothed);
   }
 
   public hideCarousel() {
     this.disposeCarousel();
     this.isCarouselOpen = false;
     this.trackingEnabled = true;
+    this.lostSinceMs = null;
+    this.recoveryUntilMs = 0;
+    this.posLambda = this.posLambdaNormal;
+    this.maxSpeed = this.maxSpeedNormal;
     this.billboardGroup.scale.setScalar(1);
     this.billboardGroup.position.set(0, 0, 0);
   }
@@ -246,12 +316,26 @@ export class Carousel3D {
   }
 
   public freezeTracking() {
+    // Congela in mondo: l'immagine resta lì, avvicinarsi zoomma i dettagli.
+    // (Niente follow-camera: quello annullava lo zoom.)
     this.trackingEnabled = false;
   }
 
+  /** Segna perdita marker; congela solo dopo grace period (micro-lost da avvicinamento). */
+  public noteTargetLost() {
+    if (!this.isCarouselOpen) {
+      this.freezeTracking();
+      return;
+    }
+    if (this.lostSinceMs == null) this.lostSinceMs = performance.now();
+  }
+
   public resumeTracking(detail?: any) {
+    this.lostSinceMs = null;
     this.trackingEnabled = true;
-    if (detail) this.applyPoseFromDetail(detail, true);
+    // Niente snap: rientro soft verso la nuova posa del marker
+    this.beginRecovery();
+    if (detail) this.applyPoseFromDetail(detail, false);
   }
 
   public isTrackingFrozen(): boolean {
@@ -259,8 +343,30 @@ export class Carousel3D {
   }
 
   public updateTargetTransform(detail: any) {
-    if (!this.trackingEnabled) return;
+    const wasLost = this.lostSinceMs != null || !this.trackingEnabled;
+    this.lostSinceMs = null;
+    if (!this.trackingEnabled) {
+      this.trackingEnabled = true;
+    }
+    if (wasLost) this.beginRecovery();
+    // Mai force=true: evita salti al riaggancio
     this.applyPoseFromDetail(detail, false);
+  }
+
+  private beginRecovery() {
+    this.recoveryUntilMs = performance.now() + this.recoveryDurationMs;
+    this.posLambda = this.posLambdaRecovery;
+    this.maxSpeed = this.maxSpeedRecovery;
+  }
+
+  private refreshMotionParams() {
+    if (performance.now() < this.recoveryUntilMs) {
+      this.posLambda = this.posLambdaRecovery;
+      this.maxSpeed = this.maxSpeedRecovery;
+    } else {
+      this.posLambda = this.posLambdaNormal;
+      this.maxSpeed = this.maxSpeedNormal;
+    }
   }
 
   private applyPoseFromDetail(detail: any, force = false) {
@@ -270,7 +376,8 @@ export class Carousel3D {
 
     this.targetPos.set(position.x, position.y, position.z);
 
-    if (!this.hasPose || force) {
+    // Snap solo al primo pose (apertura trigger), mai al resume carosello
+    if (!this.hasPose || (force && !this.isCarouselOpen)) {
       this.smoothed.copy(this.targetPos);
       this.hasPose = true;
       this.flushPoseToContainer();
@@ -297,6 +404,16 @@ export class Carousel3D {
 
   public update() {
     const dt = Math.min(this.clock.getDelta(), 0.05);
+    this.refreshMotionParams();
+
+    if (
+      this.isCarouselOpen &&
+      this.lostSinceMs != null &&
+      this.trackingEnabled &&
+      performance.now() - this.lostSinceMs >= this.loseGraceMs
+    ) {
+      this.freezeTracking();
+    }
 
     if (this.hasPose && this.trackingEnabled) {
       // Lerp esponenziale + limite velocità (niente scarti improvvisi → meno "a tratti")
@@ -318,19 +435,25 @@ export class Carousel3D {
       this.smoothed.set(mx, my, mz);
       this.flushPoseToContainer();
     }
+    // Se tracking frozen: posa mondo ferma → avvicinarsi zoomma naturalmente
 
     if (this.triggerMesh && this.triggerMesh.visible) {
       this.triggerMesh.rotation.y += 0.025;
       this.triggerMesh.rotation.x += 0.012;
-      this.triggerMesh.position.y = 0.12 + Math.sin(performance.now() * 0.003) * 0.015;
+      // Oscillazione in unità locali (scala % schermo gestisce la grandezza)
+      this.triggerMesh.position.y =
+        this.triggerLocalDiameter * 0.55 + Math.sin(performance.now() * 0.003) * 0.08;
     }
 
     if (this.carouselGroup) {
       const targetX = -(this.currentIndex * this.slideSpacing);
-      const slideT = 1 - Math.exp(-10 * dt);
+      const slideT = 1 - Math.exp(-12 * dt);
       this.carouselGroup.position.x += (targetX - this.carouselGroup.position.x) * slideT;
+      // Garantisce scala mondo fissa all'apertura (zoom solo da movimento fisico)
+      this.billboardGroup.scale.setScalar(this.scaleAtOpen);
     }
 
+    this.updateTriggerScale(dt);
     this.updateBillboard(dt);
   }
 }

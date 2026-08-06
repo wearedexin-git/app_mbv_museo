@@ -78,6 +78,17 @@ const config = {
   externals: {
     '@8thwall/ecs': 'window.ecs',
   },
+  // Evita EMFILE su macOS: troppi watcher su asset/image-targets/.venv
+  watchOptions: {
+    ignored: [
+      '**/node_modules/**',
+      '**/.venv/**',
+      '**/dist/**',
+      '**/.git/**',
+      '**/image-targets/**/*.jpg',
+      '**/src/asset/**/*.{jpg,jpeg,png,mp3,rtf}',
+    ],
+  },
   devServer: {
     host: '0.0.0.0',
     port: 8080,
@@ -89,6 +100,9 @@ const config = {
     // HMR richiede WebSocket: via tunnel (es. localtunnel) spesso fallisce e inonda la console di errori.
     hot: false,
     liveReload: false,
+    static: {
+      watch: false,
+    },
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',

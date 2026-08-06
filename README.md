@@ -60,6 +60,7 @@ L'applicazione è ora una PWA completa, il che le permette di comportarsi come u
     -   **App Shell**: Interfaccia e logica caricate istantaneamente dalla cache.
     -   **Dynamic Cache**: Immagini, Audio e Quiz vengono salvati sul telefono man mano che l'utente li scopre, ottimizzando lo spazio e garantendo il funzionamento anche se il Wi-Fi del museo è debole.
 -   **Ottimizzazione iOS (Notch)**: L'interfaccia utilizza le `safe-area-insets` per evitare che le icone (Chiudi, Lingua) finiscano sotto la barra di stato o la tacca degli iPhone.
+-   **Recupero errori**: banner museali IT/EN per offline, timeout, asset, XR/camera, tracking e hang — vedi [`docs/error-recovery.md`](docs/error-recovery.md).
 
 ## 🌐 Note per il Deploy (Sottocartelle)
 

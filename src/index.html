@@ -21,7 +21,9 @@
     // In test locale / tunnel: disattiva SW (cache spesso causa schermata bianca)
     const isDevHost = /^(localhost|127\.|192\.168\.|10\.|.*\.ngrok)/i.test(location.hostname)
       || location.hostname.endsWith('.ngrok-free.dev')
-      || location.hostname.endsWith('.ngrok.io');
+      || location.hostname.endsWith('.ngrok.io')
+      || location.hostname.endsWith('.trycloudflare.com')
+      || location.hostname.endsWith('.loca.lt');
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         if (isDevHost) {
@@ -38,17 +40,75 @@
       });
     }
 
-    // Se XR non parte entro 10s, mostra causa (evita sola schermata bianca)
-    window.addEventListener('load', () => {
-      setTimeout(() => {
+    // Boot XR: usa il banner di recovery (stesso stile PWA). Bundle raffina lingua/copy.
+    (function () {
+      let softTimer = null;
+      let hardTimer = null;
+
+      function bannerEls() {
+        return {
+          banner: document.getElementById('error-recovery-banner'),
+          title: document.getElementById('error-recovery-title'),
+          msg: document.getElementById('error-recovery-msg'),
+          reload: document.getElementById('error-reload-btn'),
+          close: document.getElementById('error-close-btn'),
+        };
+      }
+
+      function showEarlyXrBanner(detail) {
         if (window.XR8) return;
-        const el = document.createElement('div');
-        el.id = 'xr-boot-error';
-        el.style.cssText = 'position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:24px;background:#141419;color:#fff;font:16px/1.4 -apple-system,sans-serif;text-align:center';
-        el.innerHTML = '<div><strong>WebAR non si avvia</strong><br><br>Host: ' + location.host + '<br><br>1) Ricarica la pagina<br>2) In console 8th Wall autorizza questo dominio<br>3) Consenti la fotocamera</div>';
-        document.body.appendChild(el);
-      }, 10000);
-    });
+        // Se il hub TS è già attivo, delega
+        if (window.ErrorRecovery && typeof window.ErrorRecovery.reportXrBoot === 'function') {
+          window.ErrorRecovery.reportXrBoot(detail);
+          return;
+        }
+        const { banner, title, msg, reload, close } = bannerEls();
+        if (!banner) return;
+        if (title) title.textContent = 'Esperienza AR in avvio';
+        if (msg) {
+          msg.textContent = detail
+            || 'Il motore di realtà aumentata non è ancora pronto. Attendi oppure ricarica la pagina.';
+        }
+        if (reload) {
+          reload.textContent = 'Ricarica';
+          reload.onclick = () => location.reload();
+        }
+        if (close) {
+          close.textContent = 'Chiudi';
+          close.onclick = () => banner.classList.add('hidden');
+        }
+        banner.classList.remove('hidden');
+      }
+
+      function clearEarly() {
+        if (softTimer) clearTimeout(softTimer);
+        if (hardTimer) clearTimeout(hardTimer);
+        softTimer = hardTimer = null;
+        if (window.XR8) {
+          const b = document.getElementById('error-recovery-banner');
+          // Non chiudere altri tipi di errore gestiti dal hub
+          if (b && !window.ErrorRecovery) b.classList.add('hidden');
+        }
+      }
+
+      window.addEventListener('xrloaded', clearEarly);
+      const poll = setInterval(() => {
+        if (window.XR8) {
+          clearInterval(poll);
+          clearEarly();
+        }
+      }, 500);
+
+      window.addEventListener('load', () => {
+        softTimer = setTimeout(() => showEarlyXrBanner('Download motore AR ancora in corso…'), 15000);
+        hardTimer = setTimeout(() => {
+          if (window.XR8) return;
+          showEarlyXrBanner(
+            'Il motore AR non risulta disponibile. Ricarica, consenti la fotocamera e preferisci una rete stabile.'
+          );
+        }, 45000);
+      });
+    })();
 
     // GESTIONE BANNER PWA
     let deferredPrompt;
@@ -652,6 +712,91 @@
       border: 1px solid var(--glass-border);
     }
 
+    /* ERROR RECOVERY BANNER (stesso linguaggio del PWA banner) */
+    #error-recovery-banner {
+      position: fixed;
+      left: 20px;
+      right: 20px;
+      bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 18px;
+      color: white;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: slide-up 0.5s ease-out;
+    }
+
+    #error-recovery-banner.hidden {
+      display: none !important;
+    }
+
+    #error-recovery-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #c4a45d;
+      margin-bottom: 4px;
+    }
+
+    #error-recovery-msg {
+      flex: 1;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.45;
+    }
+
+    #recovery-loader {
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: rgba(10, 10, 14, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: #fff;
+      padding: 24px;
+      text-align: center;
+    }
+
+    #recovery-loader.hidden {
+      display: none !important;
+    }
+
+    .recovery-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #c4a45d;
+      border-radius: 50%;
+      animation: recovery-spin 0.8s linear infinite;
+    }
+
+    @keyframes recovery-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    #recovery-loader-text {
+      font-size: 0.95rem;
+      font-weight: 500;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+
+    body.mbv-recovery-blocked #ar-ui-overlay {
+      pointer-events: none;
+      opacity: 0.55;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -659,6 +804,25 @@
 </head>
 
 <body>
+  <!-- ERROR RECOVERY BANNER -->
+  <div id="error-recovery-banner" class="hidden">
+    <div class="pwa-header" style="align-items:flex-start;">
+      <div>
+        <div id="error-recovery-title">Avviso</div>
+        <div id="error-recovery-msg" class="pwa-text">Messaggio</div>
+      </div>
+    </div>
+    <div class="pwa-actions">
+      <button id="error-reload-btn" class="pwa-btn pwa-btn-primary">Ricarica</button>
+      <button id="error-close-btn" class="pwa-btn pwa-btn-secondary">Chiudi</button>
+    </div>
+  </div>
+
+  <div id="recovery-loader" class="hidden">
+    <div class="recovery-spinner" aria-hidden="true"></div>
+    <div id="recovery-loader-text">Stiamo ripristinando la visita…</div>
+  </div>
+
   <!-- PWA INSTALL BANNER -->
   <div id="pwa-install-banner" class="hidden">
     <div class="pwa-header">

@@ -1,6 +1,7 @@
 import { UIController } from './ui-controller'
 import { getTargetConfig, TargetConfig } from './config/targetsManager'
 import { Carousel3D } from './carousel-module'
+import { ErrorRecovery } from './error-recovery'
 
 declare const XR8: any;
 
@@ -25,7 +26,14 @@ export const CarouselPipelineModule = () => {
       uiController = new UIController();
       carousel3D = new Carousel3D(scene, camera, renderer);
 
+      // Collega lingua e stato carosello al hub errori
+      ErrorRecovery.configure({
+        getLang: () => uiController.getLang(),
+        isCarouselOpen: () => !!carousel3D?.isCarouselOpen,
+      });
+
       uiController.onNavLeft = () => {
+        if (ErrorRecovery.isBlocked()) return;
         carousel3D.slideLeft();
         uiController.updateNavButtons(
           carousel3D.getCurrentIndex() > 0,
@@ -33,6 +41,7 @@ export const CarouselPipelineModule = () => {
         );
       };
       uiController.onNavRight = () => {
+        if (ErrorRecovery.isBlocked()) return;
         carousel3D.slideRight();
         uiController.updateNavButtons(
           carousel3D.getCurrentIndex() > 0,
@@ -41,6 +50,7 @@ export const CarouselPipelineModule = () => {
       };
 
       uiController.onLangToggle = (lang) => {
+        ErrorRecovery.syncLanguage();
         if (activeConfig) {
           const lData = activeConfig.localization[lang];
           uiController.updateLocalization(lData.infoText, lData.audioSrc);
@@ -48,10 +58,14 @@ export const CarouselPipelineModule = () => {
       };
 
       uiController.onQuizRequest = () => {
+        if (ErrorRecovery.isBlocked()) return;
         if (activeConfig && activeConfig.quizId) {
           const quizPath = `./quizbase/${activeConfig.quizId}/questions.json`;
-          fetch(quizPath)
-            .then((response) => response.json())
+          ErrorRecovery.fetchWithTimeout(quizPath)
+            .then((response) => {
+              if (!response.ok) throw new Error(`quiz ${response.status}`);
+              return response.json();
+            })
             .then((questions) => {
               uiController.startQuiz(questions);
             })
@@ -66,9 +80,11 @@ export const CarouselPipelineModule = () => {
         carousel3D.hideTrigger();
         activeTargetId = null;
         activeConfig = null;
+        ErrorRecovery.noteTrackingRestored();
       };
 
       carousel3D.onTriggerClicked = () => {
+        if (ErrorRecovery.isBlocked()) return;
         if (!activeConfig) return;
         carousel3D.spawnCarousel(activeConfig.images);
         const langData = activeConfig.localization['it'];
@@ -82,6 +98,7 @@ export const CarouselPipelineModule = () => {
     },
 
     onUpdate: () => {
+      ErrorRecovery.heartbeat();
       if (carousel3D) carousel3D.update();
     },
 
@@ -97,6 +114,7 @@ export const CarouselPipelineModule = () => {
             if (sameHotspot(targetName, activeTargetId, activeConfig)) {
               activeTargetId = targetName;
               carousel3D.resumeTracking(detail);
+              ErrorRecovery.noteTrackingRestored();
             }
             return;
           }
@@ -118,7 +136,7 @@ export const CarouselPipelineModule = () => {
           if (detail.name !== activeTargetId && !sameHotspot(detail.name, activeTargetId, activeConfig)) {
             return;
           }
-          // Aggiorna solo se tracking non congelato
+          ErrorRecovery.noteTrackingRestored();
           carousel3D.updateTargetTransform(detail);
         },
       },
@@ -135,9 +153,10 @@ export const CarouselPipelineModule = () => {
             return;
           }
 
-          // Carosello aperto: congela ultima posa, non chiudere
+          // Carosello aperto: non congelare subito (avvicinamento → micro imagelost)
           if (carousel3D.isCarouselOpen) {
-            carousel3D.freezeTracking();
+            carousel3D.noteTargetLost();
+            ErrorRecovery.noteTrackingLost();
           }
         },
       },
