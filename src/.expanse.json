@@ -17,7 +17,7 @@
           "headset": "AR",
           "phone": "AR",
           "world": {
-            "disableWorldTracking": false
+            "disableWorldTracking": true
           }
         }
       },

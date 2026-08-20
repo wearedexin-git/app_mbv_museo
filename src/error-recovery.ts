@@ -119,6 +119,12 @@ class ErrorRecoveryController {
   show(kind: ErrorKind, detail?: string) {
     this.currentKind = kind;
     this.applyCopy(kind);
+    // In sviluppo, mostra il dettaglio reale nel banner (aiuta il debug su device)
+    if (detail && this.msgEl && /localhost|127\.|192\.168\.|ngrok|loca\.lt|trycloudflare/i.test(location.hostname)) {
+      const base = this.msgEl.textContent || '';
+      const short = String(detail).slice(0, 180);
+      this.msgEl.textContent = `${base}\n\n(${short})`;
+    }
     this.banner?.classList.remove('hidden');
     this.hideLoader();
     this.report(kind, detail);

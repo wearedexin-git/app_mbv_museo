@@ -9,27 +9,91 @@ const allConfigs = [];
 const appImports = [];
 const appVarNames = [];
 
+/** Rimuove un gruppo RTF bilanciato che inizia con {\controlWord */
+function removeRtfGroup(rtf, controlWord) {
+  const startToken = `{\\${controlWord}`;
+  let result = rtf;
+  let idx = result.indexOf(startToken);
+  while (idx !== -1) {
+    let depth = 0;
+    let end = -1;
+    for (let i = idx; i < result.length; i++) {
+      if (result[i] === '{') depth++;
+      else if (result[i] === '}') {
+        depth--;
+        if (depth === 0) {
+          end = i;
+          break;
+        }
+      }
+    }
+    if (end === -1) break;
+    result = result.slice(0, idx) + result.slice(end + 1);
+    idx = result.indexOf(startToken);
+  }
+  return result;
+}
+
 function decodeRTF(filePath) {
   try {
     if (!fs.existsSync(filePath)) return null;
-    const content = fs.readFileSync(filePath, 'utf8');
+    let content = fs.readFileSync(filePath, 'utf8');
+
+    // Solo metadati: non toccare il gruppo root {\rtf1 ... testo}
+    content = removeRtfGroup(content, 'fonttbl');
+    content = removeRtfGroup(content, 'colortbl');
+    content = removeRtfGroup(content, 'stylesheet');
+    content = removeRtfGroup(content, 'info');
+    // Gruppi ignoti {\*....}
+    let star = content.indexOf('{\\*\\');
+    while (star !== -1) {
+      let depth = 0;
+      let end = -1;
+      for (let j = star; j < content.length; j++) {
+        if (content[j] === '{') depth++;
+        else if (content[j] === '}') {
+          depth--;
+          if (depth === 0) {
+            end = j;
+            break;
+          }
+        }
+      }
+      if (end < 0) break;
+      content = content.slice(0, star) + content.slice(end + 1);
+      star = content.indexOf('{\\*\\');
+    }
+
     let text = content
-      .replace(/\{[^}]+\}/g, '')
-      .replace(/\\[a-z0-9*-]+[ ]?/gi, '')
-      .replace(/\\'([0-9a-f]{2})/g, (match, hex) => {
-          const charCode = parseInt(hex, 16);
-          if (hex === '92' || hex === '91') return "'";
-          if (hex === '93' || hex === '94') return '"';
-          if (hex === 'e8') return 'è';
-          if (hex === 'e0') return 'à';
-          if (hex === 'f9') return 'ù';
-          if (hex === 'ec') return 'ì';
-          if (hex === 'f2') return 'ò';
-          return String.fromCharCode(charCode);
+      .replace(/\\\r?\n/g, ' ')
+      .replace(/\\'([0-9a-f]{2})/gi, (_, hex) => {
+        const h = hex.toLowerCase();
+        const map = {
+          '91': "'", '92': "'", '93': '"', '94': '"',
+          e8: 'è', e9: 'é', e0: 'à', e1: 'á', f9: 'ù', ec: 'ì', f2: 'ò',
+          c8: 'È', c9: 'É', c0: 'À', d9: 'Ù', cc: 'Ì', d2: 'Ò',
+        };
+        return map[h] || String.fromCharCode(parseInt(h, 16));
       })
-      .replace(/[{} ]+/g, ' ')
+      .replace(/\\u(-?\d+)\??/g, (_, n) => {
+        const code = parseInt(n, 10);
+        return code > 0 ? String.fromCharCode(code) : '';
+      })
+      .replace(/\\par(?![a-z])/gi, '\n')
+      .replace(/\\[a-z]+(-?\d+)?[ ]?/gi, '')
+      .replace(/[{}]/g, '')
+      .replace(/\\/g, '')
+      .replace(/TimesNewRoman[A-Za-z0-9]*;?/gi, '')
+      .replace(/^[;\*\s]+/gm, '')
+      .replace(/;{2,}/g, ' ')
+      .replace(/\r/g, '')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n+/g, ' ')
+      .replace(/[ \t]{2,}/g, ' ')
       .trim();
-    return text;
+
+    text = text.replace(/^[^A-Za-zÀ-ÖØ-öø-ÿ“"«]+/, '').trim();
+    return text || null;
   } catch (e) {
     return null;
   }

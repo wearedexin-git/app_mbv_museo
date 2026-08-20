@@ -144,14 +144,15 @@
       if (isStandalone || localStorage.getItem('pwa_dismissed') === 'true') return;
 
       setTimeout(() => {
+        // Non sovrapporre al prompt camera di 8th Wall
+        if (document.querySelector('.prompt-box-8w')) return;
         if (isIOS) {
           pwaMsg.innerText = "Tocca 'Condividi' e seleziona 'Aggiungi alla Home' per installare l'app.";
           pwaBanner.classList.remove('hidden');
         } else {
-          // Su Android/Desktop proviamo a mostrarlo comunque se il prompt non è ancora scattato
           pwaBanner.classList.remove('hidden');
         }
-      }, 5000);
+      }, 8000);
     });
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -163,26 +164,123 @@
       }
     });
 
-    // 8TH WALL CUSTOMIZATION SCRIPT (LOCALIZATION ONLY)
-    const observer = new MutationObserver(() => {
-      const promptBox = document.querySelector('.prompt-box-8w')
-      if (promptBox) {
-        // Traduzione dei bottoni e del testo nel box dei permessi (iOS/Android)
-        const p = promptBox.querySelector('p')
-        if (p && !p.innerText.includes('Tocca')) {
-          p.innerHTML = "<strong>Tocca 'Consenti' per accedere alla fotocamera e iniziare l'esperienza</strong>"
-        }
-        const primaryBtn = promptBox.querySelector('.button-primary-8w')
-        if (primaryBtn && primaryBtn.innerText !== 'Consenti') {
-          primaryBtn.innerText = 'Consenti'
-        }
-        const secondaryBtn = promptBox.querySelector('.prompt-button-8w:not(.button-primary-8w)')
-        if (secondaryBtn && secondaryBtn.innerText !== 'Annulla') {
-          secondaryBtn.innerText = 'Annulla'
-        }
+    // 8TH WALL: localizza prompt permessi (camera + motion) + nascondi PWA
+    // Nota: questo script è in <head> → document.body non esiste ancora.
+    const PROMPT_IT = {
+      motion: "L'AR richiede l'accesso ai sensori di movimento del dispositivo",
+      camera: "Tocca Consenti per accedere alla fotocamera e iniziare l'esperienza",
+      continue: 'Continua',
+      allow: 'Consenti',
+      cancel: 'Annulla',
+    }
+
+    const DENIED_IT = {
+      title: 'Permessi negati',
+      body: 'Safari ha bloccato i sensori di movimento. Chiudi completamente Safari (dallo switcher app), riaprilo e torna a questa pagina: al prompt tocca Continua e poi Consenti.',
+      bodyApple: "Hai bloccato l'accesso ai sensori di movimento. Chiudi completamente Safari e riapri questa pagina per riprovare.",
+      refresh: 'Ho chiuso Safari — riprova',
+      enableHeader: 'Abilitiamo i sensori di movimento',
+    }
+
+    let promptLocalizeBusy = false
+
+    const translatePromptText = (raw) => {
+      const t = (raw || '').replace(/\s+/g, ' ').trim()
+      if (!t) return null
+      if (/sensori di movimento|tocca consenti|fotocamera e iniziare/i.test(t)) return null
+      if (/motion\s*sensors|device\s*motion|gyroscope|accelerometer/i.test(t)) return PROMPT_IT.motion
+      if (/ar requires access/i.test(t)) return PROMPT_IT.motion
+      if (/camera|fotocamera|permission|allow access|experience|esperienza/i.test(t)) return PROMPT_IT.camera
+      return null
+    }
+
+    const localizeDeniedScreens = () => {
+      const userPrompt = document.getElementById('userPromptError')
+      if (userPrompt && !userPrompt.classList.contains('hidden')) {
+        const h1 = userPrompt.querySelector('h1')
+        const p = userPrompt.querySelector('p')
+        const btn = userPrompt.querySelector('#reloadButton, button.main-button, button')
+        if (h1 && /permission|denied|permessi/i.test(h1.textContent || '')) h1.textContent = DENIED_IT.title
+        if (p && /motion|permission|movimento|permessi/i.test(p.textContent || '')) p.textContent = DENIED_IT.body
+        if (btn && /refresh|reload|ricarica/i.test(btn.textContent || '')) btn.textContent = DENIED_IT.refresh
       }
-    })
-    observer.observe(document.body, { childList: true, subtree: true })
+
+      const appleDenied = document.getElementById('motionPermissionsErrorApple')
+      if (appleDenied && !appleDenied.classList.contains('hidden')) {
+        const h1 = appleDenied.querySelector('h1')
+        const ps = appleDenied.querySelectorAll('p')
+        if (h1) h1.textContent = DENIED_IT.title
+        if (ps[0]) ps[0].textContent = DENIED_IT.bodyApple
+        if (ps[1]) ps[1].textContent = "Chiudi l'app o il tab e aprilo di nuovo per riabilitare i sensori."
+      }
+
+      const appleHelp = document.getElementById('deviceMotionErrorApple')
+      if (appleHelp && !appleHelp.classList.contains('hidden')) {
+        const header = appleHelp.querySelector('.loading-error-header')
+        if (header) header.textContent = DENIED_IT.enableHeader
+      }
+    }
+
+    const localizeCameraPrompt = () => {
+      if (promptLocalizeBusy) return
+      localizeDeniedScreens()
+
+      const promptBox = document.querySelector('.prompt-box-8w')
+      const pwa = document.getElementById('pwa-install-banner')
+      if (pwa && promptBox) pwa.classList.add('hidden')
+      if (!promptBox) return
+
+      promptLocalizeBusy = true
+      try {
+        const p = promptBox.querySelector('p')
+        if (p) {
+          const next = translatePromptText(p.textContent)
+          if (next && p.textContent.trim() !== next) p.textContent = next
+        }
+
+        promptBox.querySelectorAll('button.prompt-button-8w, button').forEach((btn) => {
+          const label = (btn.textContent || '').trim()
+          if (!label) return
+          if (/^(continua|consenti|annulla)$/i.test(label)) return
+          if (btn.classList.contains('button-primary-8w') || /^continue$/i.test(label)) {
+            const box = (promptBox.textContent || '')
+            const it = /motion|sensor|movimento/i.test(box) || /^continue$/i.test(label)
+              ? PROMPT_IT.continue
+              : PROMPT_IT.allow
+            if (label !== it) btn.textContent = it
+          } else if (/^cancel$/i.test(label)) {
+            btn.textContent = PROMPT_IT.cancel
+          }
+        })
+      } finally {
+        promptLocalizeBusy = false
+      }
+    }
+
+    const startPromptLocalize = () => {
+      const root = document.body
+      if (!root) return
+      const observer = new MutationObserver(() => {
+        if (
+          document.querySelector('.prompt-box-8w') ||
+          document.querySelector('#userPromptError:not(.hidden)') ||
+          document.querySelector('#motionPermissionsErrorApple:not(.hidden)') ||
+          document.querySelector('#deviceMotionErrorApple:not(.hidden)')
+        ) {
+          localizeCameraPrompt()
+        }
+      })
+      observer.observe(root, { childList: true, subtree: true, attributes: true, attributeFilter: ['class'] })
+      localizeCameraPrompt()
+      let n = 0
+      const tick = setInterval(() => {
+        localizeCameraPrompt()
+        if (++n > 60) clearInterval(tick)
+      }, 300)
+    }
+
+    if (document.body) startPromptLocalize()
+    else document.addEventListener('DOMContentLoaded', startPromptLocalize)
   </script>
   <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
   <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam"
@@ -255,107 +353,217 @@
       font-size: 26px;
     }
 
-    /* --- 8TH WALL LOADING SCREEN CUSTOMIZATION (FINALE) --- */
+    /* --- 8TH WALL LOADING + CAMERA PERMISSIONS --- */
+    /* Non forzare display: altrimenti la loading non si nasconde più e l'AR resta bloccata. */
     #loadBackground,
-    .xrextras-loading-screen {
-      background: #ffffff !important;
+    .xrextras-loading-screen,
+    #requestingCameraPermissions,
+    #loading-screen {
+      background: #f7f4ef !important;
+      background-color: #f7f4ef !important;
+      font-family: 'Inter', sans-serif !important;
+      color: #141419 !important;
     }
 
     #requestingCameraPermissions,
     #loading-screen {
-      display: flex !important;
       flex-direction: column !important;
       align-items: center !important;
       justify-content: center !important;
-      background-color: #ffffff !important;
-      color: transparent !important;
-      /* Nasconde i text nodes diretti */
-      font-family: 'Inter', sans-serif !important;
       text-align: center !important;
       z-index: 10000 !important;
-      /* Alzato per sicurezza */
-      font-size: 0 !important;
-      /* Nasconde i text nodes diretti */
-      line-height: 0 !important;
+      padding: 24px !important;
+      box-sizing: border-box !important;
     }
 
-    /* Logo - Pseudo-elemento */
-    #requestingCameraPermissions::before,
-    #loading-screen::before {
+    /* Logo museo — solo mentre la schermata è visibile */
+    #requestingCameraPermissions:not([style*="display: none"]):not([style*="display:none"])::before,
+    #loading-screen:not([style*="display: none"]):not([style*="display:none"])::before {
       content: "" !important;
       display: block !important;
-      width: 280px !important;
-      height: 180px !important;
+      width: min(280px, 70vw) !important;
+      height: 120px !important;
       background-image: url('./image/ba_va_vettoriale_payoff_oro_nero.png') !important;
       background-size: contain !important;
       background-repeat: no-repeat !important;
       background-position: center !important;
-      margin-bottom: 20px !important;
+      margin: 0 auto 28px !important;
       order: -2 !important;
-      visibility: visible !important;
-      opacity: 1 !important;
+      flex-shrink: 0 !important;
     }
 
-    /* Testo tradotto - Pseudo-elemento */
-    #requestingCameraPermissions::after {
-      content: "Accesso all'Esperienza AR\n\nTocca 'Consenti' per attivare la fotocamera e iniziare l'esperienza" !important;
-      display: block !important;
-      font-size: 1.15rem !important;
-      color: #141419 !important;
+    /* Copy sotto il logo (schermata richiesta permessi) */
+    #requestingCameraPermissions:not([style*="display: none"]):not([style*="display:none"])::after {
+      content: "Accesso all'esperienza AR\A\A Tocca Consenti per attivare la fotocamera" !important;
       white-space: pre-wrap !important;
-      max-width: 85% !important;
-      margin: 20px auto !important;
-      order: -1 !important;
+      display: block !important;
+      font-size: 1.05rem !important;
+      line-height: 1.55 !important;
       font-weight: 500 !important;
-      line-height: 1.6 !important;
-      visibility: visible !important;
-      opacity: 1 !important;
+      color: #141419 !important;
+      max-width: 20rem !important;
+      margin: 0 auto 24px !important;
+      order: -1 !important;
     }
 
-    /* Nascondiamo TUTTI i figli (Inclusi img e testi iniettati) */
-    #requestingCameraPermissions>*,
+    /* Nasconde icone/testi nativi 8th Wall, ma NON il prompt box */
     #requestingCameraIcon,
     #loadImage,
     .permission-icon,
-    .prompt-image {
+    .prompt-image,
+    #requestingCameraPermissions > img:not(.poweredby-img),
+    #loading-screen > img:not(.poweredby-img) {
       display: none !important;
-      opacity: 0 !important;
-      visibility: hidden !important;
-      font-size: 0 !important;
-      height: 0 !important;
-      width: 0 !important;
-      margin: 0 !important;
-      content: none !important;
     }
 
-    /* Esenzione per il badge obbligatorio */
     #requestingCameraPermissions .poweredby-img,
     #loading-screen .poweredby-img {
       display: block !important;
-      opacity: 0.5 !important;
-      visibility: visible !important;
+      opacity: 0.45 !important;
       height: auto !important;
-      width: 100px !important;
-      margin-top: 40px !important;
-      order: 1 !important;
-      font-size: 12px !important;
-      /* Se c'è testo nel badge */
+      width: 96px !important;
+      margin-top: 28px !important;
+      order: 2 !important;
     }
 
-    /* Prompt iOS/Android */
+    /* Prompt iOS/Android — testo e bottoni leggibili su sfondo chiaro */
     .prompt-box-8w {
       background-color: #ffffff !important;
-      border-radius: 24px !important;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
-      padding: 30px !important;
+      color: #141419 !important;
+      border-radius: 20px !important;
+      box-shadow: 0 12px 40px rgba(20, 20, 25, 0.14) !important;
+      padding: 28px 22px 20px !important;
       z-index: 10001 !important;
+      max-width: min(360px, calc(100vw - 40px)) !important;
+      width: auto !important;
+      box-sizing: border-box !important;
+      font-family: 'Inter', sans-serif !important;
     }
 
-    .button-primary-8w {
-      background-color: #c4a45d !important;
-      color: #000000 !important;
+    .prompt-box-8w > p {
+      color: #141419 !important;
+      font-size: 1.02rem !important;
+      line-height: 1.5 !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+      text-align: center !important;
+      margin: 0 0 8px !important;
+    }
+
+    .prompt-box-8w .prompt-button-8w,
+    .prompt-box-8w button {
       border-radius: 12px !important;
       font-weight: 600 !important;
+      font-size: 0.95rem !important;
+      min-height: 44px !important;
+      padding: 10px 18px !important;
+      border: none !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .button-primary-8w,
+    .prompt-box-8w .button-primary-8w {
+      background-color: #c4a45d !important;
+      color: #141419 !important;
+    }
+
+    .prompt-box-8w .prompt-button-8w:not(.button-primary-8w),
+    .prompt-box-8w button:not(.button-primary-8w) {
+      background-color: #e8e4dc !important;
+      color: #141419 !important;
+    }
+
+    /* --- XRExtras: permessi negati / motion error (allineati al brand) --- */
+    .permission-error.absolute-fill:not(.hidden),
+    #deviceMotionErrorApple:not(.hidden) {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+      text-align: center !important;
+      background: #f7f4ef !important;
+      color: #141419 !important;
+      font-family: 'Inter', sans-serif !important;
+      padding: 32px 24px !important;
+      box-sizing: border-box !important;
+      z-index: 10050 !important;
+    }
+
+    #userPromptError:not(.hidden)::before,
+    #motionPermissionsErrorApple:not(.hidden)::before,
+    #deviceMotionErrorApple:not(.hidden)::before {
+      content: "" !important;
+      display: block !important;
+      width: min(240px, 65vw) !important;
+      height: 100px !important;
+      background-image: url('./image/ba_va_vettoriale_payoff_oro_nero.png') !important;
+      background-size: contain !important;
+      background-repeat: no-repeat !important;
+      background-position: center !important;
+      margin: 0 auto 28px !important;
+    }
+
+    .permission-error > h1 {
+      font-size: 1.35rem !important;
+      font-weight: 600 !important;
+      color: #141419 !important;
+      margin: 0 0 12px !important;
+      letter-spacing: -0.01em !important;
+      line-height: 1.3 !important;
+    }
+
+    .permission-error > p {
+      font-size: 1rem !important;
+      font-weight: 500 !important;
+      color: #3a3a42 !important;
+      max-width: 22rem !important;
+      line-height: 1.55 !important;
+      margin: 0 auto 8px !important;
+    }
+
+    .permission-error .main-button,
+    #reloadButton.main-button {
+      border: none !important;
+      outline: none !important;
+      background-color: #c4a45d !important;
+      color: #141419 !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 1rem !important;
+      font-weight: 600 !important;
+      display: inline-block !important;
+      margin-top: 28px !important;
+      padding: 12px 28px !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 16px rgba(196, 164, 93, 0.35) !important;
+    }
+
+    #deviceMotionErrorApple .loading-error-header {
+      color: #141419 !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 1.25rem !important;
+      font-weight: 600 !important;
+      margin-bottom: 16px !important;
+    }
+
+    #deviceMotionErrorApple .loading-error-instructions {
+      color: #3a3a42 !important;
+      font-family: 'Inter', sans-serif !important;
+      font-size: 0.95rem !important;
+      line-height: 1.6 !important;
+      text-align: left !important;
+      max-width: 22rem !important;
+      margin: 0 auto !important;
+      padding-left: 1.25rem !important;
+    }
+
+    #deviceMotionErrorApple .loading-error-instructions .highlight {
+      color: #c4a45d !important;
+      font-weight: 600 !important;
+    }
+
+    #deviceMotionErrorApple .loading-error-footer {
+      color: #3a3a42 !important;
     }
 
     /* ------------------------------------------------------------- */
@@ -634,24 +842,24 @@
       padding: 0;
     }
 
-    /* PWA BANNER STYLES */
+    /* PWA BANNER STYLES — fondo scuro leggibile anche su loading bianco */
     #pwa-install-banner {
       position: fixed;
-      bottom: 20px;
+      bottom: calc(20px + env(safe-area-inset-bottom, 0px));
       left: 20px;
       right: 20px;
-      background: var(--glass-bg);
-      backdrop-filter: var(--glass-blur);
-      -webkit-backdrop-filter: var(--glass-blur);
-      border: 1px solid var(--glass-border);
+      background: rgba(20, 20, 25, 0.94);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 16px;
       padding: 18px;
-      color: white;
+      color: #ffffff;
       z-index: 9999;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
       animation: slide-up 0.5s ease-out;
     }
 
@@ -684,6 +892,7 @@
       font-size: 0.95rem;
       font-weight: 500;
       line-height: 1.4;
+      color: #ffffff;
     }
 
     .pwa-actions {
@@ -707,9 +916,9 @@
     }
 
     .pwa-btn-secondary {
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     /* ERROR RECOVERY BANNER (stesso linguaggio del PWA banner) */

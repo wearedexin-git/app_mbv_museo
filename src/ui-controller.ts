@@ -172,9 +172,18 @@ export class UIController {
     return this.currentLang;
   }
 
+  /** Pulisce residui RTF (backslash, soft-break) prima di mostrarli in UI. */
+  private formatInfoText(raw: string): string {
+    return String(raw || '')
+      .replace(/\\\r?\n/g, ' ')
+      .replace(/\\/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   // Chiamato quando il Target confermato
   public showOverlay(localizedInfoText: string, audioSrc: string, imagesCount: number, hasQuiz: boolean) {
-    this.infoText.innerHTML = localizedInfoText;
+    this.infoText.textContent = this.formatInfoText(localizedInfoText);
     
     // Setup Audio
     this.audioPlayer.src = audioSrc;
@@ -218,7 +227,7 @@ export class UIController {
   }
 
   public updateLocalization(localizedInfoText: string, audioSrc: string) {
-    this.infoText.innerHTML = localizedInfoText;
+    this.infoText.textContent = this.formatInfoText(localizedInfoText);
     
     const wasPlaying = this.isAudioPlaying;
     
