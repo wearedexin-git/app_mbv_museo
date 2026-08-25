@@ -172,9 +172,24 @@ export class UIController {
     return this.currentLang;
   }
 
-  /** Pulisce residui RTF (backslash, soft-break) prima di mostrarli in UI. */
+  /** Pulisce RTF/C1 e riduce punteggiatura tipografica ad ASCII (niente "No glyph"). */
   private formatInfoText(raw: string): string {
+    const windows1252 = typeof TextDecoder !== 'undefined'
+      ? new TextDecoder('windows-1252')
+      : null;
+
     return String(raw || '')
+      .replace(/[\u0080-\u009F]/g, (ch) => {
+        if (!windows1252) return '';
+        return windows1252.decode(Uint8Array.of(ch.charCodeAt(0)));
+      })
+      .replace(/\u2026/g, '...')
+      .replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-')
+      .replace(/[\u2018\u2019\u201A\u201B\u2032]/g, "'")
+      .replace(/[\u201C\u201D\u201E\u201F\u2033]/g, '"')
+      .replace(/[\u00AB\u00BB]/g, '"')
+      .replace(/\u00A0/g, ' ')
+      .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F\u200B-\u200D\uFEFF]/g, '')
       .replace(/\\\r?\n/g, ' ')
       .replace(/\\/g, '')
       .replace(/\s+/g, ' ')

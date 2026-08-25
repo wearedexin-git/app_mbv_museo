@@ -105,8 +105,7 @@ ErrorRecovery.reportAssetLoadError(detail?)
 ### Logging
 
 - `console.warn('[MBV:error]', payload)`
-- hook opzionale: `window.__mbvReportError?.(payload)` per analytics future  
-  (nessun Sentry/GA nel progetto al momento)
+- hook `window.__mbvReportError` → **Sentry** (`src/monitoring/sentry.ts`). Setup mail e dashboard: [`docs/sentry.md`](sentry.md)
 
 ---
 
@@ -147,5 +146,5 @@ ErrorRecovery.reportAssetLoadError(detail?)
 ## Estensioni future
 
 - Soft-reset pipeline senza full reload (oltre a Ricarica)
-- Invio eventi a analytics reale via `__mbvReportError`
+- Retry mirato (solo asset fallito) oltre al reload pagina
 - Retry mirato (solo asset fallito) oltre al reload pagina

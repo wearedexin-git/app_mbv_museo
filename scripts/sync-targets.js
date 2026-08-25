@@ -9,6 +9,33 @@ const allConfigs = [];
 const appImports = [];
 const appVarNames = [];
 
+const windows1252Decoder = new TextDecoder('windows-1252');
+
+function decodeWindows1252Byte(hex) {
+  const byte = parseInt(hex, 16);
+  if (Number.isNaN(byte)) return '';
+  return windows1252Decoder.decode(Uint8Array.of(byte));
+}
+
+/** Byte 0x80–0x9F letti come Latin-1 diventano controlli C1 (□). Ripristina 1252. */
+function remapC1AsWindows1252(text) {
+  return text.replace(/[\u0080-\u009F]/g, (ch) =>
+    windows1252Decoder.decode(Uint8Array.of(ch.charCodeAt(0)))
+  );
+}
+
+/** Inter/iOS spesso non hanno glifi per … – ‘ ’ “ ” → box "No glyph". ASCII sicuro. */
+function flattenTypographicPunctuation(text) {
+  return text
+    .replace(/\u2026/g, '...')
+    .replace(/[\u2012\u2013\u2014\u2015\u2212]/g, '-')
+    .replace(/[\u2018\u2019\u201A\u201B\u2032]/g, "'")
+    .replace(/[\u201C\u201D\u201E\u201F\u2033]/g, '"')
+    .replace(/[\u00AB\u00BB]/g, '"')
+    .replace(/\u00A0/g, ' ')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '');
+}
+
 /** Rimuove un gruppo RTF bilanciato che inizia con {\controlWord */
 function removeRtfGroup(rtf, controlWord) {
   const startToken = `{\\${controlWord}`;
@@ -66,15 +93,9 @@ function decodeRTF(filePath) {
 
     let text = content
       .replace(/\\\r?\n/g, ' ')
-      .replace(/\\'([0-9a-f]{2})/gi, (_, hex) => {
-        const h = hex.toLowerCase();
-        const map = {
-          '91': "'", '92': "'", '93': '"', '94': '"',
-          e8: 'è', e9: 'é', e0: 'à', e1: 'á', f9: 'ù', ec: 'ì', f2: 'ò',
-          c8: 'È', c9: 'É', c0: 'À', d9: 'Ù', cc: 'Ì', d2: 'Ò',
-        };
-        return map[h] || String.fromCharCode(parseInt(h, 16));
-      })
+      // RTF \ansi\ansicpg1252: \'HH è un byte Windows-1252, non Latin-1.
+      // \'85 → …  \'96 → –  Se si usa fromCharCode(0x85) resta U+0085 (tofu/□).
+      .replace(/\\'([0-9a-f]{2})/gi, (_, hex) => decodeWindows1252Byte(hex))
       .replace(/\\u(-?\d+)\??/g, (_, n) => {
         const code = parseInt(n, 10);
         return code > 0 ? String.fromCharCode(code) : '';
@@ -93,6 +114,7 @@ function decodeRTF(filePath) {
       .trim();
 
     text = text.replace(/^[^A-Za-zÀ-ÖØ-öø-ÿ“"«]+/, '').trim();
+    text = flattenTypographicPunctuation(remapC1AsWindows1252(text));
     return text || null;
   } catch (e) {
     return null;

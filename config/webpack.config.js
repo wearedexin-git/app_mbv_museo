@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
@@ -28,6 +29,10 @@ const config = {
     publicPath: '/',
   },
   plugins: [
+    new webpack.DefinePlugin({
+      __SENTRY_DSN__: JSON.stringify(process.env.SENTRY_DSN || ''),
+      __SENTRY_ENVIRONMENT__: JSON.stringify(process.env.SENTRY_ENVIRONMENT || ''),
+    }),
     new HtmlWebpackPlugin({
       template: path.join(srcPath, 'index.html'),
       filename: 'index.html',
@@ -109,6 +114,8 @@ const config = {
       'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
       // Evita interstitial warning di ngrok che rompe il load AR
       'ngrok-skip-browser-warning': 'true',
+      // Safari tiene il bundle in cache: in locale vogliamo sempre l'ultima versione
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
     },
     client: {
       // Usa host/port della pagina corrente (es. *.loca.lt) per il WS, non localhost.

@@ -1,3 +1,6 @@
+import { initMonitoring } from './monitoring/sentry';
+initMonitoring();
+
 import * as THREE from 'three';
 window.THREE = THREE;
 import { CarouselPipelineModule } from './ar-pipeline';

@@ -27,6 +27,7 @@
     "webpack-virtual-modules": "^0.6.2"
   },
   "dependencies": {
+    "@sentry/browser": "^10.70.0",
     "three": "^0.183.2"
   }
 }
