@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/labirinto_labirinto_luminance.jpg",
+  "metadata": null,
+  "name": "labirinto_labirinto",
+  "type": "PLANAR",
+  "properties": {
+    "left": 2,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1204,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "labirinto_labirinto_original.jpg",
+    "croppedImage": "labirinto_labirinto_cropped.jpg",
+    "thumbnailImage": "labirinto_labirinto_thumbnail.jpg",
+    "luminanceImage": "labirinto_labirinto_luminance.jpg"
+  },
+  "created": 1788275097346,
+  "updated": 1788275097346
+}

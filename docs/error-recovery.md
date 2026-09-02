@@ -105,7 +105,7 @@ ErrorRecovery.reportAssetLoadError(detail?)
 ### Logging
 
 - `console.warn('[MBV:error]', payload)`
-- hook `window.__mbvReportError` → **Sentry** (`src/monitoring/sentry.ts`). Setup mail e dashboard: [`docs/sentry.md`](sentry.md)
+- hook `window.__mbvReportError` → **Sentry** (`src/monitoring/sentry.ts`). Setup mail e dashboard: [`sentry.md`](sentry.md). Indice: [`README.md`](README.md).
 
 ---
 

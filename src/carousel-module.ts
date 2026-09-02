@@ -37,6 +37,7 @@ export class Carousel3D {
   private targetPos = new THREE.Vector3();
 
   private readonly _camPos = new THREE.Vector3();
+  private readonly _worldPos = new THREE.Vector3();
   private readonly _camQuat = new THREE.Quaternion();
   private readonly _parentQuat = new THREE.Quaternion();
   private readonly _parentQuatInv = new THREE.Quaternion();
@@ -69,12 +70,12 @@ export class Carousel3D {
   private readonly loseGraceMs = 900;
 
   /**
-   * Sfera trigger: diametro ≈ % del lato corto dello schermo (indipendente da
-   * dimensione fisica del marker / risoluzione telefono).
+   * Sfera trigger: diametro ≈ % del lato corto dello schermo.
+   * Il tap è sulla sfera 3D. Tetto mondo per non entrare nel wireframe.
    */
-  private readonly triggerScreenFill = 0.30;
+  private readonly triggerScreenFill = 0.70;
   private readonly triggerLocalDiameter = 1;
-  private triggerScaleSmoothed = 0.2;
+  private triggerScaleSmoothed = 0.25;
   private readonly triggerScaleLambda = 8;
 
   constructor(scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
@@ -100,7 +101,7 @@ export class Carousel3D {
     window.addEventListener(
       'touchstart',
       (e) => {
-        if (!this.triggerMesh?.visible || e.touches.length === 0) return;
+        if (!this.triggerMesh?.visible || this.isCarouselOpen || e.touches.length === 0) return;
 
         this.mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
         this.mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
@@ -139,8 +140,7 @@ export class Carousel3D {
       this.triggerMesh = new THREE.Mesh(geo, mat);
       this.triggerMesh.add(core);
       this.triggerMesh.renderOrder = 999;
-      // Leggero lift sopra il centro del marker (in unità locali della sfera)
-      this.triggerMesh.position.set(0, this.triggerLocalDiameter * 0.55, 0);
+      this.triggerMesh.position.set(0, 0, 0);
       this.activeContainer.add(this.triggerMesh);
     }
 
@@ -149,12 +149,9 @@ export class Carousel3D {
     this.triggerMesh.visible = true;
     this.isTriggerVisible = true;
     this.applyPoseFromDetail(detail, true);
-    // Prima stima immediata (poi smoothing in update)
-    this.triggerScaleSmoothed = this.computeScreenFitScale(
-      this.triggerLocalDiameter,
-      this.triggerScreenFill
-    );
+    this.triggerScaleSmoothed = this.computeTriggerScale();
     this.triggerMesh.scale.setScalar(this.triggerScaleSmoothed);
+    this.syncTriggerLift();
   }
 
   public hideTrigger() {
@@ -236,29 +233,78 @@ export class Carousel3D {
     });
   }
 
-  /** Scala mondo affinché `localSize` occupi `fill` del lato corto dello schermo. */
-  private computeScreenFitScale(localSize: number, fill: number, minDist = 0.35): number {
+  /**
+   * FOV verticale dalla projectionMatrix XR già scritta da 8th Wall.
+   * Non chiamare updateProjectionMatrix(): su iPhone ritratto sovrascrive
+   * l'aspect XR e la sfera diventa un ellissoide verticale.
+   */
+  private getVerticalFovRad(): number {
     const cam = this.camera as THREE.PerspectiveCamera;
-    if (!cam.isPerspectiveCamera) return 0.35;
-
-    this.camera.getWorldPosition(this._camPos);
-    const dist = Math.max(minDist, this.activeContainer.position.distanceTo(this._camPos));
-    const vFov = THREE.MathUtils.degToRad(cam.fov);
-    const viewH = 2 * Math.tan(vFov / 2) * dist;
-    const viewW = viewH * (cam.aspect || window.innerWidth / window.innerHeight);
-
-    const target = Math.min(viewW, viewH) * fill;
-    const localMax = Math.max(localSize, 1e-4);
-    return THREE.MathUtils.clamp(target / localMax, 0.08, 2.5);
+    const sy = cam.projectionMatrix.elements[5];
+    if (Number.isFinite(sy) && Math.abs(sy) > 1e-6) {
+      return 2 * Math.atan(1 / sy);
+    }
+    return THREE.MathUtils.degToRad(cam.fov || 60);
   }
 
-  /** Sfera sempre ≈ triggerScreenFill del lato corto schermo (iPhone/Android, vicino/lontano). */
+  private getAspect(): number {
+    const canvas = this.renderer?.domElement;
+    if (canvas?.clientWidth && canvas.clientHeight) {
+      return canvas.clientWidth / canvas.clientHeight;
+    }
+    return (this.camera as THREE.PerspectiveCamera).aspect || window.innerWidth / window.innerHeight;
+  }
+
+  private getDistanceToAnchor(minDist = 0.12): number {
+    this.camera.updateMatrixWorld(true);
+    this.activeContainer.updateWorldMatrix(true, false);
+    this.camera.getWorldPosition(this._camPos);
+    this.activeContainer.getWorldPosition(this._worldPos);
+    return Math.max(minDist, this._camPos.distanceTo(this._worldPos));
+  }
+
+  /** Lato corto del frustum (m) alla distanza del marker. */
+  private getViewShortSideAtAnchor(minDist = 0.12): number {
+    const dist = this.getDistanceToAnchor(minDist);
+    const vFov = this.getVerticalFovRad();
+    const viewH = 2 * Math.tan(vFov / 2) * dist;
+    const viewW = viewH * this.getAspect();
+    return Math.min(viewW, viewH);
+  }
+
+  /** Scala mondo affinché `localSize` occupi `fill` del lato corto dello schermo. */
+  private computeScreenFitScale(localSize: number, fill: number, minDist = 0.35): number {
+    const shortSide = this.getViewShortSideAtAnchor(minDist);
+    const target = shortSide * fill;
+    return THREE.MathUtils.clamp(target / Math.max(localSize, 1e-4), 0.08, 2.5);
+  }
+
+  /**
+   * Mira al 70% del lato corto, con tetto mondo (~55 cm max) e raggio < distanza.
+   */
+  private computeTriggerScale(): number {
+    const dist = this.getDistanceToAnchor(0.12);
+    const fitted = this.computeScreenFitScale(
+      this.triggerLocalDiameter,
+      this.triggerScreenFill,
+      0.12
+    );
+    return THREE.MathUtils.clamp(Math.min(fitted, dist * 0.7), 0.12, 0.55);
+  }
+
+  private syncTriggerLift() {
+    if (!this.triggerMesh) return;
+    const s = this.triggerScaleSmoothed;
+    this.triggerMesh.position.y = s * 0.4 + Math.sin(performance.now() * 0.003) * s * 0.06;
+  }
+
   private updateTriggerScale(dt: number) {
     if (!this.triggerMesh?.visible || this.isCarouselOpen) return;
-    const target = this.computeScreenFitScale(this.triggerLocalDiameter, this.triggerScreenFill);
+    const target = this.computeTriggerScale();
     const t = 1 - Math.exp(-this.triggerScaleLambda * dt);
     this.triggerScaleSmoothed += (target - this.triggerScaleSmoothed) * t;
     this.triggerMesh.scale.setScalar(this.triggerScaleSmoothed);
+    this.syncTriggerLift();
   }
 
   public hideCarousel() {
@@ -440,9 +486,6 @@ export class Carousel3D {
     if (this.triggerMesh && this.triggerMesh.visible) {
       this.triggerMesh.rotation.y += 0.025;
       this.triggerMesh.rotation.x += 0.012;
-      // Oscillazione in unità locali (scala % schermo gestisce la grandezza)
-      this.triggerMesh.position.y =
-        this.triggerLocalDiameter * 0.55 + Math.sin(performance.now() * 0.003) * 0.08;
     }
 
     if (this.carouselGroup) {

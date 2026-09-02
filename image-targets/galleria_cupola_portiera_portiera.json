@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/galleria_cupola_portiera_portiera_luminance.jpg",
+  "metadata": null,
+  "name": "galleria_cupola_portiera_portiera",
+  "type": "PLANAR",
+  "properties": {
+    "left": 2,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1204,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "galleria_cupola_portiera_portiera_original.jpg",
+    "croppedImage": "galleria_cupola_portiera_portiera_cropped.jpg",
+    "thumbnailImage": "galleria_cupola_portiera_portiera_thumbnail.jpg",
+    "luminanceImage": "galleria_cupola_portiera_portiera_luminance.jpg"
+  },
+  "created": 1788275095738,
+  "updated": 1788275095738
+}

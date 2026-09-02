@@ -1,5 +1,8 @@
 # Creazione e integrazione di un nuovo Image Target
 
+> Flusso aggiornato (preprocess + CLI reale + sync): **[`image-targets-pipeline.md`](image-targets-pipeline.md)**.  
+> Questo file resta la procedura Studio / integrazione in `app.js`. Lo script `@8thwall/cli` indicato sotto **non esiste su npm**; nel progetto si usa `npx @8thwall/image-target-cli` via `scripts/generate-targets-force.js`.
+
 ## 1. Creare l'Image Target con 8th Wall
 
 1. **Usare l'interfaccia web di 8th Wall Studio**
