@@ -13,11 +13,10 @@ export class Carousel3D {
   private camera: THREE.Camera;
   private renderer: THREE.WebGLRenderer;
 
-  private triggerMesh: THREE.Mesh | null = null;
+  private triggerRoot: THREE.Group | null = null;
+  private triggerEl: HTMLElement | null = null;
+  private triggerHeadEl: HTMLElement | null = null;
   private carouselGroup: THREE.Group | null = null;
-
-  private raycaster: THREE.Raycaster;
-  private mouse: THREE.Vector2;
 
   public isTriggerVisible = false;
   public isCarouselOpen = false;
@@ -43,6 +42,7 @@ export class Carousel3D {
   private readonly _parentQuatInv = new THREE.Quaternion();
   private readonly _desiredBillboard = new THREE.Quaternion();
   private readonly _faceCamera = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
+  private readonly _ndc = new THREE.Vector3();
 
   private readonly clock = new THREE.Clock();
   /** Tracking: più alto = più reattivo. */
@@ -70,12 +70,13 @@ export class Carousel3D {
   private readonly loseGraceMs = 900;
 
   /**
-   * Sfera trigger: diametro ≈ % del lato corto dello schermo.
-   * Il tap è sulla sfera 3D. Tetto mondo per non entrare nel wireframe.
+   * Pin HTML: tre dischi sul target, respiro in scala.
    */
-  private readonly triggerScreenFill = 0.70;
+  private readonly triggerScreenFill = 0.24;
+  private readonly triggerPxMin = 100;
+  private readonly triggerPxMax = 140;
   private readonly triggerLocalDiameter = 1;
-  private triggerScaleSmoothed = 0.25;
+  private triggerScaleSmoothed = 0.18;
   private readonly triggerScaleLambda = 8;
 
   constructor(scene: THREE.Scene, camera: THREE.Camera, renderer: THREE.WebGLRenderer) {
@@ -83,13 +84,10 @@ export class Carousel3D {
     this.camera = camera;
     this.renderer = renderer;
 
-    this.raycaster = new THREE.Raycaster();
-    this.mouse = new THREE.Vector2();
-
     this.activeContainer.add(this.billboardGroup);
     this.scene.add(this.activeContainer);
 
-    this.setupTouchHandler();
+    this.bindTriggerDom();
     this.setupLighting();
   }
 
@@ -97,66 +95,95 @@ export class Carousel3D {
     this.scene.add(new THREE.AmbientLight(0xffffff, 1.0));
   }
 
-  private setupTouchHandler() {
-    window.addEventListener(
-      'touchstart',
-      (e) => {
-        if (!this.triggerMesh?.visible || this.isCarouselOpen || e.touches.length === 0) return;
+  private triggerTapAt = 0;
 
-        this.mouse.x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
-        this.mouse.y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+  private bindTriggerDom() {
+    this.triggerEl = document.getElementById('ar-trigger-hotspot');
+    if (!this.triggerEl) return;
+    this.triggerHeadEl = this.triggerEl.querySelector('.ar-pin-head');
+    const hit = this.triggerHeadEl ?? this.triggerEl;
 
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        if (this.raycaster.intersectObject(this.triggerMesh, true).length > 0) {
-          e.preventDefault();
-          this.onTriggerClicked?.();
-        }
-      },
-      { passive: false }
+    const fire = (e: Event) => {
+      if (!this.isTriggerVisible || this.isCarouselOpen) return;
+      const now = performance.now();
+      if (now - this.triggerTapAt < 400) return;
+      this.triggerTapAt = now;
+      e.preventDefault();
+      e.stopPropagation();
+      this.onTriggerClicked?.();
+    };
+    hit.addEventListener('touchstart', fire, { passive: false });
+    hit.addEventListener('click', fire);
+  }
+
+  private createTriggerHotspot() {
+    const root = new THREE.Group();
+    root.visible = false;
+    this.triggerRoot = root;
+    this.activeContainer.add(root);
+    if (!this.triggerEl) this.bindTriggerDom();
+  }
+
+  private setTriggerHtmlVisible(show: boolean) {
+    this.triggerEl?.classList.toggle('hidden', !show);
+  }
+
+  private syncTriggerHtml() {
+    const el = this.triggerEl;
+    const head = this.triggerHeadEl;
+    const root = this.triggerRoot;
+    if (!el || !head || !root) return;
+
+    const show = root.visible && this.isTriggerVisible && !this.isCarouselOpen;
+    if (!show) {
+      el.classList.add('hidden');
+      return;
+    }
+
+    root.updateWorldMatrix(true, false);
+    root.getWorldPosition(this._worldPos);
+    this._ndc.copy(this._worldPos).project(this.camera);
+    if (!Number.isFinite(this._ndc.x) || this._ndc.z > 1 || this._ndc.z < -1) {
+      el.classList.add('hidden');
+      return;
+    }
+
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const hx = (this._ndc.x * 0.5 + 0.5) * w;
+    const hy = (-this._ndc.y * 0.5 + 0.5) * h;
+    const size = THREE.MathUtils.clamp(
+      Math.min(w, h) * this.triggerScreenFill,
+      this.triggerPxMin,
+      this.triggerPxMax
     );
+
+    head.style.left = `${hx}px`;
+    head.style.top = `${hy}px`;
+    head.style.width = `${size}px`;
+    head.style.height = `${size}px`;
+    el.classList.remove('hidden');
   }
 
   public showTrigger(detail: any) {
-    if (!this.triggerMesh) {
-      // Geometria unitaria (diametro locale = 1): la scala la fa updateTriggerScale → % schermo
-      const r = this.triggerLocalDiameter * 0.5;
-      const geo = new THREE.SphereGeometry(r, 20, 20);
-      const mat = new THREE.MeshBasicMaterial({
-        color: 0x00d2ff,
-        transparent: true,
-        opacity: 0.75,
-        wireframe: true,
-        depthTest: false,
-      });
-      const core = new THREE.Mesh(
-        new THREE.SphereGeometry(r * 0.5, 24, 24),
-        new THREE.MeshBasicMaterial({
-          color: 0xffffff,
-          transparent: true,
-          opacity: 0.95,
-          depthTest: false,
-        })
-      );
-      this.triggerMesh = new THREE.Mesh(geo, mat);
-      this.triggerMesh.add(core);
-      this.triggerMesh.renderOrder = 999;
-      this.triggerMesh.position.set(0, 0, 0);
-      this.activeContainer.add(this.triggerMesh);
-    }
+    if (!this.triggerRoot) this.createTriggerHotspot();
+    if (!this.triggerRoot) return;
 
     this.trackingEnabled = true;
     this.lostSinceMs = null;
-    this.triggerMesh.visible = true;
+    this.triggerRoot.visible = true;
     this.isTriggerVisible = true;
     this.applyPoseFromDetail(detail, true);
     this.triggerScaleSmoothed = this.computeTriggerScale();
-    this.triggerMesh.scale.setScalar(this.triggerScaleSmoothed);
+    this.triggerRoot.scale.setScalar(this.triggerScaleSmoothed);
     this.syncTriggerLift();
+    this.syncTriggerHtml();
   }
 
   public hideTrigger() {
-    if (this.triggerMesh) this.triggerMesh.visible = false;
+    if (this.triggerRoot) this.triggerRoot.visible = false;
     this.isTriggerVisible = false;
+    this.setTriggerHtmlVisible(false);
   }
 
   public spawnCarousel(imagePaths: string[]) {
@@ -280,7 +307,7 @@ export class Carousel3D {
   }
 
   /**
-   * Mira al 70% del lato corto, con tetto mondo (~55 cm max) e raggio < distanza.
+   * Mira al ~23% del lato corto, tetto mondo e raggio < distanza.
    */
   private computeTriggerScale(): number {
     const dist = this.getDistanceToAnchor(0.12);
@@ -289,22 +316,23 @@ export class Carousel3D {
       this.triggerScreenFill,
       0.12
     );
-    return THREE.MathUtils.clamp(Math.min(fitted, dist * 0.7), 0.12, 0.55);
+    return THREE.MathUtils.clamp(Math.min(fitted, dist * 0.7), 0.08, 0.32);
   }
 
   private syncTriggerLift() {
-    if (!this.triggerMesh) return;
-    const s = this.triggerScaleSmoothed;
-    this.triggerMesh.position.y = s * 0.4 + Math.sin(performance.now() * 0.003) * s * 0.06;
+    if (!this.triggerRoot) return;
+    const dist = this.getDistanceToAnchor(0.12);
+    this.triggerRoot.position.y = THREE.MathUtils.clamp(dist * 0.08, 0.04, 0.14);
   }
 
   private updateTriggerScale(dt: number) {
-    if (!this.triggerMesh?.visible || this.isCarouselOpen) return;
+    if (!this.triggerRoot?.visible || this.isCarouselOpen) return;
     const target = this.computeTriggerScale();
     const t = 1 - Math.exp(-this.triggerScaleLambda * dt);
     this.triggerScaleSmoothed += (target - this.triggerScaleSmoothed) * t;
-    this.triggerMesh.scale.setScalar(this.triggerScaleSmoothed);
+    this.triggerRoot.scale.setScalar(this.triggerScaleSmoothed);
     this.syncTriggerLift();
+    this.syncTriggerHtml();
   }
 
   public hideCarousel() {
@@ -437,7 +465,8 @@ export class Carousel3D {
   }
 
   private updateBillboard(dt: number) {
-    if (!this.isCarouselOpen) return;
+    const aimTrigger = !!this.triggerRoot?.visible && !this.isCarouselOpen;
+    if (!this.isCarouselOpen && !aimTrigger) return;
 
     this.camera.getWorldQuaternion(this._camQuat);
     this.activeContainer.getWorldQuaternion(this._parentQuat);
@@ -445,7 +474,12 @@ export class Carousel3D {
     this._desiredBillboard.copy(this._parentQuatInv).multiply(this._camQuat).multiply(this._faceCamera);
 
     const t = 1 - Math.exp(-this.billboardLambda * dt);
-    this.billboardGroup.quaternion.slerp(this._desiredBillboard, t);
+    if (this.isCarouselOpen) {
+      this.billboardGroup.quaternion.slerp(this._desiredBillboard, t);
+    }
+    if (aimTrigger && this.triggerRoot) {
+      this.triggerRoot.quaternion.slerp(this._desiredBillboard, t);
+    }
   }
 
   public update() {
@@ -482,11 +516,6 @@ export class Carousel3D {
       this.flushPoseToContainer();
     }
     // Se tracking frozen: posa mondo ferma → avvicinarsi zoomma naturalmente
-
-    if (this.triggerMesh && this.triggerMesh.visible) {
-      this.triggerMesh.rotation.y += 0.025;
-      this.triggerMesh.rotation.x += 0.012;
-    }
 
     if (this.carouselGroup) {
       const targetX = -(this.currentIndex * this.slideSpacing);

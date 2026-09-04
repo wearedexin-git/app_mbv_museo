@@ -25,6 +25,7 @@ export const CarouselPipelineModule = () => {
 
       uiController = new UIController();
       carousel3D = new Carousel3D(scene, camera, renderer);
+      uiController.showScan();
 
       // Collega lingua e stato carosello al hub errori
       ErrorRecovery.configure({
@@ -61,7 +62,7 @@ export const CarouselPipelineModule = () => {
         if (ErrorRecovery.isBlocked()) return;
         if (activeConfig && activeConfig.quizId) {
           const quizPath = `./quizbase/${activeConfig.quizId}/questions.json`;
-          ErrorRecovery.fetchWithTimeout(quizPath)
+          ErrorRecovery.fetchWithTimeout(quizPath, undefined, { silent: true })
             .then((response) => {
               if (!response.ok) throw new Error(`quiz ${response.status}`);
               return response.json();
@@ -71,6 +72,7 @@ export const CarouselPipelineModule = () => {
             })
             .catch((err) => {
               console.error('❌ Errore nel caricamento del quiz:', err);
+              uiController.setQuizAvailable(false);
             });
         }
       };
@@ -81,6 +83,7 @@ export const CarouselPipelineModule = () => {
         activeTargetId = null;
         activeConfig = null;
         ErrorRecovery.noteTrackingRestored();
+        uiController.showScan();
       };
 
       carousel3D.onTriggerClicked = () => {
@@ -125,6 +128,7 @@ export const CarouselPipelineModule = () => {
           if (config) {
             activeTargetId = targetName;
             activeConfig = config;
+            uiController.hideScan();
             carousel3D.showTrigger(detail);
           }
         },
@@ -150,6 +154,7 @@ export const CarouselPipelineModule = () => {
             carousel3D.hideTrigger();
             activeTargetId = null;
             activeConfig = null;
+            uiController.showScan();
             return;
           }
 

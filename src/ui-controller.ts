@@ -1,5 +1,6 @@
 export class UIController {
   private overlay: HTMLElement;
+  private scanHud: HTMLElement;
   private langBtn: HTMLElement;
   private closeBtn: HTMLElement;
   private audioBtn: HTMLElement;
@@ -40,6 +41,7 @@ export class UIController {
 
   constructor() {
     this.overlay = document.getElementById('ar-ui-overlay')!;
+    this.scanHud = document.getElementById('ar-scan-hud')!;
     this.langBtn = document.getElementById('lang-btn')!;
     this.closeBtn = document.getElementById('close-btn')!;
     this.audioBtn = document.getElementById('audio-btn')!;
@@ -196,6 +198,14 @@ export class UIController {
       .trim();
   }
 
+  public showScan() {
+    this.scanHud?.classList.remove('hidden');
+  }
+
+  public hideScan() {
+    this.scanHud?.classList.add('hidden');
+  }
+
   // Chiamato quando il Target confermato
   public showOverlay(localizedInfoText: string, audioSrc: string, imagesCount: number, hasQuiz: boolean) {
     this.infoText.textContent = this.formatInfoText(localizedInfoText);
@@ -216,14 +226,21 @@ export class UIController {
       this.navRightBtn.classList.add('hidden');
     }
 
-    // Visibilità Pulsante Quiz
-    if(hasQuiz) this.quizBtn.classList.remove('hidden');
-    else this.quizBtn.classList.add('hidden');
+    this.setQuizAvailable(hasQuiz);
 
     this.infoPanel.classList.remove('hidden');
     this.quizPanel.classList.add('hidden');
 
     this.overlay.classList.remove('hidden');
+    this.hideScan();
+  }
+
+  public setQuizAvailable(available: boolean) {
+    if (available) this.quizBtn.classList.remove('hidden');
+    else {
+      this.quizBtn.classList.add('hidden');
+      this.quizPanel.classList.add('hidden');
+    }
   }
 
   public hideOverlay() {

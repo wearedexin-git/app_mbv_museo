@@ -1,16 +1,16 @@
 # Schema contenuti per trigger
 
-Inventario delle cartelle `src/asset/` (aggiornato 2 set 2026). Foto e QR dello stesso hotspot aprono **lo stesso** overlay / carosello / quiz.
+Inventario delle cartelle `src/asset/` (aggiornato 4 set 2026). Foto e QR dello stesso hotspot aprono **lo stesso** overlay / carosello / quiz.
 
-`src/config/targetsData.json` **non è ancora riallineato**: in app ci sono **28** hotspot; sul disco ce ne sono **43**. I 15 nuovi restano invisibili al runtime finché non si lancia `node scripts/sync-targets.js` (e, per i marker nuovi, la pipeline Image Target).
+`targetsData.json` è allineato: **43** hotspot (sync del 4 set 2026). **15** di questi hanno overlay e quiz pronti ma **manca** il JSON 8th Wall in `image-targets/`: la camera non li riconosce finché non si genera il marker (e si allinea `src/app.js`).
 
-Fonte quiz sul disco: solo `bv-quiz-bevilacqua`, `bv-quiz-camino`, `bv-quiz-vasca`, `bv-quiz-vetrina`.  
-Ogni hotspot ha una cartella `quiz/` **vuota**. L’id quiz in app lo decide `sync-targets.js` dal path (`credenza` → vetrina, `teschio` → teschio, ecc.). Se l’id c’è e il JSON in `src/quizbase/` no, in UI il bottone può comparire e il fetch fallisce (`asset_load`).
+Quiz JSON sul disco: `bv-quiz-bevilacqua`, `bv-quiz-camino`, `bv-quiz-vasca`, `bv-quiz-vetrina`.  
+Lo sync assegna `quizId` **solo** se esiste `src/quizbase/<id>/questions.json`. Mapping senza JSON (armatura, portiera, lesena, serliana, teschio) → nessun bottone, nessun fetch. `bevilacqua` è agganciato solo a `sala_bevilacqua/camino`, non a tutta la stanza. Le cartelle `quiz/` negli hotspot sono vuote e non vengono lette.
 
 Legenda:
 
-- **In app** — presente in `targetsData.json`
-- **Solo disco** — cartella pronta, non ancora nello sync
+- **In app** — in `targetsData.json` e ha JSON 8th Wall in `image-targets/`
+- **No marker 8th Wall** — overlay in `targetsData.json`, manca il pacchetto in `image-targets/` (la camera non lo vede)
 - **1 foto** / **Carosello N** — numero file in `images/`
 - Audio: lo sync usa il **primo** `.mp3` in cartella (`files[0]`). Se ce ne sono due, sono elencati tutti
 - Flusso runtime (uguale per tutti): inquadra marker → sfera 3D → tap → overlay IT/EN + audio + slide → eventuale quiz → Chiudi
@@ -32,14 +32,14 @@ Tre hotspot.
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no (`capitello` non è una chiave di mapping)
 
-### `capitello_teschio` — solo disco
+### `capitello_teschio` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_capitelloTeschio_qr.jpg`
 - **Immagini:** 1 — `capitello_teschio.jpg`
 - **Audio IT:** `audio/ita/capitelloTeschio_slide10_[ITA].mp3` (slide 10)
 - **Audio EN:** `audio/en/capitelloTeschio_slide10_[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-teschio` — **buco:** cartella `src/quizbase/bv-quiz-teschio/` assente (mapping sulla parola `teschio`)
+- **Quiz:** no (`bv-quiz-teschio` non ha JSON; lo sync non assegna l’id)
 
 ### `stanza` — in app
 
@@ -56,7 +56,7 @@ Tre hotspot.
 
 Tre hotspot.
 
-### `capitello` — solo disco
+### `capitello` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_capitello_qr.jpg`
 - **Immagini:** 1 — `capitello.jpg`
@@ -65,7 +65,7 @@ Tre hotspot.
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no
 
-### `dettaglio_porta` — solo disco
+### `dettaglio_porta` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_dettaglio_qr.jpg`
 - **Immagini:** 1 — `girali.jpg`
@@ -89,7 +89,7 @@ Tre hotspot.
 
 Quattro hotspot. `credenza` e `decorazione_credenza` hanno **stessi** audio, immagine e nome file QR: duplicato da sistemare prima dello sync.
 
-### `camera` — solo disco
+### `camera` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_camera_qr.jpg`
 - **Immagini:** 1 — `camera_rossa.jpg`
@@ -98,23 +98,23 @@ Quattro hotspot. `credenza` e `decorazione_credenza` hanno **stessi** audio, imm
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no
 
-### `credenza` — solo disco (duplicato di `decorazione_credenza`)
+### `credenza` — overlay pronto, no marker 8th Wall (duplicato di `decorazione_credenza`)
 
 - **Marker:** solo QR `trigger_credenza_qr.jpg`
 - **Immagini:** 1 — `grottesca_credenza.jpg`
 - **Audio IT:** `audio/ita/decorazione_slide29[ITA].mp3` (slide 29)
 - **Audio EN:** `audio/en/decorazione_slide29[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-vetrina` — file presente (mapping `credenza`). Stesso quiz di `dettaglio_credenza`
+- **Quiz:** `bv-quiz-vetrina` — file presente (mapping `credenza`). Stesso quiz di `dettaglio_credenza`
 
-### `decorazione_credenza` — solo disco (duplicato di `credenza`)
+### `decorazione_credenza` — overlay pronto, no marker 8th Wall (duplicato di `credenza`)
 
 - **Marker:** solo QR `trigger_credenza_qr.jpg` (stesso filename della cartella gemella; l’id 8th Wall include il path quindi non collide)
 - **Immagini:** 1 — `grottesca_credenza.jpg`
 - **Audio IT:** `audio/ita/decorazione_slide29[ITA].mp3` (slide 29)
 - **Audio EN:** `audio/en/decorazione_slide29[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-vetrina` — file presente
+- **Quiz:** `bv-quiz-vetrina` — file presente
 
 ### `dettaglio_credenza` — in app
 
@@ -131,7 +131,7 @@ Quattro hotspot. `credenza` e `decorazione_credenza` hanno **stessi** audio, imm
 
 Tre hotspot.
 
-### `camera` — solo disco
+### `camera` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_camera_qr.jpg`
 - **Immagini:** 1 — `camera_verde.jpg`
@@ -147,9 +147,9 @@ Tre hotspot.
 - **Audio IT:** `audio/ita/camino_slide32[ITA].mp3` (slide 32)
 - **Audio EN:** `audio/en/camino_slide32[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-camino` — file presente. **Stesso JSON** del camino in Salone d’onore (e, dopo sync, dei due camini in Sala da pranzo)
+- **Quiz:** `bv-quiz-camino` — file presente. **Stesso JSON** del camino in Salone d’onore e dei due camini in Sala da pranzo
 
-### `dettaglio_letto` — solo disco
+### `dettaglio_letto` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_letto_qr.jpg`
 - **Immagini:** carosello 2 — `carousel_1_letto.jpg`, `carousel_2_letto.jpg`
@@ -171,7 +171,7 @@ Quattro hotspot. Tutti in app.
 - **Audio IT:** `audio/ita/armatura1_slide42[ITA].mp3` (slide 42)
 - **Audio EN:** `audio/en/armatura1_slide42[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-armatura` — **buco:** cartella `src/quizbase/bv-quiz-armatura/` assente
+- **Quiz:** no (`bv-quiz-armatura` non ha JSON)
 
 ### `armatura_2`
 
@@ -180,7 +180,7 @@ Quattro hotspot. Tutti in app.
 - **Audio IT:** `audio/ita/armatura2_slide43[ITA].mp3` (slide 43)
 - **Audio EN:** `audio/en/armatura2_slide43[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-armatura` — **stesso buco** (mapping sulla parola `armatura`)
+- **Quiz:** no (stesso mapping `armatura`, nessun JSON)
 
 ### `armatura_3`
 
@@ -189,7 +189,7 @@ Quattro hotspot. Tutti in app.
 - **Audio IT:** `audio/ita/armatura3_slide43[ITA].mp3` (slide 43)
 - **Audio EN:** `audio/en/armatura3_slide43[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-armatura` — **stesso buco**
+- **Quiz:** no (stesso mapping `armatura`, nessun JSON)
 
 ### `stanza`
 
@@ -222,7 +222,7 @@ Tre hotspot. Tutti in app.
 - **Audio IT:** `audio/ita/portiera_slide21[ITA].mp3` (slide 21)
 - **Audio EN:** `audio/en/portiera_slide21[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-portiera` — **buco:** cartella `src/quizbase/bv-quiz-portiera/` assente
+- **Quiz:** no (`bv-quiz-portiera` non ha JSON)
 
 ### `stanza`
 
@@ -261,7 +261,7 @@ Tre hotspot.
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no
 
-### `sala` — solo disco
+### `sala` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_sala_qr.jpg`
 - **Immagini:** 1 — `sala_affresco.jpg`
@@ -270,14 +270,14 @@ Tre hotspot.
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no
 
-### `serliana` — solo disco
+### `serliana` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_serliana_qr.jpg`
 - **Immagini:** carosello 2 — `carousel_1_serliana.jpg`, `carousel_2_serliana.jpg`
 - **Audio IT:** `audio/ita/serliana_slide4_[ITA].mp3` (slide 4)
 - **Audio EN:** `audio/en/serliana_slide4_[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-serliana` — **buco:** cartella `src/quizbase/bv-quiz-serliana/` assente
+- **Quiz:** no (`bv-quiz-serliana` non ha JSON)
 
 ---
 
@@ -296,7 +296,7 @@ Un hotspot (cartella = stanza). In app.
 
 ## Sala Bevilacqua (`sala_bevilacqua`)
 
-Tre hotspot. Il mapping quiz matcha la parola `bevilacqua` nel **path della stanza**, quindi dopo sync anche `sala` e `scarpa` erediterebbero `bv-quiz-bevilacqua` (stesso JSON del camino).
+Tre hotspot. Il quiz Bevilacqua è agganciato **solo** a `camino` (`sala_bevilacqua_camino`). `sala` e `scarpa` non lo ereditano.
 
 ### `camino` — in app
 
@@ -305,25 +305,25 @@ Tre hotspot. Il mapping quiz matcha la parola `bevilacqua` nel **path della stan
 - **Audio IT:** `audio/ita/camino_slide7[ITA].mp3` (slide 7)
 - **Audio EN:** `audio/en/camino_slide7[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-bevilacqua` — file presente (`bevilacqua` vince su `camino` nell’ordine dello script)
+- **Quiz:** `bv-quiz-bevilacqua` — file presente (chiave specifica `sala_bevilacqua_camino`, prima di `camino`)
 
-### `sala` — solo disco
+### `sala` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_sala_qr.jpg`
 - **Immagini:** carosello 2 — `carousel_1_stanza.jpg`, `carousel_2_lampadario.jpg`
 - **Audio IT:** `audio/ita/sala_slide6[ITA].mp3` (slide 6)
 - **Audio EN:** `audio/en/sala_slide6[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-bevilacqua` — file presente, ma **aggancio laterale** (path stanza, non contenuto)
+- **Quiz:** no (il mapping Bevilacqua non matcha questa cartella)
 
-### `scarpa` — solo disco
+### `scarpa` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_scarpa_qr.jpg`
 - **Immagini:** carosello 2 — `carousel_1_scarpa.jpg`, `carousel_2_scarpa.jpg`
 - **Audio IT:** `audio/ita/scarpa_slide8[ITA].mp3` (slide 8)
 - **Audio EN:** `audio/en/scarpa_slide8[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-bevilacqua` — stesso JSON del camino (aggancio laterale)
+- **Quiz:** no (il mapping Bevilacqua non matcha questa cartella)
 
 ---
 
@@ -340,25 +340,25 @@ Quattro hotspot. Nessun nidificato sotto `camera` (le tre cartelle extra sono so
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no
 
-### `camino_due` — solo disco
+### `camino_due` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_caminodue_qr.jpg`
 - **Immagini:** carosello 2 — `carousel_1_camino.jpg`, `carousel_2_camino.jpg`
 - **Audio IT:** `audio/ita/camino_slide38[ITA].mp3` (slide 38) — **stesso audio** di `camino_uno`
 - **Audio EN:** `audio/en/camino_slide38[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-camino` — file presente (condiviso con Camera Verde e Salone)
+- **Quiz:** `bv-quiz-camino` — file presente (condiviso con Camera Verde e Salone)
 
-### `camino_uno` — solo disco
+### `camino_uno` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_caminouno_qr.jpg`
 - **Immagini:** carosello 2 — `carousel_1_camino.jpg`, `carousel_2_camino.jpg`
 - **Audio IT:** `audio/ita/camino_slide38[ITA].mp3` (slide 38)
 - **Audio EN:** `audio/en/camino_slide38[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz dopo sync:** `bv-quiz-camino` — file presente
+- **Quiz:** `bv-quiz-camino` — file presente
 
-### `porta` — solo disco
+### `porta` — overlay pronto, no marker 8th Wall
 
 - **Marker:** solo QR `trigger_porta_qr.jpg`
 - **Immagini:** carosello **3** — `carousel_1_porta.jpg`, `carousel_2_porta.jpg`, `carousel_3_porta.jpg` (unico hotspot a 3 slide; lo sync fa `slice(0, 3)`)
@@ -440,7 +440,7 @@ Cinque hotspot. Marker in cartella: **solo QR**. Tutti in app.
 - **Audio IT:** `audio/ita/lasena_slide34[ITA].mp3` (slide 34; nome file senza `_` prima di `[ITA]`)
 - **Audio EN:** `audio/en/lasena_slide34_[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-lesena` — **buco:** cartella `src/quizbase/bv-quiz-lesena/` assente (mapping anche su `lesena` / `lasena`)
+- **Quiz:** no (`bv-quiz-lesena` non ha JSON)
 
 ### `salone`
 
@@ -493,84 +493,88 @@ Un hotspot. In app.
 | Stanza | Hotspot | Stato | Marker | Slide | Quiz |
 |--------|---------|-------|--------|------:|------|
 | Biblioteca | capitello_busto | in app | foto + QR | 1 | no |
-| Biblioteca | capitello_teschio | **solo disco** | solo QR | 1 | teschio **buco** (dopo sync) |
+| Biblioteca | capitello_teschio | **no marker 8th Wall** | solo QR | 1 | no (teschio senza JSON) |
 | Biblioteca | stanza | in app | foto + QR | 2 | no |
-| Camera Fausto | capitello | **solo disco** | solo QR | 1 | no |
-| Camera Fausto | dettaglio_porta | **solo disco** | solo QR | 1 | no |
+| Camera Fausto | capitello | **no marker 8th Wall** | solo QR | 1 | no |
+| Camera Fausto | dettaglio_porta | **no marker 8th Wall** | solo QR | 1 | no |
 | Camera Fausto | stanza | in app | foto + QR | 1 | no |
-| Camera Rossa | camera | **solo disco** | solo QR | 1 | no |
-| Camera Rossa | credenza | **solo disco** | solo QR | 1 | vetrina OK (dopo sync; duplicato) |
-| Camera Rossa | decorazione_credenza | **solo disco** | solo QR | 1 | vetrina OK (dopo sync; duplicato) |
+| Camera Rossa | camera | **no marker 8th Wall** | solo QR | 1 | no |
+| Camera Rossa | credenza | **no marker 8th Wall** | solo QR | 1 | vetrina OK (duplicato) |
+| Camera Rossa | decorazione_credenza | **no marker 8th Wall** | solo QR | 1 | vetrina OK (duplicato) |
 | Camera Rossa | dettaglio_credenza | in app | foto + QR | 2 | vetrina OK |
-| Camera Verde | camera | **solo disco** | solo QR | 1 | no |
+| Camera Verde | camera | **no marker 8th Wall** | solo QR | 1 | no |
 | Camera Verde | dettaglio_camino | in app | foto + QR | 2 | camino OK (condiviso) |
-| Camera Verde | dettaglio_letto | **solo disco** | solo QR | 2 | no |
-| Galleria armi | armatura_1 | in app | foto + QR | 1 | armatura **buco** |
-| Galleria armi | armatura_2 | in app | foto + QR | 1 | armatura **buco** |
-| Galleria armi | armatura_3 | in app | foto + QR | 1 | armatura **buco** |
+| Camera Verde | dettaglio_letto | **no marker 8th Wall** | solo QR | 2 | no |
+| Galleria armi | armatura_1 | in app | foto + QR | 1 | no (armatura senza JSON) |
+| Galleria armi | armatura_2 | in app | foto + QR | 1 | no (armatura senza JSON) |
+| Galleria armi | armatura_3 | in app | foto + QR | 1 | no (armatura senza JSON) |
 | Galleria armi | stanza | in app | solo QR | 1 | no |
 | Galleria cupola | candelabro | in app | foto + QR | 1 | no |
-| Galleria cupola | portiera | in app | foto + QR | 1 | portiera **buco** |
+| Galleria cupola | portiera | in app | foto + QR | 1 | no (portiera senza JSON) |
 | Galleria cupola | stanza | in app | solo QR | 1 | no |
 | Labirinto | (root) | in app | foto + QR | 1 | no |
 | Sala affresco | capitello | in app | foto + QR | 2 | no |
-| Sala affresco | sala | **solo disco** | solo QR | 1 | no |
-| Sala affresco | serliana | **solo disco** | solo QR | 2 | serliana **buco** (dopo sync) |
+| Sala affresco | sala | **no marker 8th Wall** | solo QR | 1 | no |
+| Sala affresco | serliana | **no marker 8th Wall** | solo QR | 2 | no (serliana senza JSON) |
 | Sala bagno | (root) | in app | foto + QR | 2 | vasca OK |
 | Sala Bevilacqua | camino | in app | foto + QR | 1 | bevilacqua OK |
-| Sala Bevilacqua | sala | **solo disco** | solo QR | 2 | bevilacqua OK laterale (dopo sync) |
-| Sala Bevilacqua | scarpa | **solo disco** | solo QR | 2 | bevilacqua OK laterale (dopo sync) |
+| Sala Bevilacqua | sala | **no marker 8th Wall** | solo QR | 2 | no |
+| Sala Bevilacqua | scarpa | **no marker 8th Wall** | solo QR | 2 | no |
 | Sala pranzo | camera | in app | foto + QR | 1 | no |
-| Sala pranzo | camino_due | **solo disco** | solo QR | 2 | camino OK (dopo sync) |
-| Sala pranzo | camino_uno | **solo disco** | solo QR | 2 | camino OK (dopo sync) |
-| Sala pranzo | porta | **solo disco** | solo QR | 3 | no |
+| Sala pranzo | camino_due | **no marker 8th Wall** | solo QR | 2 | camino OK |
+| Sala pranzo | camino_uno | **no marker 8th Wall** | solo QR | 2 | camino OK |
+| Sala pranzo | porta | **no marker 8th Wall** | solo QR | 3 | no |
 | Stufa valtellinese | pianoforte_due | in app | 2 foto (museo + test) | 2 | no |
 | Stufa valtellinese | pianoforte_uno | in app | solo QR | 1 | no |
 | Stufa valtellinese | orologio | in app | solo QR | 1 | no |
 | Stufa valtellinese | stanza | in app | solo foto | 1 | no |
 | Salone d’onore | camino | in app | solo QR | 1 | camino OK (condiviso) |
 | Salone d’onore | lampada | in app | solo QR | 2 | no |
-| Salone d’onore | lasena | in app | solo QR | 2 | lesena **buco** |
+| Salone d’onore | lasena | in app | solo QR | 2 | no (lesena senza JSON) |
 | Salone d’onore | salone | in app | solo QR | 1 | no |
 | Salone d’onore | tappezzeria | in app | solo QR | 2 | no |
 | Scalone | (root) | in app | solo QR | 2 | no |
 | Studio | (root) | in app | solo QR | 2 | no |
 
-**43** cartelle contenuto in `src/asset/`. **28** in `targetsData.json`. **15** solo disco. Cartelle `src/asset/brand` e `src/asset/icons` non sono trigger.
+**43** cartelle contenuto in `src/asset/`, tutte in `targetsData.json`. **15** senza JSON 8th Wall in `image-targets/` (camera non li vede). Cartelle `src/asset/brand` e `src/asset/icons` non sono trigger.
 
 Slide sul disco: 24 hotspot a 1 foto, 18 a carosello da 2, 1 a carosello da 3 (`sala_pranzo/porta`).
 
 Quiz JSON esistenti: 4 file.  
-Oggi in app: 5 hotspot (vetrina ×1, vasca ×1, bevilacqua ×1, camino ×2).  
-Dopo uno sync senza pulizia: si aggiungono vetrina ×2 (credenza duplicate), camino ×2 (pranzo), bevilacqua ×2 (sala + scarpa), più i buchi teschio e serliana.
+In `targetsData.json`: **9** hotspot con `quizId` (vetrina ×3, vasca ×1, bevilacqua ×1, camino ×4). Armatura, portiera, lasena, teschio e serliana **non** hanno bottone. `sala` e `scarpa` Bevilacqua restano senza quiz.
 
 ---
 
 ## Mapping quiz (`sync-targets.js`)
 
-| Chiave nel path | `quizId` | JSON sul disco | Chi lo prende oggi / dopo sync |
-|-----------------|----------|----------------|--------------------------------|
-| `vetrina` / `credenza` | `bv-quiz-vetrina` | sì | dettaglio_credenza; dopo sync anche credenza + decorazione_credenza |
-| `camino` | `bv-quiz-camino` | sì | Camera Verde + Salone; dopo sync anche pranzo camino_uno/due. **Non** Bevilacqua camino (`bevilacqua` viene prima) |
-| `vasca` / `bagno` | `bv-quiz-vasca` | sì | sala_bagno |
-| `bevilacqua` | `bv-quiz-bevilacqua` | sì | camino; dopo sync **tutta** la stanza (sala, scarpa) |
-| `armatura` | `bv-quiz-armatura` | **no** | 3 armature |
-| `portiera` | `bv-quiz-portiera` | **no** | portiera |
-| `lesena` / `lasena` | `bv-quiz-lesena` | **no** | lasena |
-| `serliana` | `bv-quiz-serliana` | **no** | serliana (dopo sync) |
-| `teschio` | `bv-quiz-teschio` | **no** | capitello_teschio (dopo sync) |
+Chiavi in ordine (la prima che matcha vince). Se `src/quizbase/<id>/questions.json` **non esiste**, `quizId` resta `null`.
 
-`biblioteca/capitello_busto` e `camera_fausto/capitello` **non** matchano: la chiave è `teschio`, non `capitello`.
+| Chiave nel path | `quizId` | JSON sul disco | Chi lo prende |
+|-----------------|----------|----------------|---------------|
+| `sala_bevilacqua_camino` | `bv-quiz-bevilacqua` | sì | solo il camino Bevilacqua |
+| `vetrina` / `credenza` | `bv-quiz-vetrina` | sì | dettaglio_credenza, credenza, decorazione_credenza |
+| `camino` | `bv-quiz-camino` | sì | Camera Verde, Salone, pranzo camino_uno/due. **Non** Bevilacqua camino (chiave più specifica sopra) |
+| `vasca` / `bagno` | `bv-quiz-vasca` | sì | sala_bagno |
+| `armatura` | `bv-quiz-armatura` | **no** | 3 armature → nessun bottone |
+| `portiera` | `bv-quiz-portiera` | **no** | portiera → nessun bottone |
+| `lesena` / `lasena` | `bv-quiz-lesena` | **no** | lasena → nessun bottone |
+| `serliana` | `bv-quiz-serliana` | **no** | serliana → nessun bottone |
+| `teschio` | `bv-quiz-teschio` | **no** | capitello_teschio → nessun bottone |
+
+`biblioteca/capitello_busto` e `camera_fausto/capitello` **non** matchano: la chiave è `teschio`, non `capitello`.  
+`sala_bevilacqua/sala` e `scarpa` **non** matchano: non c’è più una chiave `bevilacqua` sulla stanza.
+
+Per attivare un quiz mancante: aggiungere `src/quizbase/bv-quiz-<nome>/questions.json` e rilanciare lo sync. Non serve toccare il mapping se la chiave c’è già.
 
 ---
 
-## Anomalie da sistemare prima dello sync (consigliato)
+## Anomalie ancora aperte
 
 1. **Duplicato Camera Rossa:** `credenza` ≈ `decorazione_credenza` (stessi mp3, stessa jpg, stesso `trigger_credenza_qr.jpg`). Tenerne uno.
 2. ~~Estensione doppia audio EN~~ — sistemato (`[ENG].mp3`).
 3. ~~Typo `texte_ita.rtf`~~ — sistemato (`text_ita.rtf`).
 4. ~~Serliana 5 foto + QR~~ — sistemato (resta `trigger_serliana_qr.jpg`).
-5. **Mapping quiz per substring** — vedi sezione sotto: dopo sync `bevilacqua` attacca il quiz a tutta la stanza; `teschio` e `serliana` avrebbero il bottone senza JSON.
+5. ~~Mapping quiz per substring~~ — sistemato (4 set 2026): `quizId` solo se il JSON esiste; Bevilacqua solo sul camino; fetch quiz in silent (niente banner `asset_load`).
 6. **Cartelle `quiz/` vuote** in tutti gli hotspot: non servono allo sync (legge `src/quizbase/`).
 
 ---

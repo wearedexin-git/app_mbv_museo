@@ -148,25 +148,40 @@ function findTriggerFolders(dir) {
   return results;
 }
 
-const quizMapping = {
-    'armatura': 'bv-quiz-armatura',
-    'bevilacqua': 'bv-quiz-bevilacqua',
-    'camino': 'bv-quiz-camino',
-    'lesena': 'bv-quiz-lesena',
-    'lasena': 'bv-quiz-lesena',
-    'portiera': 'bv-quiz-portiera',
-    'serliana': 'bv-quiz-serliana',
-    'teschio': 'bv-quiz-teschio',
-    'vasca': 'bv-quiz-vasca',
-    'bagno': 'bv-quiz-vasca',
-    'vetrina': 'bv-quiz-vetrina',
-    'credenza': 'bv-quiz-vetrina'
-};
+const QUIZ_ROOT = path.join(PROJECT_ROOT, 'src', 'quizbase');
+
+/** Chiavi più specifiche prima. `bevilacqua` non è una chiave di stanza: solo il camino. */
+const quizMapping = [
+    ['sala_bevilacqua_camino', 'bv-quiz-bevilacqua'],
+    ['armatura', 'bv-quiz-armatura'],
+    ['camino', 'bv-quiz-camino'],
+    ['lesena', 'bv-quiz-lesena'],
+    ['lasena', 'bv-quiz-lesena'],
+    ['portiera', 'bv-quiz-portiera'],
+    ['serliana', 'bv-quiz-serliana'],
+    ['teschio', 'bv-quiz-teschio'],
+    ['vasca', 'bv-quiz-vasca'],
+    ['bagno', 'bv-quiz-vasca'],
+    ['vetrina', 'bv-quiz-vetrina'],
+    ['credenza', 'bv-quiz-vetrina']
+];
+
+const missingQuizWarned = new Set();
+
+function quizJsonExists(quizId) {
+  return fs.existsSync(path.join(QUIZ_ROOT, quizId, 'questions.json'));
+}
 
 const getQuizId = (name) => {
     const lowerName = name.toLowerCase();
-    for (const [key, id] of Object.entries(quizMapping)) {
-      if (lowerName.includes(key)) return id;
+    for (const [key, id] of quizMapping) {
+      if (!lowerName.includes(key)) continue;
+      if (quizJsonExists(id)) return id;
+      if (!missingQuizWarned.has(id)) {
+        console.warn(`⚠️  Quiz ${id} (chiave '${key}') senza src/quizbase/${id}/questions.json — quizId = null`);
+        missingQuizWarned.add(id);
+      }
+      return null;
     }
     return null;
 };

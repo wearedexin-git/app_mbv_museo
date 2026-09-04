@@ -6,7 +6,7 @@ Indice di tutto ciò che sta in `docs/`. Il `README.md` in root resta la guida r
 
 | Documento | Contenuto |
 |-----------|-----------|
-| [trigger-schema.md](trigger-schema.md) | Contenuti **per hotspot**: stanza → cartelle, marker foto/QR, file audio/immagini/testi, quiz (anche i buchi) |
+| [trigger-schema.md](trigger-schema.md) | Contenuti **per hotspot**: stanza → cartelle, marker foto/QR, file audio/immagini/testi, quiz (solo se il JSON esiste) |
 | [image-targets-create.md](image-targets-create.md) | Procedura storica di creazione target (Studio / CLI). Integrare con la pipeline sopra. |
 | [sfera-trigger.md](sfera-trigger.md) | Sfera 3D di tap: dimensione, perché si gonfiava, cache Safari, cosa non fare. |
 | [test-ufficio.md](test-ufficio.md) | Test con 7 oggetti da scrivania (ramo `test/ufficio-7-target`). |

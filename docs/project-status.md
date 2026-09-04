@@ -53,7 +53,7 @@ Uno degli elementi chiave del progetto è il sistema di build data-driven:
 2. Trova le cartelle che rappresentano i trigger.
 3. Legge e decodifica i file `.rtf` pulendo la formattazione RTF e convertendoli in testo piano.
 4. Associa gli audio e le immagini del carosello.
-5. Associa i quiz in base a parole chiave nel nome del trigger (es. `armatura` -> `bv-quiz-armatura`).
+5. Associa i quiz in base a parole chiave nel path del trigger **solo se** esiste `src/quizbase/<id>/questions.json` (es. `credenza` → `bv-quiz-vetrina`; `armatura` senza JSON → nessun quiz).
 6. Scrive i dati aggregati in `targetsData.json` e genera l'elenco degli import per gli Image Target in `generated-config.json`.
 
 ---

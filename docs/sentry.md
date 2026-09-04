@@ -393,7 +393,7 @@ Nega il permesso fotocamera. Deve comparire banner `camera` e issue error.
 
 ### D. Asset
 
-Forza un URL texture inesistente (temporaneo) o Network → Offline sul fetch del quiz. `asset_load` o `offline` (breadcrumb).
+Forza un URL texture inesistente (temporaneo) o Network → Offline su un fetch **non** silent. Il fetch del quiz è `silent`: un 404 non apre il banner `asset_load`.
 
 ### E. Watchdog
 

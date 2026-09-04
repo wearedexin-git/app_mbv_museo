@@ -349,6 +349,162 @@
       background: rgba(255, 255, 255, 0.3);
     }
 
+    /* Pin AR: tre dischi con profondità, respiro in scala */
+    #ar-trigger-hotspot {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    #ar-trigger-hotspot.hidden {
+      display: none !important;
+      pointer-events: none;
+    }
+
+    .ar-pin-head {
+      position: absolute;
+      width: 108px;
+      height: 108px;
+      pointer-events: auto;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.38));
+      animation: ar-pin-breath 2.2s ease-in-out infinite;
+    }
+
+    .ar-pin-disc {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .ar-pin-disc.core {
+      width: 30%;
+      height: 30%;
+      background: radial-gradient(circle at 32% 28%, #ffffff 0%, #f4f4f4 52%, #cfcfcf 100%);
+      box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.28),
+        inset 0 2px 3px rgba(255, 255, 255, 0.95),
+        inset 0 -3px 5px rgba(0, 0, 0, 0.16);
+    }
+
+    .ar-pin-disc.mid {
+      width: 62%;
+      height: 62%;
+      background: radial-gradient(circle at 36% 30%, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.14) 72%);
+      box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.2),
+        inset 0 1px 1px rgba(255, 255, 255, 0.45);
+    }
+
+    .ar-pin-disc.outer {
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.28) 58%, rgba(255, 255, 255, 0.16) 100%);
+      box-shadow:
+        0 10px 22px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes ar-pin-breath {
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(0.88);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.14);
+      }
+    }
+
+    /* Scan: 4 angoli + riga che scorre */
+    #ar-scan-hud {
+      position: fixed;
+      inset: 0;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    #ar-scan-hud.hidden {
+      display: none !important;
+    }
+
+    .ar-scan-frame {
+      position: relative;
+      width: min(72vw, 300px);
+      height: min(56vh, 420px);
+    }
+
+    .ar-scan-corner {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-color: #ffffff;
+      border-style: solid;
+      box-sizing: border-box;
+      filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+    }
+
+    .ar-scan-corner.tl {
+      top: 0;
+      left: 0;
+      border-width: 4px 0 0 4px;
+      border-top-left-radius: 14px;
+    }
+
+    .ar-scan-corner.tr {
+      top: 0;
+      right: 0;
+      border-width: 4px 4px 0 0;
+      border-top-right-radius: 14px;
+    }
+
+    .ar-scan-corner.bl {
+      bottom: 0;
+      left: 0;
+      border-width: 0 0 4px 4px;
+      border-bottom-left-radius: 14px;
+    }
+
+    .ar-scan-corner.br {
+      bottom: 0;
+      right: 0;
+      border-width: 0 4px 4px 0;
+      border-bottom-right-radius: 14px;
+    }
+
+    .ar-scan-line {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 16%,
+        #ffffff 50%,
+        rgba(255, 255, 255, 0.4) 84%,
+        transparent 100%
+      );
+      box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+      animation: ar-scan-line 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes ar-scan-line {
+      from {
+        top: 8%;
+      }
+      to {
+        top: 88%;
+      }
+    }
+
     .material-symbols-rounded {
       font-size: 26px;
     }
@@ -1045,8 +1201,26 @@
     </div>
   </div>
 
+  <div id="ar-scan-hud" class="hidden">
+    <div class="ar-scan-frame">
+      <span class="ar-scan-corner tl"></span>
+      <span class="ar-scan-corner tr"></span>
+      <span class="ar-scan-corner bl"></span>
+      <span class="ar-scan-corner br"></span>
+      <div class="ar-scan-line"></div>
+    </div>
+  </div>
+
+  <div id="ar-trigger-hotspot" class="hidden">
+    <div class="ar-pin-head">
+      <span class="ar-pin-disc outer"></span>
+      <span class="ar-pin-disc mid"></span>
+      <span class="ar-pin-disc core"></span>
+    </div>
+  </div>
+
   <canvas id="camerafeed"></canvas>
-  <!-- trigger-ui: sphere-v6 -->
+  <!-- trigger-ui: hotspot-v23 -->
   <div id="ar-ui-overlay" class="hidden">
     <div class="top-bar">
       <div id="lang-btn" class="ui-element btn-text">IT</div>
@@ -1098,7 +1272,7 @@
 
   <audio id="ar-audio-player" class="hidden"></audio>
 
-  <script src="bundle.js?v=6"></script>
+  <script src="bundle.js?v=23"></script>
 </body>
 
 </html>

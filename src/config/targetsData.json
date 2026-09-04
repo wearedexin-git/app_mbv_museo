@@ -17,6 +17,23 @@
     }
   },
   {
+    "id": "biblioteca_capitello_teschio",
+    "quizId": null,
+    "images": [
+      "./asset/biblioteca/capitello_teschio/images/capitello_teschio.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "I capitelli della biblioteca non sono lì per caso: sono il frutto di una ricerca minuziosa fatta dai fratelli Bagatti Valsecchi, che avevano un'ossessione per i dettagli. Uno in particolare colpisce subito: il teschio. Sì, hai sentito bene. Un piccolo teschio disegnato a inchiostro nero su carta millimetrata, simbolo di memento mori . Nel Rinascimento questo tipo di simbolo era molto usato: un modo per ricordare che la vita è breve, e che tutto può finire da un momento all'altro. Un pensiero cupo? Forse. Ma anche un invito a vivere con consapevolezza. E questo non è l'unico teschio in casa. Alcuni si nascondono proprio qui, in biblioteca. Altri sono sparsi in giro per il museo. Riuscirai a trovarli tutti? Un dettaglio alla volta, la dimora dei Bagatti Valsecchi rivela sempre qualcosa in più.",
+        "audioSrc": "./asset/biblioteca/capitello_teschio/audio/ita/capitelloTeschio_slide10_[ITA].mp3"
+      },
+      "en": {
+        "infoText": "The capitals in the library are not there by chance: they are the result of a meticulous search conducted by the Bagatti Valsecchi brothers, who had an obsession with details. One in particular stands out immediately: the skull. Yes, you read that right. A small skull drawn in black ink on graph paper, a symbol of memento mori. During the Renaissance, this type of symbol was widely used: a way to remind people that life is short, and that everything can end in an instant. A grim thought? Perhaps. But also an invitation to live with awareness. And this is not the only skull in the house. Some are hidden right here in the library. Others are scattered throughout the museum. Will you be able to find them all? Detail by detail, the home of the Bagatti Valsecchi brothers always reveals something more.",
+        "audioSrc": "./asset/biblioteca/capitello_teschio/audio/en/capitelloTeschio_slide10_[ENG].mp3"
+      }
+    }
+  },
+  {
     "id": "biblioteca_stanza",
     "quizId": null,
     "images": [
@@ -35,6 +52,40 @@
     }
   },
   {
+    "id": "camera_fausto_capitello",
+    "quizId": null,
+    "images": [
+      "./asset/camera_fausto/capitello/images/capitello.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "I disegni dei fratelli Bagatti Valsecchi non hanno spesso una firma, perché erano il frutto di un lavoro collettivo, concepito in perfetta armonia tra i due. E guarda questo capitello nella camera di Fausto: un fiore circondato da volute laterali, riprodotto con una precisione incredibile. Ogni decorazione, ogni dettaglio, è stato pensato con cura e amore. Non si tratta di una semplice riproduzione, ma di un'opera d'arte pensata nei minimi particolari, dove ogni elemento racconta una storia.",
+        "audioSrc": "./asset/camera_fausto/capitello/audio/ita/capitello_slide16[ITA].mp3"
+      },
+      "en": {
+        "infoText": "The designs of the Bagatti Valsecchi brothers often don't have a signature because they were the result of a collective effort, conceived in perfect harmony between the two. And look at this capital in Fausto's room: a flower surrounded by lateral scrolls, reproduced with incredible precision. Every decoration, every detail, was carefully and lovingly thought out. It's not just a simple reproduction, but a work of art crafted down to the smallest detail, where every element tells a story.",
+        "audioSrc": "./asset/camera_fausto/capitello/audio/en/capitello_slide16[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "camera_fausto_dettaglio_porta",
+    "quizId": null,
+    "images": [
+      "./asset/camera_fausto/dettaglio_porta/images/girali.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Guarda il dettaglio della porta della camera da letto di Fausto: un motivo giraliforme ispirato a un pilastrino della Chiesa di Santa Maria dei Miracoli a Venezia. Ma i fratelli Bagatti Valsecchi non si limitano a copiarlo: lo reinterpretano, adattandolo perfettamente alla loro dimora. Il loro amore per l'arte veneziana è evidente in ogni angolo della casa, e questo dettaglio ci riporta all'arte dei grandi maestri come Pietro Lombardo e i suoi figli. Un legame tra Venezia e Milano che si svela piano piano, nei particolari più nascosti.",
+        "audioSrc": "./asset/camera_fausto/dettaglio_porta/audio/ita/dettaglio_slide15[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Look at the detail on the door of Fausto's bedroom: a scroll-like motif inspired by a pilaster from the Church of Santa Maria dei Miracoli in Venice. But the Bagatti Valsecchi brothers didn't just copy it, they reinterpreted it, adapting it perfectly to their home. Their love for Venetian art is evident in every corner of the house, and this detail takes us back to the work of great masters like Pietro Lombardo and his sons. A connection between Venice and Milan slowly reveals itself, in the most hidden details.",
+        "audioSrc": "./asset/camera_fausto/dettaglio_porta/audio/en/dettaglio_slide15[ENG].mp3"
+      }
+    }
+  },
+  {
     "id": "camera_fausto_stanza",
     "quizId": null,
     "images": [
@@ -48,6 +99,57 @@
       "en": {
         "infoText": "Fausto's bedroom has remained almost intact, but if you look closely, you'll notice some differences. Once, there was a large rug beneath the bed, and the walls were covered with wallpaper that added warmth to the room. Over time, however, those fabrics deteriorated and were removed. But look at the rest: the armchair, the bed, and that magnificent polyptych by Giampietrino (a student of Leonardo) are still there, just as Fausto and Giuseppe had arranged them. It's as if time has stood still, and who knows, perhaps one day we'll see a new wallpaper recreated from archival photos. Maybe even the rug under the bed will return to its former glory.",
         "audioSrc": "./asset/camera_fausto/stanza/audio/en/stanza_slide12[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "camera_rossa_camera",
+    "quizId": null,
+    "images": [
+      "./asset/camera_rossa/camera/images/camera_rossa.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Eccoci nella Camera rossa, la stanza da letto di Giuseppe Bagatti Valsecchi e Carolina Borromeo. Qui il tempo sembra essersi fermato: l'allestimento originale è stato fedelmente conservato, proprio come lo vediamo nelle fotografie storiche. Ogni mobile, ogni dettaglio è al suo posto. Solo la tappezzeria originaria, un tempo ricca e sontuosa, è andata perduta. Ma c'è un altro elemento che merita la nostra attenzione: il lampadario. Non è un semplice oggetto d'arredo, ma una creazione su disegno originale dei fratelli Bagatti Valsecchi. L'ispirazione? Una pala d'altare del primo Cinquecento, dipinta da Gandolfino da Roreto per il Duomo d'Asti, che raffigura lo Sposalizio della Vergine. Un esempio perfetto di come i due fratelli non si limitassero a collezionare, ma rielaborassero con creatività i modelli rinascimentali, adattandoli al gusto della loro dimora. Un lampadario che non solo illumina la stanza, ma racconta una storia di amore per l'arte e per il passato.",
+        "audioSrc": "./asset/camera_rossa/camera/audio/ita/camera_slide27[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Welcome to the Red Room, the bedroom of Giuseppe Bagatti Valsecchi and Carolina Borromeo. Here, time seems to have stopped: the original arrangement has been faithfully preserved, just as we see it in historical photographs. Every piece of furniture, every detail is in its place. Only the original upholstery, once rich and sumptuous, has been lost. But there's another element that deserves our attention: the chandelier. It's not just a decorative object, but a creation based on the original design of the Bagatti Valsecchi brothers. The inspiration? An altarpiece from the early 16th century, painted by Gandolfino da Roreto for the Cathedral of Asti, depicting the Marriage of the Virgin. This is a perfect example of how the two brothers didn't just collect, but creatively reinterpreted Renaissance models, adapting them to the style of their home. A chandelier that not only lights up the room, but tells a story of love for art and the past.",
+        "audioSrc": "./asset/camera_rossa/camera/audio/en/camera_slide27[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "camera_rossa_credenza",
+    "quizId": "bv-quiz-vetrina",
+    "images": [
+      "./asset/camera_rossa/credenza/images/grottesca_credenza.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Guarda bene la decorazione a grottesca che corre lungo la vetrina della Camera Rossa. Non è solo un elegante ornamento, è un omaggio sottile e raffinato a uno dei gioielli dell'arte veneziana: Santa Maria dei Miracoli. Sì, proprio quella splendida chiesa rivestita di marmi e decorazioni, progettata da Pietro Lombardo e dai suoi figli nel tardo Quattrocento. E ancora una volta, i fratelli Bagatti Valsecchi non si limitano a copiare. Studiano, reinterpretano, traducono quella bellezza in un linguaggio nuovo, su misura per la loro casa. Disegnano il motivo con cura millimetrica di Innocente Cattaneo, che lo trasferisce sul legno con maestria. - letteralmente, su carta millimetrata - e lo affidano all'esperta mano Il risultato? Una decorazione che unisce erudizione e artigianato, memoria storica e creatività contemporanea. Un altro tassello nel grande mosaico rinascimentale che è questa casa.",
+        "audioSrc": "./asset/camera_rossa/credenza/audio/ita/decorazione_slide29[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Look closely: the grotesque decoration running along the display cabinet in the Red Room is not just an elegant ornament... it's a subtle and refined tribute to one of the jewels of Venetian art: Santa Maria dei Miracoli. Yes, the stunning church adorned with marbles and decorations, designed by Pietro Lombardo and his sons in the late 15th century. Once again, the Bagatti Valsecchi brothers did not simply copy. They studied, reinterpreted, and translated that beauty into a new language, tailored to their home. They meticulously designed the motif - literally, on graph paper - and entrusted it to the expert hand of Innocente Cattaneo, who transferred it onto wood with masterful skill. The result? A decoration that combines erudition and craftsmanship, historical memory and contemporary creativity. Another piece in the great Renaissance mosaic that is this house.",
+        "audioSrc": "./asset/camera_rossa/credenza/audio/en/decorazione_slide29[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "camera_rossa_decorazione_credenza",
+    "quizId": "bv-quiz-vetrina",
+    "images": [
+      "./asset/camera_rossa/decorazione_credenza/images/grottesca_credenza.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Guarda bene la decorazione a grottesca che corre lungo la vetrina della Camera Rossa. Non è solo un elegante ornamento, è un omaggio sottile e raffinato a uno dei gioielli dell'arte veneziana: Santa Maria dei Miracoli. Sì, proprio quella splendida chiesa rivestita di marmi e decorazioni, progettata da Pietro Lombardo e dai suoi figli nel tardo Quattrocento. E ancora una volta, i fratelli Bagatti Valsecchi non si limitano a copiare. Studiano, reinterpretano, traducono quella bellezza in un linguaggio nuovo, su misura per la loro casa. Disegnano il motivo con cura millimetrica di Innocente Cattaneo, che lo trasferisce sul legno con maestria. - letteralmente, su carta millimetrata - e lo affidano all'esperta mano Il risultato? Una decorazione che unisce erudizione e artigianato, memoria storica e creatività contemporanea. Un altro tassello nel grande mosaico rinascimentale che è questa casa.",
+        "audioSrc": "./asset/camera_rossa/decorazione_credenza/audio/ita/decorazione_slide29[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Look closely: the grotesque decoration running along the display cabinet in the Red Room is not just an elegant ornament... it's a subtle and refined tribute to one of the jewels of Venetian art: Santa Maria dei Miracoli. Yes, the stunning church adorned with marbles and decorations, designed by Pietro Lombardo and his sons in the late 15th century. Once again, the Bagatti Valsecchi brothers did not simply copy. They studied, reinterpreted, and translated that beauty into a new language, tailored to their home. They meticulously designed the motif - literally, on graph paper - and entrusted it to the expert hand of Innocente Cattaneo, who transferred it onto wood with masterful skill. The result? A decoration that combines erudition and craftsmanship, historical memory and contemporary creativity. Another piece in the great Renaissance mosaic that is this house.",
+        "audioSrc": "./asset/camera_rossa/decorazione_credenza/audio/en/decorazione_slide29[ENG].mp3"
       }
     }
   },
@@ -70,6 +172,23 @@
     }
   },
   {
+    "id": "camera_verde_camera",
+    "quizId": null,
+    "images": [
+      "./asset/camera_verde/camera/images/camera_verde.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Entra nella Camera Verde, un luogo che rivela l'intimità di Giuseppe Bagatti Valsecchi, che, come molte famiglie aristocratiche, aveva una stanza privata tutta sua. Qui, ogni elemento racconta una storia di stile e privacy: la stanza è sorprendentemente conservata come nel periodo in cui era vissuta da Giuseppe. Ogni dettaglio è al suo posto, proprio come era al tempo: l'arredamento, l'atmosfera. Solo qualche piccolo elemento manca, come la credenza accanto al letto, la tappezzeria e i tappeti, che come in altre stanze riscaldavano e accoglievano l'ambiente. Ma, anche senza questi particolari, la stanza mantiene intatto il suo fascino. Una camera pensata per il riposo e la privacy, capace ancora oggi di evocare la sensazione di un rifugio personale, un angolo di pace all'interno di questa casa.",
+        "audioSrc": "./asset/camera_verde/camera/audio/ita/camera_slide30[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Step into the Green Room, a space that reveals the private side of Giuseppe Bagatti Valsecchi, who, like many aristocrats of his time, had a personal chamber all to himself. Here, every element tells a story of style and seclusion: the room is remarkably preserved, just as it was when Giuseppe lived in it. Every detail remains in place, just as it once was, the furnishings, the atmosphere. Only a few small elements are missing, such as the cabinet beside the bed, the wallpaper, and the rugs that in other rooms added warmth and comfort. Yet even without these, the room retains its charm. It was designed for rest and privacy, and it still evokes the feeling of a personal retreat, a peaceful corner within the heart of this house.",
+        "audioSrc": "./asset/camera_verde/camera/audio/en/camera_slide30[ENG].mp3"
+      }
+    }
+  },
+  {
     "id": "camera_verde_dettaglio_camino",
     "quizId": "bv-quiz-camino",
     "images": [
@@ -88,8 +207,26 @@
     }
   },
   {
+    "id": "camera_verde_dettaglio_letto",
+    "quizId": null,
+    "images": [
+      "./asset/camera_verde/dettaglio_letto/images/carousel_1_letto.jpg",
+      "./asset/camera_verde/dettaglio_letto/images/carousel_2_letto.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Le bande inferiori del letto di Giuseppe Bagatti Valsecchi sono un capolavoro di finezza e maestria, realizzate da una manifattura milanese anonima negli anni '80 dell'Ottocento. Ogni punto di ricamo è un tributo all'arte artigianale, e ogni filo racconta una storia unica. I motivi raffinatissimi sono tratti da un disegno ad acquerello, riprodotto con incredibile precisione. Al centro, una figura alata solleva due festoni, mentre ai lati, due grifoni li trattengono con le loro potenti zampe, creando un effetto di armonia e dinamismo. Ma non è solo l'eleganza dei dettagli che colpisce: la composizione si ispira anche a un'antica base marmorea rinascimentale, non ancora identificata, documentata nelle fotografie dell'archivio del museo.",
+        "audioSrc": "./asset/camera_verde/dettaglio_letto/audio/ita/letto_slide31[ITA].mp3"
+      },
+      "en": {
+        "infoText": "The lower panels of Giuseppe Bagatti Valsecchi's bed are a masterpiece of delicacy and craftsmanship, created by an anonymous Milanese workshop in the 1880s. Every stitch in the embroidery pays homage to artisanal artistry, and every thread weaves a unique story. The exquisitely refined motifs are based on a watercolor drawing, reproduced with astonishing precision. At the center, a winged figure raises two garlands, while on either side, griffins grasp the festoons with their powerful claws, creating a sense of harmony and movement. But it's not just the elegance of the details that stands out: the composition also draws inspiration from an unidentified Renaissance marble base, documented in photographs preserved in the museum's archive.",
+        "audioSrc": "./asset/camera_verde/dettaglio_letto/audio/en/letto_slide31[ENG].mp3"
+      }
+    }
+  },
+  {
     "id": "galleria_armi_armatura_1",
-    "quizId": "bv-quiz-armatura",
+    "quizId": null,
     "images": [
       "./asset/galleria_armi/armatura_1/images/armatura1.jpg"
     ],
@@ -106,7 +243,7 @@
   },
   {
     "id": "galleria_armi_armatura_2",
-    "quizId": "bv-quiz-armatura",
+    "quizId": null,
     "images": [
       "./asset/galleria_armi/armatura_2/images/armature.jpg"
     ],
@@ -123,7 +260,7 @@
   },
   {
     "id": "galleria_armi_armatura_3",
-    "quizId": "bv-quiz-armatura",
+    "quizId": null,
     "images": [
       "./asset/galleria_armi/armatura_3/images/armature.jpg"
     ],
@@ -174,7 +311,7 @@
   },
   {
     "id": "galleria_cupola_portiera",
-    "quizId": "bv-quiz-portiera",
+    "quizId": null,
     "images": [
       "./asset/galleria_cupola/portiera/images/stemma.jpg"
     ],
@@ -242,6 +379,41 @@
     }
   },
   {
+    "id": "sala_affresco_sala",
+    "quizId": null,
+    "images": [
+      "./asset/sala_affresco/sala/images/sala_affresco.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "A volte il tempo sembra davvero fermarsi. Guardando la Sala dell'Affresco, è difficile credere che siano passati più di cento anni: l'allestimento è rimasto praticamente identico a com'era quando i fratelli Bagatti Valsecchi vivevano qui. Ogni cosa è al suo posto, persino i candelieri cinquecenteschi sono ancora lì, dove li avevano messi. E sopra il Cassone delle Virtù? Gli oggetti che un tempo lo decoravano sono sempre gli stessi, solo che oggi sono custoditi dentro una teca - per proteggerli, ma anche per permetterci di ammirarli da vicino. Ma non è tutto immobile: c'è un dettaglio che ha cambiato posto. Accanto all'affresco, un tempo, c'era un bassorilievo... che oggi si trova in un'altra sala del museo. Un piccolo mistero da risolvere: riuscirai a trovarlo?",
+        "audioSrc": "./asset/sala_affresco/sala/audio/ita/sala_affresco_slide3[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Sometimes it truly feels as if time has stood still. Looking at the Fresco Room, it's hard to believe that more than a hundred years have passed: the arrangement has remained almost exactly as it was when the Bagatti Valsecchi brothers lived here. Everything is still in its place, even the 16th-century candlesticks are exactly where they left them. And above the Cassone delle Virtù ? The objects that once adorned it are still the same, though today they're kept inside a display case to protect them, but also to let us admire them up close. But not everything has remained frozen: there's one detail that has changed its place. Next to the fresco, there once was a bas-relief... which today can be found in another room of the museum. A small mystery to solve: will you be able to find it?",
+        "audioSrc": "./asset/sala_affresco/sala/audio/en/sala_affresco_slide3[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "sala_affresco_serliana",
+    "quizId": null,
+    "images": [
+      "./asset/sala_affresco/serliana/images/carousel_1_serliana.jpg",
+      "./asset/sala_affresco/serliana/images/carousel_2_serliana.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Appena entri nell'appartamento di Fausto, ti accoglie una struttura che sembra uscita da una scenografia teatrale: è una serliana; il nome è un po' tecnico, ma il concetto è semplice: si tratta di una trifora con un arco centrale e due aperture laterali squadrate. L'ha ideata nel Cinquecento Sebastiano Serlio: un architetto importantissimo che ha messo ordine nel linguaggio del Rinascimento. Quella che vedi qui è una serliana davvero speciale: arricchita da due tondi in bronzo e ispirata direttamente alla facciata di Palazzo Sacrati Prosperi a Ferrara. Lo stesso modello è stato usato anche per il portale del palazzo privato dei Bagatti Valsecchi, in via Santo Spirito 7. Insomma, un riferimento importante per i fratelli, che lo hanno reinterpretato più volte. Ma ora viene il bello: il disegno che hai davanti non rappresenta né questa serliana né il portale del palazzo privato. Eppure... li ha influenzati entrambi! Alcuni motivi decorativi presenti nello schizzo sono stati ripresi pari pari nella struttura che hai davanti agli occhi. Li hai già notati? Prova a cercarli: ogni dettaglio è un indizio del modo in cui un'idea prende forma e si trasforma in architettura.",
+        "audioSrc": "./asset/sala_affresco/serliana/audio/ita/serliana_slide4_[ITA].mp3"
+      },
+      "en": {
+        "infoText": "As soon as you enter Fausto's apartment, you are greeted by a structure that looks like it belongs on a theatrical stage: it's a serliana . The name might sound technical, but the concept is simple: it's a three-part opening with a central arch and two squared side openings. It was invented in the 16th century by Sebastiano Serlio, a hugely important architect who brought order to the language of the Renaissance. The serliana you see here is truly special: enriched with two bronze roundels and directly inspired by the façade of Palazzo Sacrati Prosperi in Ferrara. The same model was also used for the portal of the Bagatti Valsecchi private residence on Via Santo Spirito 7. In short, a key reference for the brothers, which they reinterpreted in various parts of their home. But here's the interesting part: the drawing you see in front of you does not represent this serliana or the palace portal. And yet... It influenced them both! Several decorative motifs from the sketch were carried over exactly into the structure you're looking at. Have you spotted them yet? Take a closer look: every detail is a clue to how an idea takes shape and transforms into architecture.",
+        "audioSrc": "./asset/sala_affresco/serliana/audio/en/serliana_slide4_[ENG].mp3"
+      }
+    }
+  },
+  {
     "id": "sala_bagno",
     "quizId": "bv-quiz-vasca",
     "images": [
@@ -277,6 +449,42 @@
     }
   },
   {
+    "id": "sala_bevilacqua_sala",
+    "quizId": null,
+    "images": [
+      "./asset/sala_bevilacqua/sala/images/carousel_1_stanza.jpg",
+      "./asset/sala_bevilacqua/sala/images/carousel_2_lampadario.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Appena entri nella Sala Bevilacqua, ti accorgi subito di una cosa: tutto è rimasto incredibilmente simile all'originale. Qualche piccola variazione c'è, certo, ma l'atmosfera è quella pensata dai fratelli Bagatti Valsecchi più di un secolo fa. Uno dei dettagli più affascinanti? Il lampadario. Quello che vedi oggi non è una semplice scelta decorativa, ma una citazione colta: riprende fedelmente il modello raffigurato da Vittore Carpaccio nel 1495, nella scena Re Mauro congeda gli ambasciatori - parte del celebre ciclo di Sant'Orsola , oggi alle Gallerie dell'Accademia di Venezia. Linee morbide, ferro battuto, bracci curvi che sorreggono lampade a forma di candela: un oggetto semplice, ma elegantissimo. E dietro, c'è una storia ancora più interessante. A fine Ottocento, Carpaccio venne riscoperto e diventò un vero modello di stile per la nuova Italia unita. I regnanti sabaudi ne adoravano gli arredi dipinti e li consideravano ideali per costruire un'identità artistica italiana. E i fratelli Bagatti Valsecchi? Non erano da meno. Anche loro si lasciarono ispirare da Carpaccio per arredare la loro casa. Perché ogni oggetto, qui dentro, è molto di più di una scelta estetica: è una dichiarazione d'amore per la storia e per l'arte.",
+        "audioSrc": "./asset/sala_bevilacqua/sala/audio/ita/sala_slide6[ITA].mp3"
+      },
+      "en": {
+        "infoText": "As soon as you step into the Bevilacqua Room, one thing immediately stands out: everything has remained astonishingly true to the original. There are a few small variations, of course, but the atmosphere is exactly what the Bagatti Valsecchi brothers envisioned more than a century ago. One of the most captivating details? The chandelier. What you see today isn't just a decorative choice, it's an erudite reference: it faithfully replicates the model depicted by Vittore Carpaccio in 1495, in the scene The King of Mauritania Dismisses the Ambassadors , part of the famous Legend of Saint Ursula cycle, now housed in the Gallerie dell'Accademia in Venice. Soft lines, wrought iron, gracefully curved arms holding candle-shaped lamps: a simple object, yet exquisitely elegant. And behind it lies an even more compelling story. In the late 19th century, Carpaccio was rediscovered and became a true style icon for the newly unified Italy. The Savoy monarchs were especially fond of his painted furnishings, seeing them as ideal models for shaping a unified Italian artistic identity. And the Bagatti Valsecchi brothers? They were no different. They too drew inspiration from Carpaccio in furnishing their home. Because here, every object is more than just an aesthetic choice, it's a heartfelt tribute to history and to art.",
+        "audioSrc": "./asset/sala_bevilacqua/sala/audio/en/sala_slide6[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "sala_bevilacqua_scarpa",
+    "quizId": null,
+    "images": [
+      "./asset/sala_bevilacqua/scarpa/images/carousel_1_scarpa.jpg",
+      "./asset/sala_bevilacqua/scarpa/images/carousel_2_scarpa.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Dentro al camino della Sala Bevilacqua si nasconde un dettaglio che non ti aspetti: una scarpetta! E no, non è lì per caso. È molto di più che un decoro carino: è un simbolo vero e proprio per la famiglia Bagatti Valsecchi. Sai perché? Perché \"Bagatt\" , in dialetto milanese, vuol dire proprio... ciabattino! E allora ecco che la scarpetta diventa un segno d'identità, un piccolo emblema parlante, una firma nascosta tra le pieghe della storia. E non è l'unica: ce ne sono diverse, disseminate in giro per la casa. Una sorta di caccia al tesoro in piena regola! Quante riesci a trovarne? Ogni scarpetta è un indizio, una tappa in più per scoprire il carattere unico di questa dimora così speciale.",
+        "audioSrc": "./asset/sala_bevilacqua/scarpa/audio/ita/scarpa_slide8[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Inside the fireplace of the Bevilacqua Room hides an unexpected detail: a little shoe! And no, it's not there by accident. It's much more than a charming ornament, it's a true symbol for the Bagatti Valsecchi family. Do you know why? Because Bagatt , in the Milanese dialect, means... cobbler! And so the little shoe becomes a mark of identity, a small, speaking emblem, a hidden signature tucked into the folds of history. And it's not the only one: there are several scattered throughout the house. A real treasure hunt! How many can you find? Each tiny shoe is a clue, another step in uncovering the unique character of this extraordinary home.",
+        "audioSrc": "./asset/sala_bevilacqua/scarpa/audio/en/scarpa_slide8[ENG].mp3"
+      }
+    }
+  },
+  {
     "id": "sala_pranzo_camera",
     "quizId": null,
     "images": [
@@ -290,6 +498,61 @@
       "en": {
         "infoText": "Step into the dining room and try to take a leap back in time. It's hard to believe, but everything is still here: the sideboards, the objects on the mantelpiece, even the arrangement is identical to how it was in the 19th century. It's as if someone had just turned off the light and closed the door for a moment. The 16th-century Flemish tapestries still dress the walls with their grandeur, and even though the large 18th-century Anatolian carpet is no longer there, you can almost imagine its colors beneath your feet. This was the room of important dinners, laughter, and toasts, the warm heart of the house. And today, when you step inside, that warmth is still palpable.",
         "audioSrc": "./asset/sala_pranzo/camera/audio/en/camera_slide37[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "sala_pranzo_camino_due",
+    "quizId": "bv-quiz-camino",
+    "images": [
+      "./asset/sala_pranzo/camino_due/images/carousel_1_camino.jpg",
+      "./asset/sala_pranzo/camino_due/images/carousel_2_camino.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Il camino della sala da pranzo è avvolto da una leggenda affascinante. Si racconta che l'intero ambiente sia stato concepito a partire dal ritrovamento di questo antico focolare in una casa colonica alle porte di Milano. I fratelli Bagatti Valsecchi, entusiasti della scoperta, intrapresero una ricerca scrupolosa di reperti architettonici e decorativi rinascimentali per contestualizzare al meglio il camino. Tra i disegni conservati nell'archivio del museo, possiamo ammirare il progetto della struttura, con le figure leonine sugli elementi verticali e la cappa, successivamente decorata con un affresco cinquecentesco staccato. La leggenda e il mistero attorno al camino continuano ad affascinarci, come se il tempo non fosse mai passato.",
+        "audioSrc": "./asset/sala_pranzo/camino_due/audio/ita/camino_slide38[ITA].mp3"
+      },
+      "en": {
+        "infoText": "The dining room fireplace is wrapped in a fascinating legend. It is said that the entire space was designed around the discovery of this ancient hearth in a farmhouse on the outskirts of Milan. Enthralled by their find, the Bagatti Valsecchi brothers embarked on a meticulous search for Renaissance architectural and decorative elements to frame the fireplace appropriately. Among the drawings preserved in the museum archives, we can admire the design for the hood, adorned with a detached 16th-century fresco, and the lion figures carved into the vertical elements. The legend and mystery surrounding the fireplace continue to captivate us, almost as if time itself had never moved on.",
+        "audioSrc": "./asset/sala_pranzo/camino_due/audio/en/camino_slide38[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "sala_pranzo_camino_uno",
+    "quizId": "bv-quiz-camino",
+    "images": [
+      "./asset/sala_pranzo/camino_uno/images/carousel_1_camino.jpg",
+      "./asset/sala_pranzo/camino_uno/images/carousel_2_camino.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Il camino della sala da pranzo è avvolto da una leggenda affascinante. Si racconta che l'intero ambiente sia stato concepito a partire dal ritrovamento di questo antico focolare in una casa colonica alle porte di Milano. I fratelli Bagatti Valsecchi, entusiasti della scoperta, intrapresero una ricerca scrupolosa di reperti architettonici e decorativi rinascimentali per contestualizzare al meglio il camino. Tra i disegni conservati nell'archivio del museo, possiamo ammirare il progetto della struttura, con le figure leonine sugli elementi verticali e la cappa, successivamente decorata con un affresco cinquecentesco staccato. La leggenda e il mistero attorno al camino continuano ad affascinarci, come se il tempo non fosse mai passato.",
+        "audioSrc": "./asset/sala_pranzo/camino_uno/audio/ita/camino_slide38[ITA].mp3"
+      },
+      "en": {
+        "infoText": "The dining room fireplace is wrapped in a fascinating legend. It is said that the entire space was designed around the discovery of this ancient hearth in a farmhouse on the outskirts of Milan. Enthralled by their find, the Bagatti Valsecchi brothers embarked on a meticulous search for Renaissance architectural and decorative elements to frame the fireplace appropriately. Among the drawings preserved in the museum archives, we can admire the design for the hood, adorned with a detached 16th-century fresco, and the lion figures carved into the vertical elements. The legend and mystery surrounding the fireplace continue to captivate us, almost as if time itself had never moved on.",
+        "audioSrc": "./asset/sala_pranzo/camino_uno/audio/en/camino_slide38[ENG].mp3"
+      }
+    }
+  },
+  {
+    "id": "sala_pranzo_porta",
+    "quizId": null,
+    "images": [
+      "./asset/sala_pranzo/porta/images/carousel_1_porta.jpg",
+      "./asset/sala_pranzo/porta/images/carousel_2_porta.jpg",
+      "./asset/sala_pranzo/porta/images/carousel_3_porta.jpg"
+    ],
+    "localization": {
+      "it": {
+        "infoText": "Quattro porte... ma solo due sono vere! Le altre? Finte. Un piccolo trucco architettonico pensato per creare una perfetta armonia visiva e incorniciare il grande camino come se fosse un trono. Ma il colpo di scena non finisce qui: sopra ogni porta spuntano motti in latino, piccole perle di saggezza che celebrano il piacere della tavola - mangiare bene per vivere meglio, diremmo oggi. E poi ci sono i disegni originali, conservati come tesori nell'archivio del museo, che raccontano un progetto minuzioso: motivi vegetali, animali, figure mitologiche... niente è lasciato al caso. Ogni dettaglio di queste porte è un indizio della visione raffinata e quasi maniacale con cui i Bagatti Valsecchi hanno costruito il loro mondo.",
+        "audioSrc": "./asset/sala_pranzo/porta/audio/ita/porta_slide39[ITA].mp3"
+      },
+      "en": {
+        "infoText": "Four doors... but only two are real! The others? Fake. A small architectural trick designed to create perfect visual harmony and frame the grand fireplace as if it were a throne. But the twist doesn't end there: above each door, Latin mottos appear, little pearls of wisdom celebrating the pleasures of the table, eating well to live better, as we might say today. And then there are the original designs, preserved as treasures in the museum's archive, revealing a meticulous plan: plant motifs, animals, mythological figures... nothing is left to chance. Every detail of these doors is a clue to the refined, almost obsessive vision with which the Bagatti Valsecchi brothers built their world.",
+        "audioSrc": "./asset/sala_pranzo/porta/audio/en/porta_slide39[ENG].mp3"
       }
     }
   },
@@ -399,7 +662,7 @@
   },
   {
     "id": "salone_onore_lasena",
-    "quizId": "bv-quiz-lesena",
+    "quizId": null,
     "images": [
       "./asset/salone_onore/lasena/images/carousel_1_lasena.jpg",
       "./asset/salone_onore/lasena/images/carousel_2_disegno.jpg"
@@ -442,11 +705,11 @@
     "localization": {
       "it": {
         "infoText": "Nel salone del Museo Bagatti Valsecchi, la tappezzeria in velluto rosso a rilievo su fondo oro cattura immediatamente l'attenzione. Il motivo principale è un elegante vaso contenente fiori di cardo e tulipani, con una forma allungata a doppia punta. Questo disegno, a scacchiera e con forme ovali alternate, è un richiamo al XVI secolo e si adatta perfettamente all'ambiente. Al centro degli ovali, simboli araldici come l'aquila e i gigli dei Bagatti Valsecchi, e l'abbreviazione del doppio cognome \"BA VA\" . La manifattura è stata affidata ad Ambrogio Osnago, celebre tessitore milanese ottocentesco, che ha saputo combinare raffinatezza e maestria in un'opera senza pari.",
-        "audioSrc": "./asset/salone_onore/tappezzeria/audio/ita/tappezzeria_slide36[ITA]-esv2-50p-bg-10p-music-10p.mp3"
+        "audioSrc": "./asset/salone_onore/tappezzeria/audio/ita/tappezzeria_slide36[ITA].mp3"
       },
       "en": {
         "infoText": "In the grand salon of the Bagatti Valsecchi Museum, the raised red velvet upholstery on a gold background immediately draws the eye. The main motif is an elegant vase filled with thistle and tulip flowers, with a long, double-pointed shape. This checkerboard pattern, featuring alternating oval forms, evokes the 16th century and harmonizes perfectly with the room's ambiance. At the center of the ovals are heraldic symbols such as the eagle and lilies of the Bagatti Valsecchi family, as well as the abbreviation of their surname, \"BA VA.\" The textile was crafted by Ambrogio Osnago, a renowned 19th-century Milanese weaver, who masterfully blended refinement and craftsmanship into an unparalleled work.",
-        "audioSrc": "./asset/salone_onore/tappezzeria/audio/en/tappezzeria_slide36_[ENG]-esv2-50p-bg-10p-music-10p.mp3"
+        "audioSrc": "./asset/salone_onore/tappezzeria/audio/en/tappezzeria_slide36_[ENG].mp3"
       }
     }
   },

@@ -98,7 +98,7 @@ ErrorRecovery.hide()
 ErrorRecovery.heartbeat()
 ErrorRecovery.noteTrackingLost()
 ErrorRecovery.noteTrackingRestored()
-ErrorRecovery.fetchWithTimeout(url, opts?)  // wrapper con timeout 10s
+ErrorRecovery.fetchWithTimeout(url, init?, { silent? })  // wrapper con timeout 10s; `silent` non mostra banner
 ErrorRecovery.reportAssetLoadError(detail?)
 ```
 

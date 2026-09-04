@@ -51,6 +51,7 @@ class ErrorRecoveryController {
   private bootTimerHard: number | null = null;
   private interactionBlocked = false;
   private started = false;
+  private backgroundedAt: number | null = null;
 
   init(opts: ErrorRecoveryOptions) {
     this.configure(opts);
@@ -96,6 +97,7 @@ class ErrorRecoveryController {
 
     this.startBootWatch();
     this.startWatchdog();
+    this.bindVisibilityPause();
     this.lastHeartbeat = performance.now();
   }
 
@@ -185,23 +187,30 @@ class ErrorRecoveryController {
     return this.interactionBlocked;
   }
 
-  async fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  async fetchWithTimeout(
+    input: RequestInfo | URL,
+    init?: RequestInit,
+    options?: { silent?: boolean }
+  ): Promise<Response> {
+    const silent = options?.silent === true;
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), this.timeoutMs);
     try {
       const res = await fetch(input, { ...init, signal: controller.signal });
-      if (!res.ok) {
+      if (!res.ok && !silent) {
         if (!navigator.onLine) this.show('offline', String(input));
         else this.show('asset_load', `${res.status} ${input}`);
       }
       return res;
     } catch (err: any) {
-      if (!navigator.onLine || err?.name === 'TypeError') {
-        this.show('offline', String(input));
-      } else if (err?.name === 'AbortError') {
-        this.reportTimeout(String(input));
-      } else {
-        this.show('asset_load', String(err?.message || err));
+      if (!silent) {
+        if (!navigator.onLine || err?.name === 'TypeError') {
+          this.show('offline', String(input));
+        } else if (err?.name === 'AbortError') {
+          this.reportTimeout(String(input));
+        } else {
+          this.show('asset_load', String(err?.message || err));
+        }
       }
       throw err;
     } finally {
@@ -311,6 +320,7 @@ class ErrorRecoveryController {
     this.watchdogTimer = window.setInterval(() => {
       // Watchdog solo dopo il primo frame della pipeline AR
       if (!this.heartbeatStarted) return;
+      if (document.hidden) return;
       const gap = performance.now() - this.lastHeartbeat;
       if (gap >= this.hangMs) {
         this.show('watchdog', `gap=${Math.round(gap)}ms`);
@@ -318,6 +328,32 @@ class ErrorRecoveryController {
         this.lastHeartbeat = performance.now();
       }
     }, 2000);
+  }
+
+  /**
+   * iOS congela rAF e setInterval insieme: al rientro l'heartbeat
+   * riparte prima del timer e il watchdog non vede mai il buco.
+   * visibility/pagehide copre blocco schermo e cambio app.
+   */
+  private bindVisibilityPause() {
+    const onLeave = () => {
+      if (this.backgroundedAt == null) this.backgroundedAt = performance.now();
+    };
+    const onReturn = () => {
+      const leftAt = this.backgroundedAt;
+      this.backgroundedAt = null;
+      if (leftAt == null || !this.heartbeatStarted) return;
+      if (performance.now() - leftAt < 2000) return;
+      if (this.currentKind && this.currentKind !== 'watchdog') return;
+      this.show('watchdog', 'visibility-resume');
+    };
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) onLeave();
+      else onReturn();
+    });
+    window.addEventListener('pagehide', onLeave);
+    window.addEventListener('pageshow', onReturn);
   }
 
   private report(kind: ErrorKind, detail?: string) {

@@ -37,7 +37,7 @@ L'architettura è basata su un sistema di sincronizzazione automatica che mappa 
 Per aggiungere o modificare contenuti (testi, audio, immagini o quiz), segui questa procedura:
 
 1.  **Organizza i file**: Inserisci i nuovi file in `src/asset/` seguendo la struttura `stanza/trigger`.
-2.  **Associa i Quiz**: Assicurati che il nome del trigger contenga la parola chiave corretta (es. "armatura", "teschio", "serliana") definita nel mapping dello script `sync-targets.js`.
+2.  **Associa i Quiz**: il path del trigger deve contenere la chiave dello script (`credenza`, `camino`, `bagno`, …) **e** deve esistere `src/quizbase/bv-quiz-<nome>/questions.json`. Senza JSON lo sync non mostra il bottone.
 3.  **Sincronizza i dati**:
     ```bash
     node scripts/sync-targets.js
