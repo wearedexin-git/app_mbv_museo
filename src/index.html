@@ -112,10 +112,86 @@
 
     // GESTIONE BANNER PWA
     let deferredPrompt;
-    let pwaBanner, installBtn, closeBtn, pwaMsg;
+    let pwaBanner, installBtn, closeBtn, pwaMsg, progressRow, progressFill, progressLabel;
 
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+    const setPwaProgress = (done, total) => {
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      if (progressFill) progressFill.style.width = pct + '%';
+      if (progressLabel) progressLabel.innerText = pct + '%';
+    };
+
+    // Scarica davvero tutti i contenuti (immagini, audio, quiz) nella cache
+    // offline: è l'unico "download" osservabile via JS. L'installazione nativa
+    // (Add to Home Screen) è gestita interamente dal sistema operativo e non
+    // espone alcun progresso alla pagina.
+    const startOfflineDownload = () => {
+      if (!window.PwaPrecache) return;
+      installBtn.classList.add('hidden');
+      closeBtn.classList.add('hidden');
+      progressRow.classList.remove('hidden');
+      setPwaProgress(0, 1);
+
+      window.PwaPrecache.run((p) => setPwaProgress(p.done, p.total))
+        .then((result) => {
+          const okCount = result.total - result.failed.length;
+          if (result.failed.length === 0) {
+            pwaMsg.innerText = 'Contenuti del museo scaricati: ora disponibili anche offline.';
+            progressRow.classList.add('hidden');
+            setTimeout(() => pwaBanner.classList.add('hidden'), 2500);
+          } else {
+            pwaMsg.innerText = `Scaricati ${okCount}/${result.total} file. Alcuni contenuti non sono stati salvati (rete debole): riprova.`;
+            installBtn.innerText = 'Riprova';
+            installBtn.classList.remove('hidden');
+            closeBtn.classList.remove('hidden');
+          }
+        })
+        .catch(() => {
+          pwaMsg.innerText = 'Download non riuscito. Riprova quando la rete è più stabile.';
+          installBtn.innerText = 'Riprova';
+          installBtn.classList.remove('hidden');
+          closeBtn.classList.remove('hidden');
+        });
+    };
+
+    // Sync automatico e silenzioso: quando l'app gira già come PWA installata
+    // (standalone) non mostriamo il banner, ma se i contenuti non sono ancora
+    // tutti in cache li scarichiamo comunque in background con una barra
+    // discreta, senza richiedere alcun tap.
+    const OFFLINE_SYNC_KEY = 'pwa_offline_synced_v1';
+
+    const startAutoOfflineSync = () => {
+      if (!window.PwaPrecache || window.PwaPrecache.isRunning()) return;
+      if (localStorage.getItem(OFFLINE_SYNC_KEY) === 'true') return;
+
+      const syncEl = document.getElementById('pwa-offline-sync');
+      const syncFill = document.getElementById('pwa-offline-sync-fill');
+      const syncLabel = document.getElementById('pwa-offline-sync-label');
+      if (!syncEl) return;
+
+      syncEl.classList.remove('hidden');
+      syncLabel.innerText = 'Scaricamento contenuti offline…';
+
+      window.PwaPrecache.run((p) => {
+        const pct = p.total > 0 ? Math.round((p.done / p.total) * 100) : 0;
+        syncFill.style.width = pct + '%';
+      })
+        .then((result) => {
+          if (result.failed.length === 0) {
+            localStorage.setItem(OFFLINE_SYNC_KEY, 'true');
+            syncLabel.innerText = 'Contenuti offline pronti';
+          } else {
+            syncLabel.innerText = `Offline: ${result.total - result.failed.length}/${result.total} salvati`;
+          }
+          setTimeout(() => syncEl.classList.add('hidden'), 2000);
+        })
+        .catch(() => {
+          syncLabel.innerText = 'Download offline non riuscito';
+          setTimeout(() => syncEl.classList.add('hidden'), 2500);
+        });
+    };
 
     window.addEventListener('load', () => {
       // Inizializza elementi solo dopo il caricamento della pagina
@@ -123,6 +199,9 @@
       installBtn = document.getElementById('pwa-install-btn');
       closeBtn = document.getElementById('pwa-close-btn');
       pwaMsg = document.getElementById('pwa-msg');
+      progressRow = document.getElementById('pwa-progress-row');
+      progressFill = document.getElementById('pwa-progress-fill');
+      progressLabel = document.getElementById('pwa-progress-label');
 
       // Bind dell'evento chiusura
       closeBtn.onclick = () => {
@@ -130,24 +209,45 @@
         localStorage.setItem('pwa_dismissed', 'true');
       };
 
-      // Bind dell'evento installazione (Android)
+      // Bind del bottone principale: su Android avvia il prompt nativo e poi
+      // il download reale; su iOS (nessun beforeinstallprompt) avvia subito
+      // il download, perché "Aggiungi alla Home" resta un gesto manuale
+      // nel foglio Condividi fuori dal nostro controllo.
       installBtn.onclick = () => {
+        if (isIOS) {
+          startOfflineDownload();
+          return;
+        }
         if (!deferredPrompt) return;
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choice) => {
-          if (choice.outcome === 'accepted') pwaBanner.classList.add('hidden');
           deferredPrompt = null;
+          if (choice.outcome === 'accepted') {
+            startOfflineDownload();
+          } else {
+            pwaBanner.classList.add('hidden');
+          }
         });
       };
 
-      // Se già installato o già chiuso, non mostrare nulla
-      if (isStandalone || localStorage.getItem('pwa_dismissed') === 'true') return;
+      // App già installata: niente banner, solo il sync automatico in background.
+      if (isStandalone) {
+        setTimeout(() => {
+          if (document.querySelector('.prompt-box-8w')) return;
+          startAutoOfflineSync();
+        }, 4000);
+        return;
+      }
+
+      if (localStorage.getItem('pwa_dismissed') === 'true') return;
 
       setTimeout(() => {
         // Non sovrapporre al prompt camera di 8th Wall
         if (document.querySelector('.prompt-box-8w')) return;
         if (isIOS) {
-          pwaMsg.innerText = "Tocca 'Condividi' e seleziona 'Aggiungi alla Home' per installare l'app.";
+          pwaMsg.innerText = "Tocca 'Condividi' e seleziona 'Aggiungi alla Home' per installare l'app, oppure scarica subito i contenuti per l'offline.";
+          installBtn.innerText = 'Scarica offline';
+          installBtn.classList.remove('hidden');
           pwaBanner.classList.remove('hidden');
         } else {
           pwaBanner.classList.remove('hidden');
@@ -1078,6 +1178,73 @@
       border: 1px solid rgba(255, 255, 255, 0.25);
     }
 
+    .pwa-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pwa-progress-track {
+      flex: 1;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+    }
+
+    .pwa-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #c4a45d;
+      transition: width 0.2s ease;
+    }
+
+    .pwa-progress-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #ffffff;
+      min-width: 34px;
+      text-align: right;
+    }
+
+    /* Barra discreta per il sync offline automatico in standalone (no banner, no bottoni) */
+    #pwa-offline-sync {
+      position: fixed;
+      top: env(safe-area-inset-top, 0px);
+      left: 0;
+      right: 0;
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: rgba(20, 20, 25, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: opacity 0.4s ease;
+    }
+
+    #pwa-offline-sync-track {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+    }
+
+    #pwa-offline-sync-fill {
+      height: 100%;
+      width: 0%;
+      background: #c4a45d;
+      transition: width 0.2s ease;
+    }
+
+    #pwa-offline-sync-label {
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.85);
+      white-space: nowrap;
+    }
+
     /* ERROR RECOVERY BANNER (stesso linguaggio del PWA banner) */
     #error-recovery-banner {
       position: fixed;
@@ -1195,10 +1362,24 @@
       <img src="./asset/icons/pwa-icon-192.png" class="pwa-icon-mini">
       <div id="pwa-msg" class="pwa-text">Installa l'app del Museo per un'esperienza migliore e accesso offline.</div>
     </div>
+    <div id="pwa-progress-row" class="pwa-progress-row hidden">
+      <div class="pwa-progress-track">
+        <div id="pwa-progress-fill" class="pwa-progress-fill"></div>
+      </div>
+      <span id="pwa-progress-label" class="pwa-progress-label">0%</span>
+    </div>
     <div class="pwa-actions">
       <button id="pwa-install-btn" class="pwa-btn pwa-btn-primary hidden">Installa</button>
       <button id="pwa-close-btn" class="pwa-btn pwa-btn-secondary">Chiudi</button>
     </div>
+  </div>
+
+  <!-- SYNC OFFLINE AUTOMATICO (app già installata, aperta in standalone) -->
+  <div id="pwa-offline-sync" class="hidden">
+    <div id="pwa-offline-sync-track">
+      <div id="pwa-offline-sync-fill"></div>
+    </div>
+    <span id="pwa-offline-sync-label">Scaricamento contenuti offline…</span>
   </div>
 
   <div id="ar-scan-hud" class="hidden">

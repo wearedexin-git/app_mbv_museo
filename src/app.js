@@ -5,8 +5,10 @@ import * as THREE from 'three';
 window.THREE = THREE;
 import { CarouselPipelineModule } from './ar-pipeline';
 import { ErrorRecovery } from './error-recovery';
+import { PwaPrecache } from './pwa-precache';
 
 window.ErrorRecovery = ErrorRecovery;
+window.PwaPrecache = PwaPrecache;
 
 // App Key sul tag <script src="xr.js" appKey="..."> in index.html (questo runtime non espone XR8.configure).
 

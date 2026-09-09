@@ -112,6 +112,13 @@ export function initMonitoring() {
   }
 
   const integrations = [
+    // console: false — evita che OGNI console.log/warn/info (Three.js, 8th
+    // Wall, debug XR) diventi un breadcrumb automatico: su questa app sono
+    // tanti e gonfiano l'evento eccezione oltre il limite pratico
+    // dell'ingest Sentry, che allora risponde 413 e l'evento va perso.
+    // warn/error restano comunque coperti come Issue/Log da
+    // captureConsoleIntegration e consoleLoggingIntegration qui sotto.
+    Sentry.breadcrumbsIntegration({ console: false }),
     Sentry.captureConsoleIntegration({ levels: ['error'] }),
     Sentry.consoleLoggingIntegration({ levels: ['warn', 'error'] }),
   ];
@@ -125,6 +132,9 @@ export function initMonitoring() {
     tracesSampleRate: 0,
     replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 0,
+    // Cap extra di sicurezza sulla dimensione dell'evento, a prescindere
+    // dalla causa esatta del breadcrumb bloat.
+    maxBreadcrumbs: 30,
     ignoreErrors: [
       'Script error.',
       'Script error',
