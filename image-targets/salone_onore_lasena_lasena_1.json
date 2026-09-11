@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/salone_onore_lasena_lasena_1_luminance.jpg",
+  "metadata": null,
+  "name": "salone_onore_lasena_lasena_1",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "salone_onore_lasena_lasena_1_original.jpg",
+    "croppedImage": "salone_onore_lasena_lasena_1_cropped.jpg",
+    "thumbnailImage": "salone_onore_lasena_lasena_1_thumbnail.jpg",
+    "luminanceImage": "salone_onore_lasena_lasena_1_luminance.jpg"
+  },
+  "created": 1789031008423,
+  "updated": 1789031008423
+}

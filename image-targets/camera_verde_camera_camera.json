@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/camera_verde_camera_camera_luminance.jpg",
+  "metadata": null,
+  "name": "camera_verde_camera_camera",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "camera_verde_camera_camera_original.jpg",
+    "croppedImage": "camera_verde_camera_camera_cropped.jpg",
+    "thumbnailImage": "camera_verde_camera_camera_thumbnail.jpg",
+    "luminanceImage": "camera_verde_camera_camera_luminance.jpg"
+  },
+  "created": 1789044449712,
+  "updated": 1789044449712
+}

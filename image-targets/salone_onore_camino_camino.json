@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/salone_onore_camino_camino_luminance.jpg",
+  "metadata": null,
+  "name": "salone_onore_camino_camino",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "salone_onore_camino_camino_original.jpg",
+    "croppedImage": "salone_onore_camino_camino_cropped.jpg",
+    "thumbnailImage": "salone_onore_camino_camino_thumbnail.jpg",
+    "luminanceImage": "salone_onore_camino_camino_luminance.jpg"
+  },
+  "created": 1789031007825,
+  "updated": 1789031007825
+}

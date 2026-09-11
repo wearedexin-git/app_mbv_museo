@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/galleria_armi_stanza_galleria_luminance.jpg",
+  "metadata": null,
+  "name": "galleria_armi_stanza_galleria",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "galleria_armi_stanza_galleria_original.jpg",
+    "croppedImage": "galleria_armi_stanza_galleria_cropped.jpg",
+    "thumbnailImage": "galleria_armi_stanza_galleria_thumbnail.jpg",
+    "luminanceImage": "galleria_armi_stanza_galleria_luminance.jpg"
+  },
+  "created": 1789034271254,
+  "updated": 1789034271254
+}

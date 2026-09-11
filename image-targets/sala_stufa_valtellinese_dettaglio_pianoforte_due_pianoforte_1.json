@@ -6,11 +6,11 @@
   "properties": {
     "left": 0,
     "top": 0,
-    "width": 768,
-    "height": 1024,
+    "width": 1200,
+    "height": 1600,
     "isRotated": false,
-    "originalWidth": 768,
-    "originalHeight": 1024
+    "originalWidth": 1200,
+    "originalHeight": 1600
   },
   "resources": {
     "originalImage": "sala_stufa_valtellinese_dettaglio_pianoforte_due_pianoforte_1_original.jpg",
@@ -18,6 +18,6 @@
     "thumbnailImage": "sala_stufa_valtellinese_dettaglio_pianoforte_due_pianoforte_1_thumbnail.jpg",
     "luminanceImage": "sala_stufa_valtellinese_dettaglio_pianoforte_due_pianoforte_1_luminance.jpg"
   },
-  "created": 1788526618843,
-  "updated": 1788526618843
+  "created": 1789037352035,
+  "updated": 1789037352035
 }

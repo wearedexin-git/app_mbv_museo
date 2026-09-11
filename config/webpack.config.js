@@ -27,6 +27,9 @@ const config = {
     filename: 'bundle.js',
     path: distPath,
     publicPath: '/',
+    // Senza clean, i file rimossi dalle sorgenti (es. un marker eliminato)
+    // restano orfani in dist/ tra una build e l'altra.
+    clean: true,
   },
   plugins: [
     new webpack.DefinePlugin({

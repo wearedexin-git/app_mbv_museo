@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/studio_studio_2_luminance.jpg",
+  "metadata": null,
+  "name": "studio_studio_2",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "studio_studio_2_original.jpg",
+    "croppedImage": "studio_studio_2_cropped.jpg",
+    "thumbnailImage": "studio_studio_2_thumbnail.jpg",
+    "luminanceImage": "studio_studio_2_luminance.jpg"
+  },
+  "created": 1789036241629,
+  "updated": 1789036241629
+}

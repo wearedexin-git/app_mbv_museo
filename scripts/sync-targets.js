@@ -3,6 +3,7 @@ const path = require('path');
 
 const PROJECT_ROOT = path.resolve(__dirname, '..');
 const ASSET_ROOT = path.join(PROJECT_ROOT, 'src', 'asset');
+const IMAGE_TARGETS_ROOT = path.join(PROJECT_ROOT, 'image-targets');
 const DATA_OUTPUT = path.join(PROJECT_ROOT, 'src', 'config', 'targetsData.json');
 
 const allConfigs = [];
@@ -249,9 +250,19 @@ triggerFolders.forEach((targetFolder) => {
   allTriggersInFolder.forEach(f => {
     const triggerBase = f.replace(/^trigger_/, '').split('.')[0];
     const fullTargetId = [...relPath.split(path.sep), triggerBase].join('_').replace(/[^a-zA-Z0-9_]/g, '');
-    
+
     if (seenTriggers.has(fullTargetId)) return;
     seenTriggers.add(fullTargetId);
+
+    // Un require('../image-targets/<id>.json') su un file inesistente rompe
+    // la build webpack (Module not found). Molti hotspot hanno la foto
+    // trigger pronta in src/asset/ ma non hanno ancora il pacchetto 8th Wall
+    // generato (vedi docs/trigger-schema.md, "no marker 8th Wall"): li
+    // teniamo nel contenuto/testi (sopra) ma li escludiamo qui finché il
+    // marker non viene generato con generate-targets-force.js.
+    if (!fs.existsSync(path.join(IMAGE_TARGETS_ROOT, `${fullTargetId}.json`))) {
+      return;
+    }
 
     const varName = `${fullTargetId.replace(/[^a-zA-Z0-9]/g, '')}Json`;
     appImports.push(`const ${varName} = require('../image-targets/${fullTargetId}.json');`);

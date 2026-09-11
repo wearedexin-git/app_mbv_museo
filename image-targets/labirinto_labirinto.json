@@ -4,12 +4,12 @@
   "name": "labirinto_labirinto",
   "type": "PLANAR",
   "properties": {
-    "left": 2,
+    "left": 0,
     "top": 0,
     "width": 1200,
     "height": 1600,
     "isRotated": false,
-    "originalWidth": 1204,
+    "originalWidth": 1200,
     "originalHeight": 1600
   },
   "resources": {
@@ -18,6 +18,6 @@
     "thumbnailImage": "labirinto_labirinto_thumbnail.jpg",
     "luminanceImage": "labirinto_labirinto_luminance.jpg"
   },
-  "created": 1788275097346,
-  "updated": 1788275097346
+  "created": 1789037191594,
+  "updated": 1789037191594
 }

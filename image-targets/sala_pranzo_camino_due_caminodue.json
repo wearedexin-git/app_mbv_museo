@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_pranzo_camino_due_caminodue_luminance.jpg",
+  "metadata": null,
+  "name": "sala_pranzo_camino_due_caminodue",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "sala_pranzo_camino_due_caminodue_original.jpg",
+    "croppedImage": "sala_pranzo_camino_due_caminodue_cropped.jpg",
+    "thumbnailImage": "sala_pranzo_camino_due_caminodue_thumbnail.jpg",
+    "luminanceImage": "sala_pranzo_camino_due_caminodue_luminance.jpg"
+  },
+  "created": 1789035606697,
+  "updated": 1789035606697
+}
