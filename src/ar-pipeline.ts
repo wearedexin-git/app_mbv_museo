@@ -90,7 +90,7 @@ export const CarouselPipelineModule = () => {
         if (ErrorRecovery.isBlocked()) return;
         if (!activeConfig) return;
         carousel3D.spawnCarousel(activeConfig.images);
-        const langData = activeConfig.localization['it'];
+        const langData = activeConfig.localization[uiController.getLang()];
         uiController.showOverlay(
           langData.infoText,
           langData.audioSrc,
