@@ -275,12 +275,24 @@
     }
 
     const DENIED_IT = {
-      title: 'Permessi negati',
-      body: 'Safari ha bloccato i sensori di movimento. Chiudi completamente Safari (dallo switcher app), riaprilo e torna a questa pagina: al prompt tocca Continua e poi Consenti.',
-      bodyApple: "Hai bloccato l'accesso ai sensori di movimento. Chiudi completamente Safari e riapri questa pagina per riprovare.",
-      refresh: 'Ho chiuso Safari — riprova',
-      enableHeader: 'Abilitiamo i sensori di movimento',
+      title: 'Permesso fotocamera negato',
+      body: "Hai bloccato l'accesso alla fotocamera. Chiudi completamente Safari (dallo switcher app), riaprilo e torna a questa pagina: al prompt tocca Consenti per attivarla.",
+      bodyApple: "Hai bloccato l'accesso alla fotocamera. Chiudi completamente Safari e riapri questa pagina per riprovare.",
+      refresh: 'Ho aggiornato i permessi — riprova',
+      enableHeader: 'Abilitiamo la fotocamera',
     }
+
+    // Segnala a Sentry (via ErrorRecovery) solo la prima volta che vediamo
+    // una schermata di permesso negato, per evitare eventi duplicati mentre
+    // resta visibile (il MutationObserver qui sotto la ricontrolla spesso).
+    let cameraDeniedReported = false;
+    const reportCameraDeniedOnce = () => {
+      if (cameraDeniedReported) return;
+      cameraDeniedReported = true;
+      try {
+        window.ErrorRecovery?.reportCameraError?.('permission_denied');
+      } catch { /* ignore */ }
+    };
 
     let promptLocalizeBusy = false
 
@@ -303,6 +315,7 @@
         if (h1 && /permission|denied|permessi/i.test(h1.textContent || '')) h1.textContent = DENIED_IT.title
         if (p && /motion|permission|movimento|permessi/i.test(p.textContent || '')) p.textContent = DENIED_IT.body
         if (btn && /refresh|reload|ricarica/i.test(btn.textContent || '')) btn.textContent = DENIED_IT.refresh
+        reportCameraDeniedOnce()
       }
 
       const appleDenied = document.getElementById('motionPermissionsErrorApple')
@@ -311,7 +324,8 @@
         const ps = appleDenied.querySelectorAll('p')
         if (h1) h1.textContent = DENIED_IT.title
         if (ps[0]) ps[0].textContent = DENIED_IT.bodyApple
-        if (ps[1]) ps[1].textContent = "Chiudi l'app o il tab e aprilo di nuovo per riabilitare i sensori."
+        if (ps[1]) ps[1].textContent = "Chiudi l'app o il tab e aprilo di nuovo per riabilitarla."
+        reportCameraDeniedOnce()
       }
 
       const appleHelp = document.getElementById('deviceMotionErrorApple')
@@ -388,7 +402,10 @@
   <!-- Carica XRExtras ufficiale per gestire FullScreen e Permessi Camera -->
   <script src="https://cdn.8thwall.com/web/xrextras/xrextras.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0"
+  <!-- Range invece di un singolo punto: serve davvero il font variabile,
+       altrimenti font-variation-settings in CSS non ha alcun effetto
+       (Google serve un'istanza statica quando gli si chiede un solo valore). -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     rel="stylesheet">
   <style>
     :root {
@@ -607,6 +624,172 @@
 
     .material-symbols-rounded {
       font-size: 26px;
+      /* Default esplicito = stesso aspetto di prima per tutte le altre
+         icone dell'app, ora che il font è caricato come variabile. */
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+    /* --- ONBOARDING (splash + tre schermate pre-camera) --- */
+    #onboarding-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10100;
+      background: #ffffff;
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Barra di progresso dello splash: si riempie durante l'attesa del
+       logo, poi sparisce insieme al resto dello splash. */
+    #onboarding-progress-track {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, 90px);
+      width: min(200px, 50vw);
+      height: 3px;
+      background: rgba(20, 20, 25, 0.12);
+      border-radius: 2px;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+
+    #onboarding-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: #c4a45d;
+      transition: width 1.2s linear;
+    }
+
+    #onboarding-overlay.onboarding-loaded #onboarding-progress-track {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Logo unico e condiviso: parte centrato e grande (splash) e anima
+       verso l'angolo in alto a sinistra quando l'overlay riceve la classe
+       "onboarding-loaded" (vedi onboarding.ts). */
+    #onboarding-logo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: min(240px, 60vw);
+      transform: translate(-50%, -50%);
+      transition: top 0.7s cubic-bezier(0.4, 0, 0.2, 1), left 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    #onboarding-overlay.onboarding-loaded #onboarding-logo {
+      top: calc(16px + env(safe-area-inset-top, 0px));
+      left: 20px;
+      width: 96px;
+      transform: translate(0, 0);
+    }
+
+    .onboarding-topbar {
+      position: absolute;
+      top: calc(20px + env(safe-area-inset-top, 0px));
+      right: 20px;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.3s;
+    }
+
+    #onboarding-overlay.onboarding-loaded .onboarding-topbar {
+      opacity: 1;
+    }
+
+    /* Stesso componente .ui-element/.btn-text dell'overlay AR (cerchio 50px,
+       glass + transizione), solo ricolorato per restare leggibile sul
+       fondo chiaro dell'onboarding invece che sopra la fotocamera. */
+    .onboarding-lang-btn {
+      background: rgba(20, 20, 25, 0.06);
+      border-color: rgba(20, 20, 25, 0.15);
+      color: #141419;
+      box-shadow: none;
+    }
+
+    .onboarding-lang-btn:active {
+      background: rgba(20, 20, 25, 0.12) !important;
+    }
+
+    .onboarding-screen {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px;
+      box-sizing: border-box;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.3s;
+    }
+
+    #onboarding-overlay.onboarding-loaded .onboarding-screen {
+      opacity: 1;
+    }
+
+    /* Icona centrale con alone sfumato oro, al posto del logo ripetuto */
+    .onboarding-icon-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 32px;
+    }
+
+    .onboarding-icon {
+      font-size: 96px;
+      color: #c4a45d;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48;
+    }
+
+    /* Icone SVG fornite dalla cliente (schermate silenzioso/fotocamera),
+       già colorate in oro nel file: stessa dimensione delle Material
+       Symbols per restare coerenti con la schermata "Esperienza Immersiva". */
+    .onboarding-icon-svg {
+      width: 88px;
+      height: 88px;
+    }
+
+    /* Stessi valori delle schermate "permesso negato" già esistenti
+       (.permission-error / #reloadButton.main-button più sotto): stessa
+       firma visiva per ogni pagina informativa a schermo intero. */
+    .onboarding-title {
+      color: #c4a45d;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin: 0 0 20px;
+    }
+
+    .onboarding-body {
+      color: #141419;
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 26rem;
+      margin: 0 0 32px;
+    }
+
+    .onboarding-btn {
+      background: #c4a45d;
+      color: #ffffff;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 40px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* La nostra schermata onboarding "Attiva la fotocamera" spiega già il
+       permesso: la schermata nativa 8th Wall sotto è ridondante (e in parte
+       non tradotta). La rendiamo invisibile SENZA toccare display — 8th Wall
+       usa quel valore per il proprio stato interno, forzarlo a "none"
+       blocca l'avvio dell'AR (vedi commento sotto). Resta invece attiva la
+       richiesta nativa del permesso camera del browser, che non dipende
+       dalla visibilità di questo elemento. */
+    #requestingCameraPermissions {
+      opacity: 0 !important;
+      pointer-events: none !important;
     }
 
     /* --- 8TH WALL LOADING + CAMERA PERMISSIONS --- */
@@ -1337,6 +1520,45 @@
 </head>
 
 <body>
+  <!-- ONBOARDING: splash + tre schermate pre-camera, mostrate a ogni apertura dell'app -->
+  <div id="onboarding-overlay">
+    <img id="onboarding-logo" src="./image/ba_va_vettoriale_payoff_oro_nero.png" alt="Museo Bagatti Valsecchi">
+    <div id="onboarding-progress-track" aria-hidden="true">
+      <div id="onboarding-progress-fill"></div>
+    </div>
+
+    <div class="onboarding-topbar">
+      <div id="onboarding-lang-btn" class="ui-element btn-text onboarding-lang-btn">IT</div>
+    </div>
+
+    <div id="onboarding-screen-1" class="onboarding-screen">
+      <div class="onboarding-icon-wrap">
+        <img class="onboarding-icon-svg" src="./image/icon-scan.svg" alt="" aria-hidden="true">
+      </div>
+      <h1 id="onboarding-title-1" class="onboarding-title">Esperienza Immersiva</h1>
+      <p id="onboarding-body-1" class="onboarding-body">Hai attivato la modalità immersiva. Scansiona la stanza per scoprire disegni storici e curiosità sulle opere che osservi dal vivo.</p>
+      <button id="onboarding-continue-1" class="onboarding-btn">Continua</button>
+    </div>
+
+    <div id="onboarding-screen-2" class="onboarding-screen hidden">
+      <div class="onboarding-icon-wrap">
+        <img class="onboarding-icon-svg" src="./image/icon-silenzioso.svg" alt="" aria-hidden="true">
+      </div>
+      <h1 id="onboarding-title-2" class="onboarding-title">Avvertenza Modalità Silenzioso</h1>
+      <p id="onboarding-body-2" class="onboarding-body">Su alcuni dispositivi la Modalità Silenzioso potrebbe impedire di sentire l'audioguida. Se riscontri questo problema, ti consigliamo di disattivare la Modalità Silenzioso.</p>
+      <button id="onboarding-continue-2" class="onboarding-btn">Continua</button>
+    </div>
+
+    <div id="onboarding-screen-3" class="onboarding-screen hidden">
+      <div class="onboarding-icon-wrap">
+        <img class="onboarding-icon-svg" src="./image/icon-camera.svg" alt="" aria-hidden="true">
+      </div>
+      <h1 id="onboarding-title-3" class="onboarding-title">Attiva la fotocamera</h1>
+      <p id="onboarding-body-3" class="onboarding-body">Per vivere l'esperienza AR abbiamo bisogno di accedere alla fotocamera del tuo dispositivo. Al passo successivo il telefono ti chiederà il permesso.</p>
+      <button id="onboarding-continue-3" class="onboarding-btn">Attiva Fotocamera</button>
+    </div>
+  </div>
+
   <!-- ERROR RECOVERY BANNER -->
   <div id="error-recovery-banner" class="hidden">
     <div class="pwa-header" style="align-items:flex-start;">

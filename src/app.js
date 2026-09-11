@@ -6,6 +6,8 @@ window.THREE = THREE;
 import { CarouselPipelineModule } from './ar-pipeline';
 import { ErrorRecovery } from './error-recovery';
 import { PwaPrecache } from './pwa-precache';
+import { initOnboarding } from './onboarding';
+import { getAppLang } from './lang-state';
 
 window.ErrorRecovery = ErrorRecovery;
 window.PwaPrecache = PwaPrecache;
@@ -15,9 +17,9 @@ window.PwaPrecache = PwaPrecache;
 // ON-SCREEN LOGGER (Disabled)
 const log = (...args) => { /* console.log(...args); */ };
 
-// Init recovery il prima possibile (lingua default IT; ar-pipeline aggiorna getLang)
+// Init recovery il prima possibile (lingua da onboarding; ar-pipeline aggiorna getLang su uiController)
 ErrorRecovery.init({
-  getLang: () => 'it',
+  getLang: () => getAppLang(),
   isCarouselOpen: () => false,
 });
 
@@ -157,4 +159,33 @@ const studiostudioqrJson = require('../image-targets/studio_studio_qr.json');
   log('🚀 XR8.run() called');
 }
 
-window.XR8 ? onxrloaded() : window.addEventListener('xrloaded', onxrloaded);
+// Avvia il motore AR (e quindi la richiesta del permesso camera) solo dopo
+// che l'utente ha completato le due schermate di onboarding, anche se il
+// motore XR8 è già pronto prima. Il caricamento di xr.js prosegue comunque
+// in background durante l'onboarding: non lo blocchiamo, solo l'avvio.
+let xr8Ready = false;
+let onboardingDone = false;
+let arStarted = false;
+
+const tryStartAr = () => {
+  if (xr8Ready && onboardingDone && !arStarted) {
+    arStarted = true;
+    onxrloaded();
+  }
+};
+
+if (window.XR8) {
+  xr8Ready = true;
+} else {
+  window.addEventListener('xrloaded', () => {
+    xr8Ready = true;
+    tryStartAr();
+  });
+}
+
+initOnboarding(() => {
+  onboardingDone = true;
+  tryStartAr();
+});
+
+tryStartAr();

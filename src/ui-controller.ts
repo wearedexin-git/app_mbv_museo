@@ -1,3 +1,5 @@
+import { getAppLang, setAppLang } from './lang-state';
+
 export class UIController {
   private overlay: HTMLElement;
   private scanHud: HTMLElement;
@@ -29,7 +31,7 @@ export class UIController {
   private closePlayerBtn: HTMLElement;
 
   // Stato UI
-  private currentLang: 'it' | 'en' = 'it';
+  private currentLang: 'it' | 'en' = getAppLang();
   public onLangToggle?: (lang: 'it' | 'en') => void;
   public onCloseTarget?: () => void;
   public onNavLeft?: () => void;
@@ -66,6 +68,7 @@ export class UIController {
     this.timeDisplay = document.getElementById('time-display')!;
     this.closePlayerBtn = document.getElementById('close-player-btn')!;
 
+    this.langBtn.innerHTML = this.currentLang.toUpperCase();
     this.bindEvents();
     this.bindAudioErrorOnce();
   }
@@ -80,6 +83,7 @@ export class UIController {
   private bindEvents() {
     this.langBtn.addEventListener('click', () => {
       this.currentLang = this.currentLang === 'it' ? 'en' : 'it';
+      setAppLang(this.currentLang);
       this.langBtn.innerHTML = this.currentLang.toUpperCase();
       if(this.onLangToggle) this.onLangToggle(this.currentLang);
       // Aggiorna copy del banner recovery se aperto
