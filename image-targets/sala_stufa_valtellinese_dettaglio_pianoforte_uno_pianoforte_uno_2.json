@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2_luminance.jpg",
+  "metadata": null,
+  "name": "sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2_original.jpg",
+    "croppedImage": "sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2_cropped.jpg",
+    "thumbnailImage": "sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2_thumbnail.jpg",
+    "luminanceImage": "sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2_luminance.jpg"
+  },
+  "created": 1789135983411,
+  "updated": 1789135983411
+}

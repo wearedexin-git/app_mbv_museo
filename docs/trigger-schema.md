@@ -87,34 +87,25 @@ Tre hotspot.
 
 ## Camera Rossa (`camera_rossa`)
 
-Quattro hotspot. `credenza` e `decorazione_credenza` hanno **stessi** audio, immagine e nome file QR: duplicato da sistemare prima dello sync.
+Tre hotspot. La cartella `decorazione_credenza` (duplicato di `credenza`: stessi mp3, stessa jpg, stesso `trigger_credenza_qr.jpg`) è stata rimossa — se ne teneva uno solo, come da anomalia già segnalata più sotto.
 
-### `camera` — overlay pronto, no marker 8th Wall
+### `camera` — in app
 
-- **Marker:** solo QR `trigger_camera_qr.jpg`
+- **Marker:** foto `trigger_camera.jpg` + QR `trigger_camera_qr.jpg`
 - **Immagini:** 1 — `camera_rossa.jpg`
 - **Audio IT:** `audio/ita/camera_slide27[ITA].mp3` (slide 27)
 - **Audio EN:** `audio/en/camera_slide27[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** no
 
-### `credenza` — overlay pronto, no marker 8th Wall (duplicato di `decorazione_credenza`)
+### `credenza` — in app
 
-- **Marker:** solo QR `trigger_credenza_qr.jpg`
+- **Marker:** foto `trigger_credenza.jpg` + QR `trigger_credenza_qr.jpg`
 - **Immagini:** 1 — `grottesca_credenza.jpg`
 - **Audio IT:** `audio/ita/decorazione_slide29[ITA].mp3` (slide 29)
 - **Audio EN:** `audio/en/decorazione_slide29[ENG].mp3`
 - **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
 - **Quiz:** `bv-quiz-vetrina` — file presente (mapping `credenza`). Stesso quiz di `dettaglio_credenza`
-
-### `decorazione_credenza` — overlay pronto, no marker 8th Wall (duplicato di `credenza`)
-
-- **Marker:** solo QR `trigger_credenza_qr.jpg` (stesso filename della cartella gemella; l’id 8th Wall include il path quindi non collide)
-- **Immagini:** 1 — `grottesca_credenza.jpg`
-- **Audio IT:** `audio/ita/decorazione_slide29[ITA].mp3` (slide 29)
-- **Audio EN:** `audio/en/decorazione_slide29[ENG].mp3`
-- **Testi:** `testi/ita/text_ita.rtf`, `testi/en/text_en.rtf`
-- **Quiz:** `bv-quiz-vetrina` — file presente
 
 ### `dettaglio_credenza` — in app
 
@@ -499,9 +490,8 @@ Un hotspot. In app.
 | Camera Fausto | dettaglio_porta | **no marker 8th Wall** | solo QR | 1 | no |
 | Camera Fausto | stanza | in app | foto + QR | 1 | no |
 | Camera Rossa | camera | **no marker 8th Wall** | solo QR | 1 | no |
-| Camera Rossa | credenza | **no marker 8th Wall** | solo QR | 1 | vetrina OK (duplicato) |
-| Camera Rossa | decorazione_credenza | **no marker 8th Wall** | solo QR | 1 | vetrina OK (duplicato) |
-| Camera Rossa | dettaglio_credenza | in app | foto + QR | 2 | vetrina OK |
+| Camera Rossa | credenza | in app | foto + QR | 1 | vetrina OK |
+| Camera Rossa | dettaglio_credenza | in app | foto + QR (×2) | 2 | vetrina OK |
 | Camera Verde | camera | **no marker 8th Wall** | solo QR | 1 | no |
 | Camera Verde | dettaglio_camino | in app | foto + QR | 2 | camino OK (condiviso) |
 | Camera Verde | dettaglio_letto | **no marker 8th Wall** | solo QR | 2 | no |
@@ -552,7 +542,7 @@ Chiavi in ordine (la prima che matcha vince). Se `src/quizbase/<id>/questions.js
 | Chiave nel path | `quizId` | JSON sul disco | Chi lo prende |
 |-----------------|----------|----------------|---------------|
 | `sala_bevilacqua_camino` | `bv-quiz-bevilacqua` | sì | solo il camino Bevilacqua |
-| `vetrina` / `credenza` | `bv-quiz-vetrina` | sì | dettaglio_credenza, credenza, decorazione_credenza |
+| `vetrina` / `credenza` | `bv-quiz-vetrina` | sì | dettaglio_credenza, credenza |
 | `camino` | `bv-quiz-camino` | sì | Camera Verde, Salone, pranzo camino_uno/due. **Non** Bevilacqua camino (chiave più specifica sopra) |
 | `vasca` / `bagno` | `bv-quiz-vasca` | sì | sala_bagno |
 | `armatura` | `bv-quiz-armatura` | **no** | 3 armature → nessun bottone |
@@ -570,7 +560,7 @@ Per attivare un quiz mancante: aggiungere `src/quizbase/bv-quiz-<nome>/questions
 
 ## Anomalie ancora aperte
 
-1. **Duplicato Camera Rossa:** `credenza` ≈ `decorazione_credenza` (stessi mp3, stessa jpg, stesso `trigger_credenza_qr.jpg`). Tenerne uno.
+1. ~~Duplicato Camera Rossa: `credenza` ≈ `decorazione_credenza`~~ — risolto, cartella `decorazione_credenza` rimossa.
 2. ~~Estensione doppia audio EN~~ — sistemato (`[ENG].mp3`).
 3. ~~Typo `texte_ita.rtf`~~ — sistemato (`text_ita.rtf`).
 4. ~~Serliana 5 foto + QR~~ — sistemato (resta `trigger_serliana_qr.jpg`).

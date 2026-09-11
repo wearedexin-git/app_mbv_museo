@@ -137,23 +137,6 @@
     }
   },
   {
-    "id": "camera_rossa_decorazione_credenza",
-    "quizId": "bv-quiz-vetrina",
-    "images": [
-      "./asset/camera_rossa/decorazione_credenza/images/grottesca_credenza.jpg"
-    ],
-    "localization": {
-      "it": {
-        "infoText": "Guarda bene la decorazione a grottesca che corre lungo la vetrina della Camera Rossa. Non è solo un elegante ornamento, è un omaggio sottile e raffinato a uno dei gioielli dell'arte veneziana: Santa Maria dei Miracoli. Sì, proprio quella splendida chiesa rivestita di marmi e decorazioni, progettata da Pietro Lombardo e dai suoi figli nel tardo Quattrocento. E ancora una volta, i fratelli Bagatti Valsecchi non si limitano a copiare. Studiano, reinterpretano, traducono quella bellezza in un linguaggio nuovo, su misura per la loro casa. Disegnano il motivo con cura millimetrica di Innocente Cattaneo, che lo trasferisce sul legno con maestria. - letteralmente, su carta millimetrata - e lo affidano all'esperta mano Il risultato? Una decorazione che unisce erudizione e artigianato, memoria storica e creatività contemporanea. Un altro tassello nel grande mosaico rinascimentale che è questa casa.",
-        "audioSrc": "./asset/camera_rossa/decorazione_credenza/audio/ita/decorazione_slide29[ITA].mp3"
-      },
-      "en": {
-        "infoText": "Look closely: the grotesque decoration running along the display cabinet in the Red Room is not just an elegant ornament... it's a subtle and refined tribute to one of the jewels of Venetian art: Santa Maria dei Miracoli. Yes, the stunning church adorned with marbles and decorations, designed by Pietro Lombardo and his sons in the late 15th century. Once again, the Bagatti Valsecchi brothers did not simply copy. They studied, reinterpreted, and translated that beauty into a new language, tailored to their home. They meticulously designed the motif - literally, on graph paper - and entrusted it to the expert hand of Innocente Cattaneo, who transferred it onto wood with masterful skill. The result? A decoration that combines erudition and craftsmanship, historical memory and contemporary creativity. Another piece in the great Renaissance mosaic that is this house.",
-        "audioSrc": "./asset/camera_rossa/decorazione_credenza/audio/en/decorazione_slide29[ENG].mp3"
-      }
-    }
-  },
-  {
     "id": "camera_rossa_dettaglio_credenza",
     "quizId": "bv-quiz-vetrina",
     "images": [
