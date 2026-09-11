@@ -4,10 +4,19 @@ export type ErrorRecoveryOptions = {
   getLang: () => AppLang;
   /** true se il carosello AR è aperto (offline → blocco soft) */
   isCarouselOpen?: () => boolean;
+  /** true se il pannello quiz è visibile: sospende la chiusura automatica per tracking perso */
+  isQuizOpen?: () => boolean;
+  /** Chiamato quando il marker resta perso oltre hangMs con carosello aperto (quiz escluso): chiude hotspot attivo e torna alla scansione. */
+  onTrackingTimeout?: () => void;
   /** timeout load critici (ms) */
   timeoutMs?: number;
   /** soglia hang / tracking perso (ms) */
   hangMs?: number;
+};
+
+const TRACKING_HINT_TEXT: Record<AppLang, string> = {
+  it: 'Per riprendere l’esperienza, inquadra di nuovo l’opera.',
+  en: 'To resume the experience, frame the artwork again.',
 };
 
 type ReportPayload = {
@@ -30,6 +39,8 @@ const DEFAULT_HANG_MS = 10_000;
 class ErrorRecoveryController {
   private getLang: () => AppLang = () => 'it';
   private isCarouselOpen: () => boolean = () => false;
+  private isQuizOpen: () => boolean = () => false;
+  private onTrackingTimeout?: () => void;
   private timeoutMs = DEFAULT_TIMEOUT_MS;
   private hangMs = DEFAULT_HANG_MS;
 
@@ -47,6 +58,8 @@ class ErrorRecoveryController {
   private watchdogTimer: number | null = null;
   private trackingLostSince: number | null = null;
   private trackingLostTimer: number | null = null;
+  private trackingHintTimer: number | null = null;
+  private trackingHint: HTMLElement | null = null;
   private bootTimerSoft: number | null = null;
   private bootTimerHard: number | null = null;
   private interactionBlocked = false;
@@ -66,6 +79,7 @@ class ErrorRecoveryController {
     this.closeBtn = document.getElementById('error-close-btn');
     this.loader = document.getElementById('recovery-loader');
     this.loaderText = document.getElementById('recovery-loader-text');
+    this.trackingHint = document.getElementById('tracking-hint');
 
     this.reloadBtn?.addEventListener('click', () => this.reload());
     this.closeBtn?.addEventListener('click', () => this.hide());
@@ -105,6 +119,8 @@ class ErrorRecoveryController {
   configure(opts: Partial<ErrorRecoveryOptions>) {
     if (opts.getLang) this.getLang = opts.getLang;
     if (opts.isCarouselOpen) this.isCarouselOpen = opts.isCarouselOpen;
+    if (opts.isQuizOpen) this.isQuizOpen = opts.isQuizOpen;
+    if (opts.onTrackingTimeout) this.onTrackingTimeout = opts.onTrackingTimeout;
     if (opts.timeoutMs) this.timeoutMs = opts.timeoutMs;
     if (opts.hangMs) this.hangMs = opts.hangMs;
   }
@@ -116,6 +132,17 @@ class ErrorRecoveryController {
       const msg = getErrorMessage(this.currentKind || 'offline', this.getLang());
       if (this.loaderText) this.loaderText.textContent = msg.loading;
     }
+    if (this.trackingHint && !this.trackingHint.classList.contains('hidden')) {
+      this.trackingHint.textContent = TRACKING_HINT_TEXT[this.getLang()];
+    }
+  }
+
+  private hideTrackingHint() {
+    if (this.trackingHintTimer != null) {
+      window.clearTimeout(this.trackingHintTimer);
+      this.trackingHintTimer = null;
+    }
+    this.trackingHint?.classList.add('hidden');
   }
 
   show(kind: ErrorKind, detail?: string) {
@@ -150,10 +177,28 @@ class ErrorRecoveryController {
   noteTrackingLost() {
     if (this.trackingLostSince != null) return;
     this.trackingLostSince = performance.now();
+
+    // A metà strada verso la chiusura: etichetta leggera, nessun bottone,
+    // sparisce da sola al ritrovamento del marker o alla chiusura a hangMs.
+    if (this.trackingHintTimer != null) window.clearTimeout(this.trackingHintTimer);
+    this.trackingHintTimer = window.setTimeout(() => {
+      if (this.trackingLostSince == null) return;
+      if (!this.isCarouselOpen() || this.isQuizOpen()) return;
+      if (this.trackingHint) {
+        this.trackingHint.textContent = TRACKING_HINT_TEXT[this.getLang()];
+        this.trackingHint.classList.remove('hidden');
+      }
+    }, Math.round(this.hangMs / 2));
+
     if (this.trackingLostTimer != null) window.clearTimeout(this.trackingLostTimer);
     this.trackingLostTimer = window.setTimeout(() => {
       if (this.trackingLostSince == null) return;
       if (!this.isCarouselOpen()) return;
+      // Quiz aperto: l'utente potrebbe aver appoggiato il telefono per
+      // rispondere con calma. Niente avviso né chiusura in quel caso.
+      if (this.isQuizOpen()) return;
+      this.hideTrackingHint();
+      this.onTrackingTimeout?.();
       this.show('tracking_lost_long');
     }, this.hangMs);
   }
@@ -164,6 +209,7 @@ class ErrorRecoveryController {
       window.clearTimeout(this.trackingLostTimer);
       this.trackingLostTimer = null;
     }
+    this.hideTrackingHint();
     if (this.currentKind === 'tracking_lost_long') this.hide();
   }
 

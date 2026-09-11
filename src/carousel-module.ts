@@ -43,6 +43,8 @@ export class Carousel3D {
   private readonly _desiredBillboard = new THREE.Quaternion();
   private readonly _faceCamera = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI);
   private readonly _ndc = new THREE.Vector3();
+  private readonly _forward = new THREE.Vector3();
+  private readonly _lockedTarget = new THREE.Vector3();
 
   private readonly clock = new THREE.Clock();
   /** Tracking: più alto = più reattivo. */
@@ -68,6 +70,12 @@ export class Carousel3D {
   /** Congela solo dopo perdita prolungata (micro-lost da avvicinamento non bloccano subito). */
   private lostSinceMs: number | null = null;
   private readonly loseGraceMs = 900;
+
+  /** Marker perso da tempo (carosello aperto): segue la fotocamera invece di
+   *  restare fermo nel mondo, per non "uscire" dallo schermo mentre ti giri. */
+  private cameraLocked = false;
+  private frozenAnchorDistance = 1;
+  private readonly cameraLockLambda = 8;
 
   /**
    * Pin HTML: tre dischi sul target, respiro in scala.
@@ -171,6 +179,7 @@ export class Carousel3D {
 
     this.trackingEnabled = true;
     this.lostSinceMs = null;
+    this.cameraLocked = false;
     this.triggerRoot.visible = true;
     this.isTriggerVisible = true;
     this.applyPoseFromDetail(detail, true);
@@ -199,6 +208,7 @@ export class Carousel3D {
     this.isCarouselOpen = true;
     this.trackingEnabled = true;
     this.lostSinceMs = null;
+    this.cameraLocked = false;
     this.recoveryUntilMs = 0;
     this.posLambda = this.posLambdaNormal;
     this.maxSpeed = this.maxSpeedNormal;
@@ -340,6 +350,7 @@ export class Carousel3D {
     this.isCarouselOpen = false;
     this.trackingEnabled = true;
     this.lostSinceMs = null;
+    this.cameraLocked = false;
     this.recoveryUntilMs = 0;
     this.posLambda = this.posLambdaNormal;
     this.maxSpeed = this.maxSpeedNormal;
@@ -390,8 +401,20 @@ export class Carousel3D {
   }
 
   public freezeTracking() {
-    // Congela in mondo: l'immagine resta lì, avvicinarsi zoomma i dettagli.
-    // (Niente follow-camera: quello annullava lo zoom.)
+    // Marker perso da un pezzo (carosello): invece di restare fermo nel
+    // punto reale — che la fotocamera "supera" muovendosi, facendo sembrare
+    // che l'opera scappi verso un bordo/fuori schermo — da qui segue la
+    // fotocamera restando centrata, come un elemento fisso davanti a te,
+    // finché non si ritrova il marker o scatta la chiusura automatica (10s).
+    // Per il trigger (non ancora aperto) resta invece un congelamento
+    // "muto": lì non c'è percezione di rottura, il pin semplicemente sparisce.
+    if (this.isCarouselOpen) {
+      this.camera.updateMatrixWorld(true);
+      this.camera.getWorldPosition(this._camPos);
+      this.activeContainer.getWorldPosition(this._worldPos);
+      this.frozenAnchorDistance = Math.max(0.3, this._camPos.distanceTo(this._worldPos));
+      this.cameraLocked = true;
+    }
     this.trackingEnabled = false;
   }
 
@@ -406,6 +429,7 @@ export class Carousel3D {
 
   public resumeTracking(detail?: any) {
     this.lostSinceMs = null;
+    this.cameraLocked = false;
     this.trackingEnabled = true;
     // Niente snap: rientro soft verso la nuova posa del marker
     this.beginRecovery();
@@ -419,6 +443,7 @@ export class Carousel3D {
   public updateTargetTransform(detail: any) {
     const wasLost = this.lostSinceMs != null || !this.trackingEnabled;
     this.lostSinceMs = null;
+    this.cameraLocked = false;
     if (!this.trackingEnabled) {
       this.trackingEnabled = true;
     }
@@ -514,8 +539,19 @@ export class Carousel3D {
       }
       this.smoothed.set(mx, my, mz);
       this.flushPoseToContainer();
+    } else if (this.cameraLocked) {
+      // Marker perso da tempo: segue la fotocamera restando centrata (stessa
+      // distanza di quando si è persa), così non esce mai dallo schermo.
+      this.camera.updateMatrixWorld(true);
+      this.camera.getWorldPosition(this._camPos);
+      this._forward.set(0, 0, -1).applyQuaternion(this.camera.getWorldQuaternion(this._camQuat));
+      this._lockedTarget.copy(this._camPos).addScaledVector(this._forward, this.frozenAnchorDistance);
+
+      const t = 1 - Math.exp(-this.cameraLockLambda * dt);
+      this.smoothed.lerp(this._lockedTarget, t);
+      this.flushPoseToContainer();
     }
-    // Se tracking frozen: posa mondo ferma → avvicinarsi zoomma naturalmente
+    // Se il trigger (non carosello) è frozen: posa mondo ferma, nessun follow.
 
     if (this.carouselGroup) {
       const targetX = -(this.currentIndex * this.slideSpacing);

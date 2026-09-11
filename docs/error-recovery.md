@@ -42,7 +42,7 @@ Overlay leggero `#recovery-loader` durante auto-retry (es. ritorno online).
 | `asset_load` | Texture carosello / asset correlati | Banner per quel fallimento |
 | `xr_boot` | Motore XR non disponibile / schermata nera al boot | Messaggio dedicato |
 | `camera` | Permesso fotocamera negato / non disponibile | Messaggio dedicato |
-| `tracking_lost_long` | Marker perso con carosello aperto per ≥ 10s | Solo banner (contenuto non chiuso automaticamente) |
+| `tracking_lost_long` | Marker perso con carosello aperto per ≥ 10s | Banner + chiusura automatica dell'hotspot (eccetto quiz aperto) |
 | `ui_hang` / `watchdog` | Nessun heartbeat pipeline per ≥ 10s | Banner |
 | `js_fatal` | `window.onerror` / `unhandledrejection` rilevanti | Banner |
 
@@ -65,7 +65,11 @@ Rilevato solo su azioni reali (texture, quiz JSON, audio, ecc.) con soglia **10 
 
 ### Tracking perso a lungo
 
-Timer avviato su `reality.imagelost` con carosello aperto; cancellato su `imagefound` / `imageupdated`. Dopo 10s → banner `tracking_lost_long` (il piano 3D resta; l’utente può riallineare o ricaricare).
+Timer avviato su `reality.imagelost` con carosello aperto; cancellato su `imagefound` / `imageupdated`. Dopo 10s, se il quiz non è aperto: si chiude l'hotspot attivo (stessa azione della X manuale, si torna alla scansione) e compare il banner `tracking_lost_long`. Se il quiz è aperto in quel momento, niente banner né chiusura (l'utente potrebbe aver appoggiato il telefono per rispondere con calma).
+
+Prima di questa modifica il piano 3D restava congelato nello spazio e, muovendosi, poteva "scivolare" fino a bloccarsi visivamente in un angolo dello schermo — da qui la scelta di chiudere invece di lasciarlo aperto.
+
+Nella finestra tra i 900ms (fine grace period) e i 10s (chiusura), il piano non resta più fermo nel mondo: segue la fotocamera restando centrato nell'inquadratura (`carousel-module.ts`, `cameraLocked`/`freezeTracking`), così non esce mai dallo schermo mentre l'utente si gira — la percezione precedente era di un'app rotta. Vale solo a carosello aperto: il pin del trigger (prima del tap) resta congelato nel mondo come da comportamento originale.
 
 ### Watchdog frame
 
@@ -126,7 +130,7 @@ ErrorRecovery.reportAssetLoadError(detail?)
 | Soglia hang / tracking | 10 secondi |
 | Retry blocco | Reload URL |
 | Ambiente test | Avvisi visibili |
-| Tracking perso lungo | Solo banner (no auto-close carosello) |
+| Tracking perso lungo | Banner + auto-close carosello (eccetto quiz aperto) |
 
 ---
 
@@ -138,7 +142,7 @@ ErrorRecovery.reportAssetLoadError(detail?)
 4. Chrome DevTools → Network → Slow 3G + asset pesante → timeout
 5. URL texture invalido (temporaneo) → `asset_load`
 6. Nega permesso camera → `camera`
-7. Copri / esci dal marker ≥ 10s con carosello aperto → `tracking_lost_long`
+7. Copri / esci dal marker ≥ 10s con carosello aperto → hotspot chiuso in automatico + banner `tracking_lost_long`. Ripeti con il quiz aperto: né chiusura né banner.
 8. Cambia IT/EN con banner aperto → testo aggiornato
 
 ---

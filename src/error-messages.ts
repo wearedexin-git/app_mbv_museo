@@ -102,14 +102,14 @@ const MESSAGES: Record<ErrorKind, Record<AppLang, MessageSet>> = {
   tracking_lost_long: {
     it: {
       title: 'Opera fuori inquadratura',
-      body: 'Abbiamo perso di vista il dettaglio. Inquadra di nuovo l’opera oppure ricarica la pagina per riprendere la visita.',
+      body: 'Abbiamo chiuso il dettaglio e siamo tornati alla scansione. Inquadra di nuovo l’opera per riaprirlo.',
       reload: 'Ricarica',
       close: 'Chiudi',
       loading: 'Stiamo ripristinando la visita…',
     },
     en: {
       title: 'Artwork out of view',
-      body: 'We lost sight of the detail. Frame the artwork again, or reload the page to continue your visit.',
+      body: "We've closed the detail view and returned to scanning. Frame the artwork again to reopen it.",
       reload: 'Reload',
       close: 'Close',
       loading: 'Restoring your visit…',

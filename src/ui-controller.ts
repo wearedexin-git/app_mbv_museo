@@ -1,8 +1,24 @@
 import { getAppLang, setAppLang } from './lang-state';
 
+const SCAN_HINT_KEY = 'mbv_scan_hint_shown';
+const SCAN_HINT_TEXT: Record<'it' | 'en', { title: string; body: string }> = {
+  it: {
+    title: 'Inquadra le opere',
+    body: "Punta la fotocamera su un'opera del museo per attivare l'esperienza multimediale.",
+  },
+  en: {
+    title: 'Frame the artworks',
+    body: 'Point your camera at a museum artwork to activate its multimedia experience.',
+  },
+};
+
 export class UIController {
   private overlay: HTMLElement;
   private scanHud: HTMLElement;
+  private scanHintBanner: HTMLElement | null;
+  private scanHintTitle: HTMLElement | null;
+  private scanHintBody: HTMLElement | null;
+  private scanHintTimer: number | null = null;
   private langBtn: HTMLElement;
   private closeBtn: HTMLElement;
   private audioBtn: HTMLElement;
@@ -44,6 +60,9 @@ export class UIController {
   constructor() {
     this.overlay = document.getElementById('ar-ui-overlay')!;
     this.scanHud = document.getElementById('ar-scan-hud')!;
+    this.scanHintBanner = document.getElementById('scan-hint-banner');
+    this.scanHintTitle = document.getElementById('scan-hint-title');
+    this.scanHintBody = document.getElementById('scan-hint-body');
     this.langBtn = document.getElementById('lang-btn')!;
     this.closeBtn = document.getElementById('close-btn')!;
     this.audioBtn = document.getElementById('audio-btn')!;
@@ -178,6 +197,12 @@ export class UIController {
     return this.currentLang;
   }
 
+  /** true se il pannello quiz è visibile: l'utente potrebbe aver appoggiato
+   *  il telefono per rispondere con calma, niente chiusura automatica lì. */
+  public isQuizOpen(): boolean {
+    return !this.quizPanel.classList.contains('hidden') && !this.infoBottomSheet.classList.contains('hidden');
+  }
+
   /** Pulisce RTF/C1 e riduce punteggiatura tipografica ad ASCII (niente "No glyph"). */
   private formatInfoText(raw: string): string {
     const windows1252 = typeof TextDecoder !== 'undefined'
@@ -204,10 +229,29 @@ export class UIController {
 
   public showScan() {
     this.scanHud?.classList.remove('hidden');
+    this.maybeShowScanHint();
   }
 
   public hideScan() {
     this.scanHud?.classList.add('hidden');
+  }
+
+  /** Suggerimento "inquadra le opere": solo la prima volta in assoluto
+   *  (localStorage), sparisce da solo dopo 4.5s anche senza trovare nulla. */
+  private maybeShowScanHint() {
+    if (!this.scanHintBanner) return;
+    if (localStorage.getItem(SCAN_HINT_KEY) === 'true') return;
+    localStorage.setItem(SCAN_HINT_KEY, 'true');
+
+    const copy = SCAN_HINT_TEXT[this.currentLang];
+    if (this.scanHintTitle) this.scanHintTitle.textContent = copy.title;
+    if (this.scanHintBody) this.scanHintBody.textContent = copy.body;
+    this.scanHintBanner.classList.remove('hidden');
+
+    if (this.scanHintTimer != null) window.clearTimeout(this.scanHintTimer);
+    this.scanHintTimer = window.setTimeout(() => {
+      this.scanHintBanner?.classList.add('hidden');
+    }, 4500);
   }
 
   // Chiamato quando il Target confermato

@@ -1488,6 +1488,62 @@
       display: none !important;
     }
 
+    /* Suggerimento iniziale sulla schermata di scansione (una tantum) */
+    /* In alto, non in basso: il banner PWA compare in basso dopo 8s e
+       potrebbe sovrapporsi se questo fosse ancora visibile in quel momento. */
+    #scan-hint-banner {
+      position: fixed;
+      left: 20px;
+      right: 20px;
+      top: calc(32px + env(safe-area-inset-top, 0px));
+      z-index: 9996;
+      background: rgba(20, 20, 25, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      text-align: center;
+      padding: 16px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+
+    #scan-hint-title {
+      color: #c4a45d;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    #scan-hint-body {
+      font-size: 0.88rem;
+      font-weight: 500;
+      line-height: 1.4;
+    }
+
+    /* Etichetta leggera "rinquadra l'opera": nessun bottone, si autogestisce */
+    #tracking-hint {
+      position: fixed;
+      left: 20px;
+      right: 20px;
+      bottom: calc(32px + env(safe-area-inset-bottom, 0px));
+      z-index: 9997;
+      background: rgba(20, 20, 25, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      line-height: 1.4;
+      text-align: center;
+      padding: 14px 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+    }
+
     .recovery-spinner {
       width: 36px;
       height: 36px;
@@ -1578,6 +1634,10 @@
     <div id="recovery-loader-text">Stiamo ripristinando la visita…</div>
   </div>
 
+  <!-- Etichetta leggera: compare a metà strada verso la chiusura per
+       tracking perso, nessun bottone, sparisce da sola (error-recovery.ts). -->
+  <div id="tracking-hint" class="hidden">Per riprendere l'esperienza, inquadra di nuovo l'opera.</div>
+
   <!-- PWA INSTALL BANNER -->
   <div id="pwa-install-banner" class="hidden">
     <div class="pwa-header">
@@ -1612,6 +1672,13 @@
       <span class="ar-scan-corner br"></span>
       <div class="ar-scan-line"></div>
     </div>
+  </div>
+
+  <!-- Suggerimento iniziale: solo la prima volta (localStorage), sparisce
+       da solo dopo 4.5s anche se non si è ancora trovata un'opera. -->
+  <div id="scan-hint-banner" class="hidden">
+    <div id="scan-hint-title">Inquadra le opere</div>
+    <div id="scan-hint-body">Punta la fotocamera su un'opera del museo per attivare l'esperienza multimediale.</div>
   </div>
 
   <div id="ar-trigger-hotspot" class="hidden">

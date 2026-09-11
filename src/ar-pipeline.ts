@@ -27,10 +27,24 @@ export const CarouselPipelineModule = () => {
       carousel3D = new Carousel3D(scene, camera, renderer);
       uiController.showScan();
 
+      // Chiude l'hotspot attivo e torna alla scansione: stessa azione della
+      // X manuale, riusata anche quando il marker resta perso troppo a lungo.
+      const closeActiveHotspot = () => {
+        uiController.hideOverlay();
+        carousel3D.hideCarousel();
+        carousel3D.hideTrigger();
+        activeTargetId = null;
+        activeConfig = null;
+        ErrorRecovery.noteTrackingRestored();
+        uiController.showScan();
+      };
+
       // Collega lingua e stato carosello al hub errori
       ErrorRecovery.configure({
         getLang: () => uiController.getLang(),
         isCarouselOpen: () => !!carousel3D?.isCarouselOpen,
+        isQuizOpen: () => uiController.isQuizOpen(),
+        onTrackingTimeout: () => closeActiveHotspot(),
       });
 
       uiController.onNavLeft = () => {
@@ -77,13 +91,11 @@ export const CarouselPipelineModule = () => {
         }
       };
 
+      // Nota: ui-controller chiama già hideOverlay() prima di onCloseTarget
+      // sul tap manuale della X; closeActiveHotspot() lo rifà comunque
+      // (idempotente) perché lo stesso path serve anche il timeout automatico.
       uiController.onCloseTarget = () => {
-        carousel3D.hideCarousel();
-        carousel3D.hideTrigger();
-        activeTargetId = null;
-        activeConfig = null;
-        ErrorRecovery.noteTrackingRestored();
-        uiController.showScan();
+        closeActiveHotspot();
       };
 
       carousel3D.onTriggerClicked = () => {
