@@ -253,6 +253,12 @@ export class Carousel3D {
             })
           );
           mesh.position.x = i * this.slideSpacing;
+          // La rotazione che tiene il pannello rivolto verso la fotocamera
+          // (updateBillboard, sotto) mostra di fatto il retro del piano:
+          // con `DoubleSide` la texture resta la stessa ma appare speculare.
+          // Invertire la scala X compensa senza toccare l'orientamento (che
+          // già funziona per posizione/inseguimento della fotocamera).
+          mesh.scale.x = -1;
           this.carouselGroup.add(mesh);
           this.images.push(mesh);
 
