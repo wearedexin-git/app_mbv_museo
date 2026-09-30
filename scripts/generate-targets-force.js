@@ -1,7 +1,7 @@
 /**
  * Rigenera image-target 8th Wall forzando la sovrascrittura.
  * Uso: node scripts/generate-targets-force.js [targetId...]
- * Senza argomenti: tutti i trigger_* sotto src/asset (esclusi *_qr*).
+ * Senza argomenti: tutti i trigger_* sotto src/asset (inclusi *_qr*).
  */
 const { spawn } = require('child_process');
 const fs = require('fs');
@@ -20,8 +20,6 @@ function findTriggers(dir, results = []) {
       continue;
     }
     if (!f.startsWith('trigger_') || !/\.(jpg|jpeg|png)$/i.test(f)) continue;
-    // Solo foto (non QR): la rigenerazione QR non è in scope
-    if (/_qr\./i.test(f) || /_qr$/i.test(f.replace(/\.[^.]+$/, ''))) continue;
 
     const rel = path.relative(ASSET_ROOT, dir);
     const subpath = rel.split(path.sep).filter(Boolean);
