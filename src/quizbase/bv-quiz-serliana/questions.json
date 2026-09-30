@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Cos'è una serliana?",
+    "options": [
+      "Una particolare tecnica di intarsio ligneo",
+      "Una finestra ad arco centrale affiancata da due aperture rettangolari",
+      "Un tipo di decorazione a stucco con motivi floreali"
+    ],
+    "correctAnswer": 1,
+    "images": [
+      "assets/images/quiz_01.png"
+    ]
+  }
+]

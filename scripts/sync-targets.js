@@ -151,16 +151,24 @@ function findTriggerFolders(dir) {
 
 const QUIZ_ROOT = path.join(PROJECT_ROOT, 'src', 'quizbase');
 
-/** Chiavi più specifiche prima. `bevilacqua` non è una chiave di stanza: solo il camino. */
+/**
+ * Abbinamento quiz → hotspot (match per sottostringa sull'id hotspot, prima chiave vincente).
+ * Id completi dove la parola chiave da sola aggancerebbe hotspot sbagliati:
+ * - camino: solo i due camini della sala da pranzo (la domanda parla di quelli);
+ * - teschio: la domanda è ambientata in Camera di Fausto, non sul capitello in Biblioteca;
+ * - armatura: solo armatura_1;
+ * - bevilacqua (scarpetta araldica): sulla scarpa, non sul camino di Sala Bevilacqua.
+ */
 const quizMapping = [
-    ['sala_bevilacqua_camino', 'bv-quiz-bevilacqua'],
-    ['armatura', 'bv-quiz-armatura'],
-    ['camino', 'bv-quiz-camino'],
+    ['sala_bevilacqua_scarpa', 'bv-quiz-bevilacqua'],
+    ['sala_pranzo_camino_uno', 'bv-quiz-camino'],
+    ['sala_pranzo_camino_due', 'bv-quiz-camino'],
+    ['camera_fausto_stanza', 'bv-quiz-teschio'],
+    ['galleria_armi_armatura_1', 'bv-quiz-armatura'],
     ['lesena', 'bv-quiz-lesena'],
     ['lasena', 'bv-quiz-lesena'],
     ['portiera', 'bv-quiz-portiera'],
     ['serliana', 'bv-quiz-serliana'],
-    ['teschio', 'bv-quiz-teschio'],
     ['vasca', 'bv-quiz-vasca'],
     ['bagno', 'bv-quiz-vasca'],
     ['vetrina', 'bv-quiz-vetrina'],

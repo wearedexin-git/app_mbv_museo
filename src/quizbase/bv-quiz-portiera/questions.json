@@ -1,0 +1,14 @@
+[
+  {
+    "question": "Quali sono i quattro simboli che compongono lo stemma araldico della famiglia Bagatti Valsecchi?",
+    "options": [
+      "Aquila imperiale, soldato, bue, gigli",
+      "Aquila imperiale, re, bue, gigli",
+      "Aquila imperiale, soldato, bue, cardi"
+    ],
+    "correctAnswer": 0,
+    "images": [
+      "assets/images/quiz_05.png"
+    ]
+  }
+]

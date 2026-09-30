@@ -87,7 +87,7 @@
   },
   {
     "id": "camera_fausto_stanza",
-    "quizId": null,
+    "quizId": "bv-quiz-teschio",
     "images": [
       "./asset/camera_fausto/stanza/images/camera.jpg"
     ],
@@ -173,7 +173,7 @@
   },
   {
     "id": "camera_verde_dettaglio_camino",
-    "quizId": "bv-quiz-camino",
+    "quizId": null,
     "images": [
       "./asset/camera_verde/dettaglio_camino/images/carousel_1_camino.jpg",
       "./asset/camera_verde/dettaglio_camino/images/carousel_2_camino.jpg"
@@ -209,7 +209,7 @@
   },
   {
     "id": "galleria_armi_armatura_1",
-    "quizId": null,
+    "quizId": "bv-quiz-armatura",
     "images": [
       "./asset/galleria_armi/armatura_1/images/armatura1.jpg"
     ],
@@ -294,7 +294,7 @@
   },
   {
     "id": "galleria_cupola_portiera",
-    "quizId": null,
+    "quizId": "bv-quiz-portiera",
     "images": [
       "./asset/galleria_cupola/portiera/images/stemma.jpg"
     ],
@@ -380,7 +380,7 @@
   },
   {
     "id": "sala_affresco_serliana",
-    "quizId": null,
+    "quizId": "bv-quiz-serliana",
     "images": [
       "./asset/sala_affresco/serliana/images/carousel_1_serliana.jpg",
       "./asset/sala_affresco/serliana/images/carousel_2_serliana.jpg"
@@ -416,7 +416,7 @@
   },
   {
     "id": "sala_bevilacqua_camino",
-    "quizId": "bv-quiz-bevilacqua",
+    "quizId": null,
     "images": [
       "./asset/sala_bevilacqua/camino/images/camino.jpg"
     ],
@@ -451,7 +451,7 @@
   },
   {
     "id": "sala_bevilacqua_scarpa",
-    "quizId": null,
+    "quizId": "bv-quiz-bevilacqua",
     "images": [
       "./asset/sala_bevilacqua/scarpa/images/carousel_1_scarpa.jpg",
       "./asset/sala_bevilacqua/scarpa/images/carousel_2_scarpa.jpg"
@@ -610,7 +610,7 @@
   },
   {
     "id": "salone_onore_camino",
-    "quizId": "bv-quiz-camino",
+    "quizId": null,
     "images": [
       "./asset/salone_onore/camino/images/camino.jpg"
     ],
@@ -645,7 +645,7 @@
   },
   {
     "id": "salone_onore_lasena",
-    "quizId": null,
+    "quizId": "bv-quiz-lesena",
     "images": [
       "./asset/salone_onore/lasena/images/carousel_1_lasena.jpg",
       "./asset/salone_onore/lasena/images/carousel_2_disegno.jpg"
