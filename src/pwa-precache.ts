@@ -3,7 +3,7 @@ import { targetConfigs } from './config/targetsManager';
 // Deve combaciare con CACHE_NAME in src/sw.js: scriviamo nella stessa cache
 // dinamica che il service worker legge in fase di fetch, così i file
 // pre-scaricati risultano già "hit" al primo uso reale.
-const CACHE_NAME = 'bagatti-ar-v4';
+const CACHE_NAME = 'bagatti-ar-v5';
 const CONCURRENCY = 4;
 
 function collectAssetUrls(): string[] {
