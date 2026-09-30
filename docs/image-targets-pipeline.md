@@ -32,7 +32,7 @@ Foto originale (iPhone / Android / reflex), a colori, nitida
 
 Senza il passo 8th Wall (json + luminance) la camera **non** riconosce la foto nuova, anche se `trigger_*.jpg` è giusto.
 
-I file `*_qr*` sono marker QR museo: `generate-targets-force.js` **li ignora** di proposito.
+I file `*_qr*` sono foto ufficiali dell'opera (non codici QR): `generate-targets-force.js` li genera come tutti gli altri `trigger_*`, ma non vanno passati da `preprocess-triggers.py` (si usano così come sono). Lanciato senza argomenti lo script rigenera **tutti** i marker, `_qr` compresi: per rigenerarne solo alcuni passare i `targetId`.
 
 ## Script
 
@@ -89,7 +89,7 @@ Aggiorna `src/config/targetsData.json` e `generated-config.json`. Poi allinea a 
 | `image-targets/..._luminance.jpg` | Immagine di tracking 8th Wall | Scala di grigi |
 | `image-targets/..._original.jpg` | Copia della sorgente usata in generazione | Come in input |
 
-Non confrontare `trigger_*.jpg` con `*_qr_luminance.jpg`: sono target diversi (foto nuova vs QR museo).
+Non confrontare `trigger_*.jpg` con `*_qr_luminance.jpg`: sono target diversi (foto scattata al museo vs foto ufficiale).
 
 ## Qualità marker (8th Wall)
 
