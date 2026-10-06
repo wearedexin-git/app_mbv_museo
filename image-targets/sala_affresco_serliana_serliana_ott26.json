@@ -1,0 +1,23 @@
+{
+  "imagePath": "image-targets/sala_affresco_serliana_serliana_ott26_luminance.jpg",
+  "metadata": null,
+  "name": "sala_affresco_serliana_serliana_ott26",
+  "type": "PLANAR",
+  "properties": {
+    "left": 0,
+    "top": 0,
+    "width": 1200,
+    "height": 1600,
+    "isRotated": false,
+    "originalWidth": 1200,
+    "originalHeight": 1600
+  },
+  "resources": {
+    "originalImage": "sala_affresco_serliana_serliana_ott26_original.jpg",
+    "croppedImage": "sala_affresco_serliana_serliana_ott26_cropped.jpg",
+    "thumbnailImage": "sala_affresco_serliana_serliana_ott26_thumbnail.jpg",
+    "luminanceImage": "sala_affresco_serliana_serliana_ott26_luminance.jpg"
+  },
+  "created": 1791192826770,
+  "updated": 1791192826770
+}

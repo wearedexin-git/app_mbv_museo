@@ -25,11 +25,11 @@ L'architettura è basata su un sistema di sincronizzazione automatica che mappa 
 │   ├── config/
 │   │   ├── targetsData.json   # DATABASE GENERATO AUTOMATICAMENTE
 │   │   └── targetsManager.ts  # Gestore tipi e caricamento
-│   ├── scripts/
-│   │   └── sync-targets.js    # SCRIPT DI SINCRONIZZAZIONE (Core)
 │   └── index.html            # Template interfaccia
+├── scripts/
+│   └── sync-targets.js       # SCRIPT DI SINCRONIZZAZIONE (Core)
 ├── image-targets/            # File .json degli Image Target di 8th Wall
-└── webpack.config.js         # Configurazione build (supporto sottocartelle)
+└── config/webpack.config.js  # Configurazione build (supporto sottocartelle)
 ```
 
 ## ⚙️ Procedura di Aggiornamento (Scripting)
@@ -37,12 +37,12 @@ L'architettura è basata su un sistema di sincronizzazione automatica che mappa 
 Per aggiungere o modificare contenuti (testi, audio, immagini o quiz), segui questa procedura:
 
 1.  **Organizza i file**: Inserisci i nuovi file in `src/asset/` seguendo la struttura `stanza/trigger`.
-2.  **Associa i Quiz**: il path del trigger deve contenere la chiave dello script (`credenza`, `camino`, `bagno`, …) **e** deve esistere `src/quizbase/bv-quiz-<nome>/questions.json`. Senza JSON lo sync non mostra il bottone.
+2.  **Associa i Quiz**: il path del trigger deve contenere una chiave di `quizMapping` in `scripts/sync-targets.js` (`credenza`, `bagno`, `galleria_armi_armatura_1`, …) **e** deve esistere `src/quizbase/bv-quiz-<nome>/questions.json`. Senza JSON lo sync stampa un warning e non mostra il bottone.
 3.  **Sincronizza i dati**:
     ```bash
     node scripts/sync-targets.js
     ```
-    *Questo comando pulisce i testi RTF, mappa gli audio e genera il file `targetsData.json` per tutti i 43+ target.*
+    *Questo comando pulisce i testi RTF, mappa gli audio e genera il file `targetsData.json` per tutti gli hotspot (oggi 42, con 98 image target).*
 4.  **Esegui la Build**:
     ```bash
     npm run build
@@ -79,6 +79,13 @@ Tutta la doc di progetto è in [`docs/`](docs/README.md):
 L'applicazione è configurata per funzionare in **qualsiasi sottocartella** del server (es. `dominio.it/test/ar/`).
 - Il `publicPath` è impostato su `./` nel `webpack.config.js`.
 - Tutti i riferimenti agli asset nel JSON sono relativi (`./asset/...` e `./quizbase/...`).
+
+### 🔑 Variabili di build (opzionali)
+- `XR_APP_KEY` — appKey 8th Wall iniettata nel tag `xr.js` di `index.html` (default in `config/webpack.config.js`).
+- `SENTRY_DSN` / `SENTRY_ENVIRONMENT` — vedi [`docs/sentry.md`](docs/sentry.md).
+- `BUILD_ID` — di default un id generato a ogni build: versiona `bundle.js?v=` e la cache app-shell del service worker, quindi **non serve più alcun bump manuale**.
+
+Le chiavi sono pubbliche per natura (finiscono nel browser): proteggerle con la whitelist domini di 8th Wall e gli *Allowed Domains* di Sentry.
 
 ### 📦 Checklist per l'Upload
 Per ogni aggiornamento online, assicurati di caricare i seguenti file dalla cartella `dist/`:

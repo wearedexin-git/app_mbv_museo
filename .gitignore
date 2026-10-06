@@ -6,3 +6,4 @@ node_modules
 dist
 tmp
 .DS_Store
+_backup_*.tar.gz

@@ -36,6 +36,8 @@ def scan_triggers():
     
     results = []
     for root, dirs, files in os.walk(ASSETS_DIR):
+        # Cartelle "_qualcosa" (es. _disattivati/) = trigger archiviati, non attivi
+        dirs[:] = [d for d in dirs if not d.startswith('_')]
         for f in files:
             if f.startswith("trigger_") and f.lower().endswith((".jpg", ".jpeg", ".png")):
                 full_path = os.path.join(root, f)

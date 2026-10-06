@@ -398,7 +398,7 @@
   </script>
   <script crossorigin="anonymous" src="./external/runtime/runtime.js"></script>
   <script crossorigin="anonymous" src="./external/xr/xr.js" async="true" data-preload-chunks="slam"
-    appKey="3BnxNE2RNShEkkTCf4TzDiMhNRy_2EsTEq3ZvhXbZg8bXtAT4"></script>
+    appKey="<%= xrAppKey %>"></script>
   <!-- Carica XRExtras ufficiale per gestire FullScreen e Permessi Camera -->
   <script src="https://cdn.8thwall.com/web/xrextras/xrextras.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
@@ -1744,7 +1744,7 @@
 
   <audio id="ar-audio-player" class="hidden"></audio>
 
-  <script src="bundle.js?v=25"></script>
+  <script src="bundle.js?v=<%= buildId %>"></script>
 </body>
 
 </html>

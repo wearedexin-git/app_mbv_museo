@@ -16,7 +16,8 @@ function findTriggers(dir, results = []) {
   for (const f of fs.readdirSync(dir)) {
     const full = path.join(dir, f);
     if (fs.lstatSync(full).isDirectory()) {
-      findTriggers(full, results);
+      // Cartelle "_qualcosa" (es. _disattivati/) = trigger archiviati, non attivi
+      if (!f.startsWith('_')) findTriggers(full, results);
       continue;
     }
     if (!f.startsWith('trigger_') || !/\.(jpg|jpeg|png)$/i.test(f)) continue;

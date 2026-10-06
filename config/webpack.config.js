@@ -9,6 +9,15 @@ const rootPath = process.cwd()
 const distPath = path.join(rootPath, 'dist')
 const srcPath = path.join(rootPath, 'src')
 
+// Identificativo della build: versiona bundle.js (?v=) in index.html e la
+// cache dell'app shell in sw.js, al posto dei bump manuali.
+const BUILD_ID = process.env.BUILD_ID || Date.now().toString(36)
+
+// Chiavi lato client (pubbliche per natura: finiscono comunque nel browser).
+// Sovrascrivibili via env per usare chiavi diverse in staging/CI; proteggerle
+// con la whitelist dei domini su 8th Wall e "Allowed Domains" su Sentry.
+const XR_APP_KEY = process.env.XR_APP_KEY || '3BnxNE2RNShEkkTCf4TzDiMhNRy_2EsTEq3ZvhXbZg8bXtAT4'
+
 const makeTsLoader = () => ({
   test: /\.ts$/,
   loader: 'ts-loader',
@@ -41,6 +50,7 @@ const config = {
       filename: 'index.html',
       scriptLoading: 'blocking',
       inject: false,
+      templateParameters: { buildId: BUILD_ID, xrAppKey: XR_APP_KEY },
     }),
     new CopyWebpackPlugin({
       patterns: [
@@ -55,7 +65,11 @@ const config = {
           noErrorOnMissing: true,
         },
         { from: path.join(srcPath, 'manifest.json'), to: distPath },
-        { from: path.join(srcPath, 'sw.js'), to: distPath },
+        {
+          from: path.join(srcPath, 'sw.js'),
+          to: distPath,
+          transform: (content) => content.toString().replace(/__BUILD_ID__/g, BUILD_ID),
+        },
         {
           from: path.join(srcPath, 'quizbase'),
           to: path.join(distPath, 'quizbase'),

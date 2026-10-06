@@ -41,7 +41,7 @@ La struttura del progetto è organizzata per permettere l'aggiunta di contenuti 
     -   `testi/ita/` e `testi/en/`: File `.rtf` contenenti i testi informativi.
 *   `src/quizbase/bv-quiz-[nome]/`: Cartella contenente il file `questions.json` con le domande del quiz associato.
 *   `image-targets/`: Contiene i file di configurazione `.json` generati da 8th Wall per il tracciamento visivo.
-*   `src/config/targetsData.json`: Generato automaticamente dallo script di sincronizzazione; contiene il mapping completo di immagini, audio, testi estratti dagli RTF e quiz associati per oltre 40 target.
+*   `src/config/targetsData.json`: Generato automaticamente dallo script di sincronizzazione; contiene il mapping completo di immagini, audio, testi estratti dagli RTF e quiz associati per 42 hotspot (98 image target: foto + varianti `_qr`).
 *   `src/config/targetsManager.ts`: Gestore TypeScript per caricare e interrogare i dati dei target con logiche di fallback e corrispondenze parziali di prefissi.
 
 ---
@@ -53,7 +53,7 @@ Uno degli elementi chiave del progetto è il sistema di build data-driven:
 2. Trova le cartelle che rappresentano i trigger.
 3. Legge e decodifica i file `.rtf` pulendo la formattazione RTF e convertendoli in testo piano.
 4. Associa gli audio e le immagini del carosello.
-5. Associa i quiz in base a parole chiave nel path del trigger **solo se** esiste `src/quizbase/<id>/questions.json` (es. `credenza` → `bv-quiz-vetrina`; `armatura` senza JSON → nessun quiz).
+5. Associa i quiz in base a parole chiave nel path del trigger **solo se** esiste `src/quizbase/<id>/questions.json` (es. `credenza` → `bv-quiz-vetrina`, `galleria_armi_armatura_1` → `bv-quiz-armatura`). Se il JSON manca, lo script stampa un warning e imposta `quizId = null`.
 6. Scrive i dati aggregati in `targetsData.json` e genera l'elenco degli import per gli Image Target in `generated-config.json`.
 
 ---
@@ -69,5 +69,5 @@ Dall'analisi dei file sorgente, il progetto si trova in uno stato **avanzato/com
 | **Carosello 3D Spaziale** | ✅ Completato | Creato in Three.js con PlaneGeometry e logica di scorrimento lerpata orizzontale. |
 | **Interfaccia Utente 2D** | ✅ Completato | Implementato in `ui-controller.ts` con controlli audio, cambio lingua (IT/EN), supporto modali e quiz. |
 | **Sistema Quiz** | ✅ Completato | Caricamento dinamico on-demand dei JSON del quiz dalla cartella `quizbase`. |
-| **Automazione dei Target** | ✅ Completato | Lo script `sync-targets.js` aggrega e mappa oltre 43 target presenti nella cartella. |
+| **Automazione dei Target** | ✅ Completato | Lo script `sync-targets.js` aggrega e mappa 42 hotspot / 98 image target (11 con quiz). |
 | **Funzionalità PWA** | ✅ Completato | Service worker attivo con caching dinamico degli asset pesanti per ottimizzare le performance offline nel museo. |

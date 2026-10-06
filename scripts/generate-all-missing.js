@@ -13,7 +13,8 @@ function findTriggers(dir, results = []) {
     for (const f of files) {
         const full = path.join(dir, f);
         if (fs.lstatSync(full).isDirectory()) {
-            findTriggers(full, results);
+            // Cartelle "_qualcosa" (es. _disattivati/) = trigger archiviati, non attivi
+            if (!f.startsWith('_')) findTriggers(full, results);
         } else if (f.startsWith('trigger_') && /\.(jpg|jpeg|png)$/i.test(f)) {
             // Get relative path parts to build target ID
             const rel = path.relative(ASSET_ROOT, dir);
