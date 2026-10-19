@@ -95,7 +95,10 @@ Non confrontare `trigger_*.jpg` con `*_qr_luminance.jpg`: sono target diversi (f
 
 - **Variante** (es. stesse opere con luci diverse): aggiungere un altro `trigger_<nome>_<suffisso>.jpg` nella cartella dell'hotspot. Ogni file diventa un target in più che apre lo stesso contenuto. Gli scatti di ottobre 2026 (luci cambiate) usano il suffisso `_ott26`.
 - **Disattivare senza cancellare**: spostare il `trigger_*.jpg` in una sottocartella che inizia con `_` (es. `_disattivati/`). `sync-targets.js` legge solo i file in cima alla cartella e gli script di generazione/audit ignorano le cartelle `_*`; i file in `image-targets/` restano. Per riattivarlo: rimetterlo nella cartella dell'hotspot, poi `sync-targets.js` + `python3 upgrade_app.py`.
-- Disattivato oggi: `galleria_cupola/candelabro/_disattivati/trigger_candelabri.jpg` (il candelabro è stato spostato, la scena fotografata non esiste più).
+- Trigger disattivati:
+  - `galleria_cupola/candelabro/_disattivati/trigger_candelabri.jpg`: il candelabro è stato spostato, la scena fotografata non esiste più.
+  - `camera_rossa/dettaglio_credenza/_disattivati/trigger_credenza_1.jpg`: sostituito da `trigger_credenza_1_ott26.jpg`.
+  - `sala_stufa_valtellinese/dettaglio_pianoforte_uno/_disattivati/trigger_pianoforte_uno_1.jpg`: sostituito da `trigger_pianoforte_uno_1_ott26.jpg`.
 
 ## Qualità marker (8th Wall)
 

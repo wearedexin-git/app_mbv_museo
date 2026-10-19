@@ -42,7 +42,7 @@ Per aggiungere o modificare contenuti (testi, audio, immagini o quiz), segui que
     ```bash
     node scripts/sync-targets.js
     ```
-    *Questo comando pulisce i testi RTF, mappa gli audio e genera il file `targetsData.json` per tutti gli hotspot (oggi 42, con 98 image target).*
+    *Questo comando pulisce i testi RTF, mappa gli audio e genera il file `targetsData.json` per tutti gli hotspot (oggi 42, con 100 image target).*
 4.  **Esegui la Build**:
     ```bash
     npm run build

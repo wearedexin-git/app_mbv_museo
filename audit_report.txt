@@ -16,9 +16,11 @@ READY        | camera_fausto   | trigger_dettaglio.jpg          | camera_fausto_
 READY        | camera_fausto   | trigger_dettaglio_ott26.jpg    | camera_fausto_dettaglio_porta_dettaglio_ott26
 READY        | camera_rossa    | trigger_credenza_qr.jpg        | camera_rossa_credenza_credenza_qr
 READY        | camera_rossa    | trigger_credenza.jpg           | camera_rossa_credenza_credenza
+READY        | camera_rossa    | trigger_credenza_ott26.jpg     | camera_rossa_credenza_credenza_ott26
+READY        | camera_rossa    | trigger_credenza_1_ott26.jpg   | camera_rossa_dettaglio_credenza_credenza_1_ott26
 READY        | camera_rossa    | trigger_credenza_qr.jpg        | camera_rossa_dettaglio_credenza_credenza_qr
 READY        | camera_rossa    | trigger_credenza.jpg           | camera_rossa_dettaglio_credenza_credenza
-READY        | camera_rossa    | trigger_credenza_1.jpg         | camera_rossa_dettaglio_credenza_credenza_1
+READY        | camera_rossa    | trigger_credenza_ott26.jpg     | camera_rossa_dettaglio_credenza_credenza_ott26
 READY        | camera_rossa    | trigger_camera_qr.jpg          | camera_rossa_camera_camera_qr
 READY        | camera_rossa    | trigger_camera.jpg             | camera_rossa_camera_camera
 READY        | camera_verde    | trigger_camera_qr.jpg          | camera_verde_camera_camera_qr
@@ -71,9 +73,9 @@ READY        | sala_pranzo     | trigger_porta.jpg              | sala_pranzo_po
 READY        | sala_pranzo     | trigger_porta_qr.jpg           | sala_pranzo_porta_porta_qr
 READY        | sala_stufa_valtellinese | trigger_pianoforte.jpg         | sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte
 READY        | sala_stufa_valtellinese | trigger_pianoforte_uno_2.jpg   | sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_2
-READY        | sala_stufa_valtellinese | trigger_pianoforte_uno_1.jpg   | sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_1
 READY        | sala_stufa_valtellinese | trigger_pianoforte_qr.jpg      | sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_qr
 READY        | sala_stufa_valtellinese | trigger_pianoforte_ott26.jpg   | sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_ott26
+READY        | sala_stufa_valtellinese | trigger_pianoforte_uno_1_ott26.jpg | sala_stufa_valtellinese_dettaglio_pianoforte_uno_pianoforte_uno_1_ott26
 READY        | sala_stufa_valtellinese | trigger_stanza.jpg             | sala_stufa_valtellinese_stanza_stanza
 READY        | sala_stufa_valtellinese | trigger_orologio_ott26.jpg     | sala_stufa_valtellinese_orologio_orologio_ott26
 READY        | sala_stufa_valtellinese | trigger_orologio.jpg           | sala_stufa_valtellinese_orologio_orologio
